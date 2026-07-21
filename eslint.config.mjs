@@ -1,0 +1,36 @@
+import { defineConfig, globalIgnores } from "eslint/config";
+import betterTailwindcss from "eslint-plugin-better-tailwindcss";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      "better-tailwindcss": betterTailwindcss,
+    },
+    rules: {
+      "better-tailwindcss/enforce-canonical-classes": "error",
+      "better-tailwindcss/no-conflicting-classes": "error",
+      "better-tailwindcss/no-duplicate-classes": "error",
+      "better-tailwindcss/no-unknown-classes": "error",
+    },
+    settings: {
+      "better-tailwindcss": {
+        entryPoint: "src/app/globals.css",
+      },
+    },
+  },
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
