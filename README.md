@@ -22,13 +22,14 @@ TriggerとContentの上下辺は隙間なく接触させています。透明な
 ```text
 Navbar.tsx                         Server Component
 ├─ SiteLogo                       Server Component
-├─ MegaMenu.Root                  Client Component
-│  ├─ MegaMenu.Item               Client shell
-│  │  ├─ MegaMenu.Link            Client (hover + provisional keyboard behavior)
-│  │  └─ MegaMenu.Content
-│  │     └─ *MegaMenuContent      Server Component as children
+├─ MegaMenu.Root (nav)            Client Component
+│  ├─ MegaMenu.List (ul)          Client shell
+│  │  └─ MegaMenu.Item (li)       Client shell
+│  │     ├─ MegaMenu.Link         Client (hover + provisional keyboard behavior)
+│  │     └─ MegaMenu.Content
+│  │        └─ *MegaMenuContent   Server Component as children
 │  └─ MegaMenu.Layer              Client (Portal to document.body)
-└─ Login / My page / Help         Server-rendered links
+└─ Login / Customer page / Cart   Server-rendered links
 ```
 
 `MegaMenu.Link` と `MegaMenu.Content` は同じ `MegaMenu.Item` 内に記述します。React 上の所有関係は隣接したまま、active な Content だけが `createPortal` によって共有 Layer へ移動します。

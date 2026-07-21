@@ -6,7 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type HTMLAttributes,
+  type ComponentPropsWithoutRef,
   type KeyboardEventHandler,
 } from "react";
 import { POINTER_CLOSE_DELAY_MS } from "./constants";
@@ -15,7 +15,7 @@ import {
   type MegaMenuRootContextValue,
 } from "./MegaMenuRootContext";
 
-type MegaMenuRootProps = HTMLAttributes<HTMLDivElement>;
+type MegaMenuRootProps = ComponentPropsWithoutRef<"nav">;
 
 export function MegaMenuRoot({
   children,
@@ -24,7 +24,7 @@ export function MegaMenuRoot({
   ...props
 }: MegaMenuRootProps) {
   const pathname = usePathname();
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
   const activeAnchorRef = useRef<HTMLAnchorElement | null>(null);
   const suppressedFocusAnchorRef = useRef<HTMLAnchorElement | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -173,7 +173,7 @@ export function MegaMenuRoot({
     ],
   );
 
-  const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
+  const handleKeyDown: KeyboardEventHandler<HTMLElement> = (event) => {
     onKeyDown?.(event);
     if (event.defaultPrevented) return;
 
@@ -185,14 +185,14 @@ export function MegaMenuRoot({
 
   return (
     <MegaMenuRootContext.Provider value={contextValue}>
-      <div
+      <nav
         {...props}
         ref={rootRef}
         className={className}
         onKeyDown={handleKeyDown}
       >
         {children}
-      </div>
+      </nav>
     </MegaMenuRootContext.Provider>
   );
 }
