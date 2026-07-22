@@ -3,7 +3,7 @@ import Link from "next/link";
 export function SiteLogo() {
   return (
     <Link
-      className="mr-5 inline-flex min-w-max items-center gap-2.5 text-lg font-[820] tracking-[0.11em] text-ink focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] max-[1050px]:mr-[7px]"
+      className="mr-5 inline-flex min-w-max items-center gap-2.5 text-lg font-[820] tracking-[0.11em] text-ink focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] max-[1050px]:mr-[7px] max-md:mr-0"
       href="/"
       aria-label="Orbit ホーム"
     >

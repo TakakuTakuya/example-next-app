@@ -9,6 +9,7 @@ import {
   type ComponentPropsWithoutRef,
   type KeyboardEventHandler,
 } from "react";
+import { DESKTOP_NAVIGATION_MEDIA_QUERY } from "../constants";
 import { POINTER_CLOSE_DELAY_MS } from "./constants";
 import {
   MegaMenuRootContext,
@@ -147,6 +148,22 @@ export function MegaMenuRoot({
   useEffect(() => {
     return () => cancelScheduledClose();
   }, [cancelScheduledClose]);
+
+  useEffect(() => {
+    const desktopNavigation = window.matchMedia(
+      DESKTOP_NAVIGATION_MEDIA_QUERY,
+    );
+    const handleChange = () => {
+      if (!desktopNavigation.matches) {
+        closeMenu();
+      }
+    };
+
+    handleChange();
+    desktopNavigation.addEventListener("change", handleChange);
+
+    return () => desktopNavigation.removeEventListener("change", handleChange);
+  }, [closeMenu]);
 
   const contextValue = useMemo<MegaMenuRootContextValue>(
     () => ({
