@@ -110,32 +110,30 @@ export function Navbar() {
           <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
         </nav>
 
-        <div className="ml-auto hidden shrink-0 items-center gap-0 max-md:flex">
-          <BottomSheet.Root>
-            <BottomSheet.Item value="product-search">
-              <BottomSheet.Trigger
-                className={mobileActionClassName}
-                aria-label="製品を探す"
-              >
-                <Search className="size-5" aria-hidden="true" />
-              </BottomSheet.Trigger>
-              <BottomSheet.Content title="製品を探す">
-                <ProductSearchBottomSheetContent />
-              </BottomSheet.Content>
-            </BottomSheet.Item>
+        <BottomSheet.Root className="ml-auto hidden shrink-0 items-center gap-0 max-md:flex">
+          <BottomSheet.Item value="product-search">
+            <BottomSheet.Trigger
+              className={mobileActionClassName}
+              aria-label="製品を探す"
+            >
+              <Search className="size-5" aria-hidden="true" />
+            </BottomSheet.Trigger>
+            <BottomSheet.Content title="製品を探す">
+              <ProductSearchBottomSheetContent />
+            </BottomSheet.Content>
+          </BottomSheet.Item>
 
-            <BottomSheet.Item value="login">
-              <BottomSheet.Trigger
-                className={mobileActionClassName}
-                aria-label="ログイン"
-              >
-                <UserRound className="size-5" aria-hidden="true" />
-              </BottomSheet.Trigger>
-              <BottomSheet.Content title="ログイン">
-                <LoginBottomSheetContent />
-              </BottomSheet.Content>
-            </BottomSheet.Item>
-          </BottomSheet.Root>
+          <BottomSheet.Item value="login">
+            <BottomSheet.Trigger
+              className={mobileActionClassName}
+              aria-label="ログイン"
+            >
+              <UserRound className="size-5" aria-hidden="true" />
+            </BottomSheet.Trigger>
+            <BottomSheet.Content title="ログイン">
+              <LoginBottomSheetContent />
+            </BottomSheet.Content>
+          </BottomSheet.Item>
 
           <Link
             className={mobileActionClassName}
@@ -144,7 +142,7 @@ export function Navbar() {
           >
             <ShoppingCart className="size-5" aria-hidden="true" />
           </Link>
-        </div>
+        </BottomSheet.Root>
       </div>
     </header>
   );

@@ -5,7 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type ReactNode,
+  type ComponentPropsWithoutRef,
 } from "react";
 import { DESKTOP_NAVIGATION_MEDIA_QUERY } from "../constants";
 import {
@@ -14,11 +14,12 @@ import {
   type CloseBottomSheetOptions,
 } from "./BottomSheetRootContext";
 
-type BottomSheetRootProps = {
-  children: ReactNode;
-};
+type BottomSheetRootProps = ComponentPropsWithoutRef<"div">;
 
-export function BottomSheetRoot({ children }: BottomSheetRootProps) {
+export function BottomSheetRoot({
+  children,
+  ...props
+}: BottomSheetRootProps) {
   const pathname = usePathname();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const activeDialogValueRef = useRef<string | null>(null);
@@ -153,7 +154,7 @@ export function BottomSheetRoot({ children }: BottomSheetRootProps) {
 
   return (
     <BottomSheetRootContext.Provider value={contextValue}>
-      {children}
+      <div {...props}>{children}</div>
     </BottomSheetRootContext.Provider>
   );
 }

@@ -6,7 +6,7 @@ import {
   type ComponentPropsWithoutRef,
   type KeyboardEventHandler,
   type MouseEventHandler,
-  type SyntheticEvent,
+  type ReactEventHandler,
 } from "react";
 import { createPortal } from "react-dom";
 import { useBottomSheetItem } from "./BottomSheetItemContext";
@@ -59,11 +59,11 @@ export function BottomSheetContent({
 
   if (!open || !mounted) return null;
 
-  const handleCancel = (event: SyntheticEvent<HTMLDialogElement>) => {
+  const handleCancel: ReactEventHandler<HTMLDialogElement> = (event) => {
     onCancelProp?.(event);
   };
 
-  const handleClose = (event: SyntheticEvent<HTMLDialogElement>) => {
+  const handleClose: ReactEventHandler<HTMLDialogElement> = (event) => {
     onCloseProp?.(event);
     handleDialogClose(value);
   };
