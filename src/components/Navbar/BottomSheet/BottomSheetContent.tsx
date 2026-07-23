@@ -26,6 +26,7 @@ export function BottomSheetContent({
   className,
   title,
   onCancel: onCancelProp,
+  onClick: onClickProp,
   onClose: onCloseProp,
   onKeyDown: onKeyDownProp,
   ...props
@@ -68,6 +69,14 @@ export function BottomSheetContent({
     handleDialogClose(value);
   };
 
+  const handleDialogClick: MouseEventHandler<HTMLDialogElement> = (event) => {
+    onClickProp?.(event);
+
+    if (!event.defaultPrevented && event.target === event.currentTarget) {
+      closeSheet();
+    }
+  };
+
   const handleKeyDown: KeyboardEventHandler<HTMLDialogElement> = (event) => {
     onKeyDownProp?.(event);
 
@@ -89,6 +98,7 @@ export function BottomSheetContent({
       className={`fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none animate-bottom-sheet-in overflow-visible border-0 bg-transparent p-0 text-ink backdrop:bg-ink/45 backdrop:backdrop-blur-[2px] motion-reduce:animate-none ${className ?? ""}`}
       aria-labelledby={titleId}
       onCancel={handleCancel}
+      onClick={handleDialogClick}
       onClose={handleClose}
       onKeyDown={handleKeyDown}
     >

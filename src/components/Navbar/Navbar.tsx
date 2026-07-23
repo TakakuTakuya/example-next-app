@@ -9,6 +9,7 @@ import {
   UserRound,
 } from "lucide-react";
 import * as BottomSheet from "./BottomSheet";
+import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
@@ -24,12 +25,22 @@ const menuIconClassName =
 const mobileActionClassName =
   "inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink transition-colors duration-150 hover:bg-[#eff3ee] active:bg-[#e5ebe7] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] data-[state=open]:bg-[#eff3ee] motion-reduce:transition-none";
 
+type NavbarProps = {
+  hasCartItems?: boolean;
+  isLoggedIn?: boolean;
+};
+
 /**
  * Navbar は Server Component のまま。
  * MegaMenu と BottomSheet の Client shell に、
  * Server Component の各 Content を children として渡す。
  */
-export function Navbar() {
+export function Navbar({
+  hasCartItems = false,
+  isLoggedIn = false,
+}: NavbarProps) {
+  const showCartBottomSheet = isLoggedIn && hasCartItems;
+
   return (
     <header className="sticky top-0 z-20 overflow-hidden border-b border-ink/10 bg-white/92 shadow-[0_8px_28px_rgb(30_50_43/5%)] backdrop-blur-lg max-md:w-dvw">
       <div className="mx-auto flex h-[76px] w-[min(calc(100%-40px),1440px)] items-center gap-3.5 max-[1050px]:w-[calc(100%-24px)] max-[1050px]:gap-1 max-md:gap-0.5">
@@ -135,13 +146,27 @@ export function Navbar() {
             </BottomSheet.Content>
           </BottomSheet.Item>
 
-          <Link
-            className={mobileActionClassName}
-            href="/cart"
-            aria-label="カート"
-          >
-            <ShoppingCart className="size-5" aria-hidden="true" />
-          </Link>
+          {showCartBottomSheet ? (
+            <BottomSheet.Item value="cart">
+              <BottomSheet.Trigger
+                className={mobileActionClassName}
+                aria-label="カート"
+              >
+                <ShoppingCart className="size-5" aria-hidden="true" />
+              </BottomSheet.Trigger>
+              <BottomSheet.Content title="カート">
+                <CartBottomSheetContent />
+              </BottomSheet.Content>
+            </BottomSheet.Item>
+          ) : (
+            <Link
+              className={mobileActionClassName}
+              href="/cart"
+              aria-label="カート"
+            >
+              <ShoppingCart className="size-5" aria-hidden="true" />
+            </Link>
+          )}
         </BottomSheet.Root>
       </div>
     </header>
