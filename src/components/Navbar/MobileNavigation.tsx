@@ -1,22 +1,10 @@
+import { BookOpen, Layers3, Lightbulb } from "lucide-react";
 import * as Drawer from "./Drawer";
 
-const mobileNavigationItems = [
-  {
-    href: "/products",
-    label: "製品",
-    description: "キーワードやカテゴリから探す",
-  },
-  {
-    href: "/solutions",
-    label: "ソリューション",
-    description: "チームに合った解決策を探す",
-  },
-  {
-    href: "/resources",
-    label: "リソース",
-    description: "学習資料やサポート情報を探す",
-  },
-] as const;
+const iconClassName = "size-5 shrink-0 text-green-2";
+
+const linkClassName =
+  "grid min-h-20 grid-cols-[auto_1fr] items-center gap-3 rounded-xl p-3 text-ink transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none";
 
 /**
  * モバイル用メインナビゲーションの意味構造を担当するServer Component。
@@ -26,19 +14,41 @@ export function MobileNavigation() {
   return (
     <nav aria-label="モバイルメインナビゲーション">
       <ul className="divide-y divide-line">
-        {mobileNavigationItems.map(({ description, href, label }) => (
-          <li key={href}>
-            <Drawer.Link
-              className="flex min-h-20 flex-col justify-center gap-1 rounded-xl p-3 text-ink transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
-              href={href}
-            >
-              <span className="text-base font-[750]">{label}</span>
+        <li>
+          <Drawer.Link className={linkClassName} href="/products">
+            <Layers3 className={iconClassName} aria-hidden="true" />
+            <span className="flex flex-col gap-1">
+              <span className="text-base font-[750]">製品</span>
               <span className="text-sm/6 text-muted">
-                {description}
+                キーワードやカテゴリから探す
               </span>
-            </Drawer.Link>
-          </li>
-        ))}
+            </span>
+          </Drawer.Link>
+        </li>
+
+        <li>
+          <Drawer.Link className={linkClassName} href="/solutions">
+            <Lightbulb className={iconClassName} aria-hidden="true" />
+            <span className="flex flex-col gap-1">
+              <span className="text-base font-[750]">ソリューション</span>
+              <span className="text-sm/6 text-muted">
+                チームに合った解決策を探す
+              </span>
+            </span>
+          </Drawer.Link>
+        </li>
+
+        <li>
+          <Drawer.Link className={linkClassName} href="/resources">
+            <BookOpen className={iconClassName} aria-hidden="true" />
+            <span className="flex flex-col gap-1">
+              <span className="text-base font-[750]">リソース</span>
+              <span className="text-sm/6 text-muted">
+                学習資料やサポート情報を探す
+              </span>
+            </span>
+          </Drawer.Link>
+        </li>
       </ul>
     </nav>
   );
