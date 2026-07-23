@@ -10,7 +10,9 @@ import {
 } from "lucide-react";
 import * as BottomSheet from "./BottomSheet";
 import { CartBottomSheetContent } from "./CartBottomSheetContent";
+import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
+import { MobileNavigation } from "./MobileNavigation";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsMegaMenuContent } from "./ProductsMegaMenuContent";
@@ -44,15 +46,17 @@ export function Navbar({
   return (
     <header className="sticky top-0 z-20 overflow-hidden border-b border-ink/10 bg-white/92 shadow-[0_8px_28px_rgb(30_50_43/5%)] backdrop-blur-lg max-md:w-dvw">
       <div className="mx-auto flex h-[76px] w-[min(calc(100%-40px),1440px)] items-center gap-3.5 max-[1050px]:w-[calc(100%-24px)] max-[1050px]:gap-1 max-md:gap-0.5">
-        <button
-          type="button"
-          className="hidden size-11 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-white text-ink shadow-sm max-md:inline-flex"
-          aria-label="メニューを開く"
-          aria-hidden="true"
-          disabled
-        >
-          <Menu className="size-5" aria-hidden="true" />
-        </button>
+        <Drawer.Root>
+          <Drawer.Trigger
+            className="hidden size-11 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-white text-ink shadow-sm transition-colors duration-150 hover:bg-[#eff3ee] active:bg-[#e5ebe7] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] data-[state=open]:bg-[#eff3ee] max-md:inline-flex motion-reduce:transition-none"
+            aria-label="メニューを開く"
+          >
+            <Menu className="size-5" aria-hidden="true" />
+          </Drawer.Trigger>
+          <Drawer.Content title="メニュー">
+            <MobileNavigation />
+          </Drawer.Content>
+        </Drawer.Root>
 
         <SiteLogo />
 
