@@ -102,7 +102,7 @@ export function BottomSheetContent({
           <X className="size-5" aria-hidden="true" />
         </button>
 
-        <div className="flex max-h-[min(80dvh,720px)] min-h-0 flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-24px_60px_rgb(21_47_38/18%)]">
+        <div className="flex h-[calc(100dvh-70px)] min-h-0 flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-24px_60px_rgb(21_47_38/18%)]">
           <div className="flex shrink-0 items-center border-b border-line px-5 py-4">
             <h2 id={titleId} className="text-lg font-[760]">
               {title}

@@ -153,6 +153,8 @@ Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとCo
 
 Bottom Sheetの表示時は、本体だけを280msかけて48px下から定位置へ移動させる。backdropは動かさず、`prefers-reduced-motion: reduce`では本体のアニメーションも無効化する。
 
+Sheet本体はビューポート下端へ固定し、高さを`calc(100dvh - 70px)`とする。これにより、画面の高さや内容量にかかわらず本体上辺をビューポート上端から70pxの位置へ揃え、超過する内容だけを本体内でスクロールさせる。
+
 閉じるボタンはSheet内部のヘッダー行に含めず、Sheet本体の右上辺から8px上へ配置する。本体とは重ねない。`dialog`をoverflow可能な外枠、本体を角丸とスクロールを担当する内側要素に分け、ボタンが本体のクリップ領域で切れないようにする。
 
 Navbarのcomposition layerでは、MegaMenuとBottom SheetのどちらもRoot、Item、TriggerまたはLink、Content、固有Contentを直接宣言する。`MobileNavbarActions`のような状態を持たない中間コンポーネントでは包まない。これにより、デスクトップとスマートフォン双方の遷移先と展開内容を`Navbar.tsx`だけで追跡できる。
