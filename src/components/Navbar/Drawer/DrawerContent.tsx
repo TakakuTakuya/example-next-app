@@ -108,7 +108,7 @@ export function DrawerContent({
       onKeyDown={handleKeyDown}
     >
       <div className="flex h-dvh w-[min(88dvw,400px)] max-w-full animate-drawer-in flex-col bg-white shadow-[24px_0_60px_rgb(21_47_38/18%)] motion-reduce:animate-none">
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-line px-5 py-4">
+        <div className="relative z-40 flex shrink-0 items-center justify-between gap-4 border-b border-line bg-white px-5 py-4">
           <h2 id={titleId} className="text-lg font-[760]">
             {title}
           </h2>
@@ -122,7 +122,7 @@ export function DrawerContent({
           </button>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))]">
+        <div className="min-h-0 flex-1 overflow-hidden">
           {children}
         </div>
       </div>

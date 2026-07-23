@@ -34,7 +34,7 @@ type NavbarProps = {
 
 /**
  * Navbar は Server Component のまま。
- * MegaMenu と BottomSheet の Client shell に、
+ * MegaMenu、Drawer / PushNav、BottomSheet の Client shell に、
  * Server Component の各 Content を children として渡す。
  */
 export function Navbar({
