@@ -73,7 +73,6 @@ export function MegaMenuContent({
       role="region"
       aria-labelledby={item.linkId}
       className={`pointer-events-auto max-h-[min(680px,calc(100vh-100px))] w-full origin-top overflow-auto rounded-[18px] border border-[#1c382f]/13 bg-white/98 shadow-[0_28px_70px_rgb(21_47_38/18%),0_4px_16px_rgb(21_47_38/8%)] animate-mega-menu-in motion-reduce:animate-none ${className ?? ""}`}
-      data-state="open"
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onFocusCapture={handleFocusCapture}

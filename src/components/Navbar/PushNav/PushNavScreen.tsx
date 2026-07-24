@@ -46,8 +46,6 @@ export function PushNavScreen({
       id={getScreenId(value)}
       className={`absolute inset-0 min-h-0 overflow-y-auto overscroll-contain bg-white transition-transform duration-280 ease-[cubic-bezier(0.2,0.75,0.3,1)] motion-reduce:transition-none ${positionClassName} ${className ?? ""}`}
       aria-hidden={active ? undefined : true}
-      data-state={state}
-      data-value={value}
       inert={active ? undefined : true}
     />
   );

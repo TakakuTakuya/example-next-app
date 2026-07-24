@@ -22,7 +22,6 @@ export function MegaMenuLayer({ className }: MegaMenuLayerProps) {
     <div
       className={`pointer-events-none fixed inset-x-0 z-100 flex justify-center px-5 ${className ?? ""}`}
       style={{ top: layerTop }}
-      data-state={activeValue ? "open" : "closed"}
       aria-hidden={activeValue ? undefined : true}
     >
       <div

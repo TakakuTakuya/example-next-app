@@ -7,6 +7,7 @@ import {
   useState,
   type ComponentPropsWithoutRef,
 } from "react";
+import { NAVIGATION_FOCUSABLE_SELECTOR } from "../constants";
 import {
   PushNavRootContext,
   type PushNavRootContextValue,
@@ -54,7 +55,7 @@ export function PushNavRoot({
       const focusTarget =
         screen?.querySelector<HTMLElement>("[data-push-nav-focus]") ??
         screen?.querySelector<HTMLElement>(
-          "a[href], button:not(:disabled), [tabindex]:not([tabindex='-1'])",
+          NAVIGATION_FOCUSABLE_SELECTOR,
         );
 
       focusTarget?.focus({ preventScroll: true });
@@ -155,8 +156,6 @@ export function PushNavRoot({
         {...props}
         ref={rootRef}
         className={`relative h-full min-h-0 outline-none ${className ?? ""}`}
-        data-push-nav-root=""
-        data-value={activeValue}
         tabIndex={-1}
       >
         {children}

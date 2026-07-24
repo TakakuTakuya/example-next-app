@@ -10,7 +10,6 @@ export function PushNavViewport({
     <div
       {...props}
       className={`relative h-full min-h-0 overflow-hidden ${className ?? ""}`}
-      data-push-nav-viewport=""
     />
   );
 }

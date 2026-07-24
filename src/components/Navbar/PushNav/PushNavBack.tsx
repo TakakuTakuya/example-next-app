@@ -30,7 +30,6 @@ export function PushNavBack({
       {...props}
       type="button"
       disabled={disabled}
-      data-push-nav-back=""
       data-push-nav-focus=""
       onClick={handleClick}
     />

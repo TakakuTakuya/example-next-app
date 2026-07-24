@@ -31,7 +31,6 @@ export function PushNavTrigger({
       {...props}
       type="button"
       aria-controls={getScreenId(to)}
-      data-push-nav-trigger=""
       onClick={handleClick}
     />
   );

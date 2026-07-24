@@ -6,11 +6,9 @@ import {
   type MouseEventHandler,
   type PointerEventHandler,
 } from "react";
+import { NAVIGATION_FOCUSABLE_SELECTOR } from "../constants";
 import { NavbarMenuItem } from "../NavbarMenuItem";
-import {
-  FOCUSABLE_CONTENT_SELECTOR,
-  FOCUS_CLOSE_DELAY_MS,
-} from "./constants";
+import { FOCUS_CLOSE_DELAY_MS } from "./constants";
 import { useMegaMenuItem } from "./MegaMenuItemContext";
 import { useMegaMenuRoot } from "./MegaMenuRootContext";
 
@@ -40,7 +38,7 @@ export function MegaMenuLink({
     window.requestAnimationFrame(() => {
       const content = document.getElementById(item.contentId);
       const links = content?.querySelectorAll<HTMLElement>(
-        FOCUSABLE_CONTENT_SELECTOR,
+        NAVIGATION_FOCUSABLE_SELECTOR,
       );
 
       if (!links?.length) return;
