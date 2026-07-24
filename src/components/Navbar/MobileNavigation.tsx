@@ -26,7 +26,7 @@ const screenBodyClassName =
  */
 export function MobileNavigation() {
   return (
-    <nav className="h-full min-h-0" aria-label="モバイルメインナビゲーション">
+    <nav className="h-full min-h-0" aria-label="メイン">
       <PushNav.Root initialValue="root">
         <PushNav.Viewport>
           <PushNav.Screen

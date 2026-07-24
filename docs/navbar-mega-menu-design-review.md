@@ -394,7 +394,7 @@ closeの短い遅延は、空白を越えるためではなく、境界上のわ
 
 ### 採用しているセマンティクス
 
-- `MegaMenu.Root`は`aria-label="メイン"`を持つ`nav`、その直下に製品、ソリューション、リソースの`ul` / `li`
+- デスクトップの`MegaMenu.Root`とモバイルDrawer内の`MobileNavigation`は、どちらも`aria-label="メイン"`を持つ`nav`。レスポンシブに排他的に表示され、accessible nameには`nav`のロール名である「ナビゲーション」を重ねない
 - ロゴは`nav`の外側にあるホームリンク
 - ログイン、お客様専用ページ、カートは`aria-label="お客様専用ページとカート"`を持つ別`nav`
 - 上位項目は`a`
