@@ -4,18 +4,18 @@ import {
 } from "react";
 import { usePushNavRoot } from "./PushNavRootContext";
 
-type PushNavNextProps = Omit<
+type PushNavTriggerProps = Omit<
   ComponentPropsWithoutRef<"button">,
   "aria-controls" | "type"
 > & {
   to: string;
 };
 
-export function PushNavNext({
+export function PushNavTrigger({
   onClick: onClickProp,
   to,
   ...props
-}: PushNavNextProps) {
+}: PushNavTriggerProps) {
   const { getScreenId, push } = usePushNavRoot();
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (event) => {
@@ -31,7 +31,7 @@ export function PushNavNext({
       {...props}
       type="button"
       aria-controls={getScreenId(to)}
-      data-push-nav-next=""
+      data-push-nav-trigger=""
       onClick={handleClick}
     />
   );

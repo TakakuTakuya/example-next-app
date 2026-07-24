@@ -11,7 +11,7 @@ import { SolutionsPushNavContent } from "./SolutionsPushNavContent";
 
 const iconClassName = "size-5 shrink-0 text-green-2";
 
-const nextClassName =
+const triggerClassName =
   "grid min-h-20 w-full grid-cols-[auto_1fr] items-center gap-3 rounded-xl p-3 text-left text-ink transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none";
 
 const backClassName =
@@ -35,7 +35,7 @@ export function MobileNavigation() {
           >
             <ul className="divide-y divide-line">
               <li>
-                <PushNav.Next className={nextClassName} to="products">
+                <PushNav.Trigger className={triggerClassName} to="products">
                   <Layers3 className={iconClassName} aria-hidden="true" />
                   <span className="flex flex-col gap-1">
                     <span className="text-base font-[750]">製品</span>
@@ -43,11 +43,11 @@ export function MobileNavigation() {
                       キーワードやカテゴリから探す
                     </span>
                   </span>
-                </PushNav.Next>
+                </PushNav.Trigger>
               </li>
 
               <li>
-                <PushNav.Next className={nextClassName} to="solutions">
+                <PushNav.Trigger className={triggerClassName} to="solutions">
                   <Lightbulb className={iconClassName} aria-hidden="true" />
                   <span className="flex flex-col gap-1">
                     <span className="text-base font-[750]">
@@ -57,11 +57,11 @@ export function MobileNavigation() {
                       チームに合った解決策を探す
                     </span>
                   </span>
-                </PushNav.Next>
+                </PushNav.Trigger>
               </li>
 
               <li>
-                <PushNav.Next className={nextClassName} to="resources">
+                <PushNav.Trigger className={triggerClassName} to="resources">
                   <BookOpen className={iconClassName} aria-hidden="true" />
                   <span className="flex flex-col gap-1">
                     <span className="text-base font-[750]">リソース</span>
@@ -69,7 +69,7 @@ export function MobileNavigation() {
                       学習資料やサポート情報を探す
                     </span>
                   </span>
-                </PushNav.Next>
+                </PushNav.Trigger>
               </li>
             </ul>
           </PushNav.Screen>
