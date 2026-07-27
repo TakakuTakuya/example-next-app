@@ -46,7 +46,7 @@ export function Navbar({
       <div className="mx-auto flex h-[76px] w-[min(calc(100%-40px),1440px)] items-center gap-3.5 max-[1050px]:w-[calc(100%-24px)] max-[1050px]:gap-1 max-md:gap-0.5">
         <Drawer.Root>
           <Drawer.Trigger
-            className="hidden size-11 shrink-0 items-center justify-center rounded-xl border border-ink/10 bg-white text-ink shadow-sm transition-colors duration-150 hover:bg-[#eff3ee] active:bg-[#e5ebe7] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] data-[state=open]:bg-[#eff3ee] max-md:inline-flex motion-reduce:transition-none"
+            className="hidden border border-ink/10 bg-white shadow-sm max-md:inline-flex"
             aria-label="メニューを開く"
           >
             <Menu className="size-5" aria-hidden="true" />

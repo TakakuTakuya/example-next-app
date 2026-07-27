@@ -2,12 +2,15 @@ import {
   type ComponentPropsWithoutRef,
   type MouseEventHandler,
 } from "react";
+import { NavbarIconItem } from "../NavbarIconItem";
 import { useDrawerRoot } from "./DrawerRootContext";
 
 type DrawerTriggerProps = Omit<
   ComponentPropsWithoutRef<"button">,
   "aria-controls" | "aria-expanded" | "aria-haspopup" | "type"
->;
+> & {
+  "aria-label": string;
+};
 
 export function DrawerTrigger({
   onClick: onClickProp,
@@ -24,7 +27,7 @@ export function DrawerTrigger({
   };
 
   return (
-    <button
+    <NavbarIconItem
       {...props}
       type="button"
       aria-haspopup="dialog"

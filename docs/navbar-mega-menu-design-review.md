@@ -94,7 +94,8 @@ Navbarはデスクトップでは左から次の要素で構成する。
 ```text
 Navbar                                      Server Component
 ├─ Drawer.Root                              mobile Client Component
-│  ├─ Drawer.Trigger                       hamburger button
+│  ├─ Drawer.Trigger                       hamburger trigger
+│  │  └─ NavbarIconItem                    icon button
 │  └─ Drawer.Content                       body Portal + native dialog
 │     └─ MobileNavigation                  nav landmark / Server
 │        └─ PushNav.Root                   history + focus / Client
@@ -171,7 +172,7 @@ PortalはDOMの描画先だけを変える。React Context、コード上の所�
 
 `BottomSheet`は仕組みだけを見れば汎用化できるが、現時点の利用者とライフサイクルはNavbar内に限定される。そのため`src/components/ui`へ先回りして配置せず、`Navbar/BottomSheet`へコロケーションする。Navbar以外に独立した利用者が生まれ、APIとスタイルを共通契約として維持する必要が出た時点で、共有UIへの昇格を検討する。
 
-`Drawer`にも同じ配置方針を適用する。`Drawer.Root`は開閉とライフサイクル、`Drawer.Trigger`はハンバーガーボタン、`Drawer.Content`はbody Portalとネイティブ`dialog`を担当する。Drawerは階層履歴や右から左への画面遷移を知らず、Navbarローカルな`PushNav` Compound Componentsが担当する。
+`Drawer`にも同じ配置方針を適用する。`Drawer.Root`は開閉とライフサイクル、`Drawer.Trigger`はハンバーガーボタンの開閉操作とARIA関連付け、`Drawer.Content`はbody Portalとネイティブ`dialog`を担当する。`Drawer.Trigger`のbutton描画と共通のアイコン項目スタイルは`NavbarIconItem`へ委譲する。Drawerは階層履歴や右から左への画面遷移を知らず、Navbarローカルな`PushNav` Compound Componentsが担当する。
 
 `MobileNavigation`は、モバイル用`nav`ランドマーク、上位項目、可視サブテキスト、カテゴリ固有Contentの意味構造を担当するServer Componentである。上位3項目は`PushNav.Trigger`の`button`であり、ページ遷移しない。push後の画面にカテゴリ一覧と個別ページへの最終リンクを置く。
 
@@ -185,7 +186,7 @@ Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとCo
 
 `BottomSheet.Root`はContext Providerに加えてモバイルアイコン項目群の`div`を描画し、右寄せ、デスクトップでの非表示、縮小抑止をRoot固有のclassとして持つ。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
 
-`NavbarIconItem`はモバイルNavbarのアイコン項目に共通する見た目を担当する。`href`があればNext.jsの`Link`、なければ`button`を描画する。`BottomSheet.Trigger`はbuttonとして内部利用し、Bottom Sheetを開かないカートはLinkとしてServer側から直接利用する。汎用的な`asChild`やSlot機構は持たせない。
+`NavbarIconItem`はモバイルNavbarのアイコン項目に共通する見た目を担当する。`href`があればNext.jsの`Link`、なければ`button`を描画する。`Drawer.Trigger`と`BottomSheet.Trigger`はbuttonとして内部利用し、Bottom Sheetを開かないカートはLinkとしてServer側から直接利用する。汎用的な`asChild`やSlot機構は持たせない。
 
 モバイルのカート操作は、`Navbar`が受け取る`isLoggedIn`と`hasCartItems`によってServer側で分岐する。両方が`true`のときだけカートを`BottomSheet.Item`として描画し、それ以外は`/cart`への通常Linkを描画する。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。既定値はいずれも`false`とし、情報が未接続の状態では従来のLinkを維持する。
 
@@ -249,6 +250,7 @@ Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所�
 
 担当しないこと：
 
+- Drawerを開く処理
 - Bottom Sheetを開く処理
 - open状態の保持
 - `aria-expanded`や`aria-controls`の算出
@@ -550,7 +552,7 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/ResourcesMegaMenuContent.tsx` | リソース固有のServer Content |
 | `src/components/Navbar/Drawer/index.ts` | Navbar内のDrawer Compound Componentsを公開するClient entrypoint |
 | `src/components/Navbar/Drawer/DrawerRoot.tsx` | 開閉、route／breakpoint close、scroll lock、focus復帰 |
-| `src/components/Navbar/Drawer/DrawerTrigger.tsx` | ハンバーガーボタンとdialogのARIA関連付け |
+| `src/components/Navbar/Drawer/DrawerTrigger.tsx` | `NavbarIconItem`をbuttonとして使い、Drawerの開閉操作とdialogのARIA関連付け |
 | `src/components/Navbar/Drawer/DrawerLink.tsx` | 最終遷移リンクとDrawerの明示的なclose |
 | `src/components/Navbar/Drawer/DrawerContent.tsx` | native dialogのbody Portal／top layer表示、backdrop／Escape／閉じるボタン操作 |
 | `src/components/Navbar/Drawer/DrawerRootContext.ts` | Drawer Contextの型、Context、専用hook |
