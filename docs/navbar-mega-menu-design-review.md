@@ -4,7 +4,7 @@
 | --- | --- |
 | ステータス | 採用方針（キーボード操作の一部は保留） |
 | 基準実装 | Next.js 16.2.10 / React 19.2.4 |
-| 更新日 | 2026-07-24 |
+| 更新日 | 2026-07-27 |
 | UIライブラリ | Radix UI / shadcn/ui / Base UIは不使用 |
 
 ## 1. この資料の目的
@@ -122,21 +122,24 @@ Navbar                                      Server Component
 ├─ Login / Customer page / Cart             desktop Server-rendered links
 └─ BottomSheet.Root (div)                   mobile Client Component
    ├─ BottomSheet.Item                      value: product-search
-   │  ├─ BottomSheet.Trigger                Product search icon button
+   │  ├─ BottomSheet.Trigger                Product search trigger
+   │  │  └─ NavbarIconItem                  icon button
    │  └─ BottomSheet.Content                body Portal + native dialog
    │     └─ ProductSearchBottomSheetContent
    ├─ BottomSheet.Item                      value: login
-   │  ├─ BottomSheet.Trigger                Login icon button
+   │  ├─ BottomSheet.Trigger                Login trigger
+   │  │  └─ NavbarIconItem                  icon button
    │  └─ BottomSheet.Content                body Portal + native dialog
    │     └─ LoginBottomSheetContent
    └─ Cart action                           Server-side conditional
       ├─ logged in + has items
       │  └─ BottomSheet.Item
-      │     ├─ BottomSheet.Trigger          Cart icon button
+      │     ├─ BottomSheet.Trigger          Cart trigger
+      │     │  └─ NavbarIconItem            icon button
       │     └─ BottomSheet.Content
       │        └─ CartBottomSheetContent
       └─ otherwise
-         └─ Cart                            Server-rendered Link
+         └─ NavbarIconItem                  Server-rendered Cart Link
 ```
 
 ### React上の所有関係とDOM配置
@@ -180,7 +183,9 @@ PortalはDOMの描画先だけを変える。React Context、コード上の所�
 
 Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとContentは同じ`BottomSheet.Item`内にあり、複数Itemを単一`BottomSheet.Root`が管理する。一方、active Itemの`dialog`実DOMだけが`document.body`直下に置かれる。`createPortal`はDOM配置を、`showModal()`はtop layer、モーダルフォーカス、backdropを担当する。
 
-`BottomSheet.Root`はContext Providerに加えてモバイルアクション群の`div`を描画する。Navbar固有のレイアウトclassはRoot内部へ固定せず、`Navbar.tsx`から通常の`div`属性として渡す。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
+`BottomSheet.Root`はContext Providerに加えてモバイルアイコン項目群の`div`を描画し、右寄せ、デスクトップでの非表示、縮小抑止をRoot固有のclassとして持つ。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
+
+`NavbarIconItem`はモバイルNavbarのアイコン項目に共通する見た目を担当する。`href`があればNext.jsの`Link`、なければ`button`を描画する。`BottomSheet.Trigger`はbuttonとして内部利用し、Bottom Sheetを開かないカートはLinkとしてServer側から直接利用する。汎用的な`asChild`やSlot機構は持たせない。
 
 モバイルのカート操作は、`Navbar`が受け取る`isLoggedIn`と`hasCartItems`によってServer側で分岐する。両方が`true`のときだけカートを`BottomSheet.Item`として描画し、それ以外は`/cart`への通常Linkを描画する。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。既定値はいずれも`false`とし、情報が未接続の状態では従来のLinkを維持する。
 
@@ -232,6 +237,24 @@ Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所�
 - Portalや位置計算
 
 このコンポーネントには`"use client"`を付けていない。通常リンクから使う場合はServer側で扱い、`MegaMenu.Link`からimportされた場合だけclient graphに含まれる。
+
+### `NavbarIconItem`
+
+担当すること：
+
+- モバイルNavbarのアイコン項目に共通するclassの付与
+- `href`がある場合のNext.js `Link`、ない場合の`button`の描画
+- icon button／icon linkに必要な`aria-label`の要求
+- hover、focus-visible、active、openの見た目
+
+担当しないこと：
+
+- Bottom Sheetを開く処理
+- open状態の保持
+- `aria-expanded`や`aria-controls`の算出
+- 汎用的な`asChild`や任意要素へのprops合成
+
+このコンポーネントにも`"use client"`を付けない。通常のカートLinkではServer側で扱い、`BottomSheet.Trigger`からimportされた場合だけclient graphに含まれる。
 
 ### `MegaMenu.Root`
 
@@ -502,6 +525,7 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/index.ts` | CMS統合時にも利用できるServer Component公開エントリ |
 | `src/components/Navbar/Navbar.tsx` | Server側のNavbar構成とItem宣言 |
 | `src/components/Navbar/NavbarMenuItem.tsx` | Navbar固有の共通リンクUI |
+| `src/components/Navbar/NavbarIconItem.tsx` | モバイルNavbarの共通icon button／icon link UI |
 | `src/components/Navbar/SiteLogo.tsx` | ロゴリンク |
 | `src/components/Navbar/MobileNavigation.tsx` | モバイル用`nav`、PushNav画面、可視サブテキストのServer Component |
 | `src/components/Navbar/ProductsPushNavContent.tsx` | 製品画面のPushNav固有Server Content |
@@ -538,15 +562,16 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/PushNav/PushNavBack.tsx` | 1階層backする`button` |
 | `src/components/Navbar/PushNav/PushNavRootContext.ts` | PushNav Contextの型、Context、専用hook |
 | `src/components/Navbar/BottomSheet/index.ts` | Navbar内のBottom Sheet Compound Componentsを公開するClient entrypoint |
-| `src/components/Navbar/BottomSheet/BottomSheetRoot.tsx` | 単一activeValue、route／breakpoint close、scroll lock、focus復帰 |
+| `src/components/Navbar/BottomSheet/BottomSheetRoot.tsx` | モバイルアイコン項目群の配置、単一activeValue、route／breakpoint close、scroll lock、focus復帰 |
 | `src/components/Navbar/BottomSheet/BottomSheetItem.tsx` | valueとTrigger／Content固有IDの関連付け |
-| `src/components/Navbar/BottomSheet/BottomSheetTrigger.tsx` | icon buttonとdialogのARIA関連付け |
+| `src/components/Navbar/BottomSheet/BottomSheetTrigger.tsx` | `NavbarIconItem`をbuttonとして使い、dialogとARIA関連付け |
 | `src/components/Navbar/BottomSheet/BottomSheetContent.tsx` | native dialogのbody Portal／top layer表示、backdrop装飾、backdropクリック／Escape／閉じるボタン操作 |
 | `src/components/Navbar/BottomSheet/BottomSheetRootContext.ts` | Bottom Sheet Contextの型、Context、専用hook |
 | `src/components/Navbar/BottomSheet/BottomSheetItemContext.ts` | Item Contextの型、Context、専用hook |
+| `src/lib/cn.ts` | `clsx`と`tailwind-merge`による条件付きclassNameの結合とTailwind utilityの競合解決 |
 | `src/app/globals.css` | Tailwindの読込、デザイントークン、入場アニメーション定義 |
 
-表示スタイルは各コンポーネントのTailwind utility classとして記述する。`globals.css`へコンポーネント固有のセレクタは置かず、Portalで描画されるLayerとContentも同じ方針で扱う。
+表示スタイルは各コンポーネントのTailwind utility classとして記述する。外部`className`と内部classを合成する場合は共通の`cn`を使い、同一utility groupの競合を呼び出し順で解決する。`globals.css`へコンポーネント固有のセレクタは置かず、Portalで描画されるLayerとContentも同じ方針で扱う。
 
 ## 14. 検証済み事項
 

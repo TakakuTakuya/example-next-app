@@ -7,6 +7,7 @@ import {
   useState,
   type ComponentPropsWithoutRef,
 } from "react";
+import { cn } from "@/lib/cn";
 import { NAVIGATION_FOCUSABLE_SELECTOR } from "../constants";
 import {
   PushNavRootContext,
@@ -155,7 +156,7 @@ export function PushNavRoot({
       <div
         {...props}
         ref={rootRef}
-        className={`relative h-full min-h-0 outline-none ${className ?? ""}`}
+        className={cn("relative h-full min-h-0 outline-none", className)}
         tabIndex={-1}
       >
         {children}

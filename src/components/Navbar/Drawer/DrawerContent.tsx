@@ -9,6 +9,7 @@ import {
   type ReactEventHandler,
 } from "react";
 import { createPortal } from "react-dom";
+import { cn } from "@/lib/cn";
 import { useDrawerRoot } from "./DrawerRootContext";
 
 const subscribeToHydration = () => () => {};
@@ -100,7 +101,10 @@ export function DrawerContent({
       {...props}
       ref={setContentDialogElement}
       id={contentId}
-      className={`fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none overflow-hidden border-0 bg-transparent p-0 text-ink backdrop:bg-ink/45 backdrop:backdrop-blur-[2px] ${className ?? ""}`}
+      className={cn(
+        "fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none overflow-hidden border-0 bg-transparent p-0 text-ink backdrop:bg-ink/45 backdrop:backdrop-blur-[2px]",
+        className,
+      )}
       aria-labelledby={titleId}
       onCancel={handleCancel}
       onClick={handleDialogClick}

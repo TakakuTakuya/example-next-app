@@ -2,6 +2,7 @@ import {
   type ComponentPropsWithoutRef,
   type MouseEventHandler,
 } from "react";
+import { NavbarIconItem } from "../NavbarIconItem";
 import { useBottomSheetItem } from "./BottomSheetItemContext";
 import { useBottomSheetRoot } from "./BottomSheetRootContext";
 
@@ -29,7 +30,7 @@ export function BottomSheetTrigger({
   };
 
   return (
-    <button
+    <NavbarIconItem
       {...props}
       type="button"
       aria-haspopup="dialog"

@@ -7,6 +7,7 @@ import {
   useState,
   type ComponentPropsWithoutRef,
 } from "react";
+import { cn } from "@/lib/cn";
 import { DESKTOP_NAVIGATION_MEDIA_QUERY } from "../constants";
 import {
   BottomSheetRootContext,
@@ -18,6 +19,7 @@ type BottomSheetRootProps = ComponentPropsWithoutRef<"div">;
 
 export function BottomSheetRoot({
   children,
+  className,
   ...props
 }: BottomSheetRootProps) {
   const pathname = usePathname();
@@ -154,7 +156,12 @@ export function BottomSheetRoot({
 
   return (
     <BottomSheetRootContext.Provider value={contextValue}>
-      <div {...props}>{children}</div>
+      <div
+        {...props}
+        className={cn("ml-auto hidden shrink-0 max-md:flex", className)}
+      >
+        {children}
+      </div>
     </BottomSheetRootContext.Provider>
   );
 }

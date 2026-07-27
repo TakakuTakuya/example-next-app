@@ -1,4 +1,5 @@
 import { useId, useMemo, type HTMLAttributes } from "react";
+import { cn } from "@/lib/cn";
 import {
   MegaMenuItemContext,
   type MegaMenuItemContextValue,
@@ -25,10 +26,7 @@ export function MegaMenuItem({
 
   return (
     <MegaMenuItemContext.Provider value={contextValue}>
-      <li
-        className={`flex h-full items-center ${className ?? ""}`}
-        {...props}
-      />
+      <li className={cn("flex h-full items-center", className)} {...props} />
     </MegaMenuItemContext.Provider>
   );
 }

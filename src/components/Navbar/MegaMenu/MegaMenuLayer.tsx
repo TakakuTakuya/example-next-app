@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { cn } from "@/lib/cn";
 import { useMegaMenuRoot } from "./MegaMenuRootContext";
 
 type MegaMenuLayerProps = {
@@ -20,7 +21,10 @@ export function MegaMenuLayer({ className }: MegaMenuLayerProps) {
 
   return createPortal(
     <div
-      className={`pointer-events-none fixed inset-x-0 z-100 flex justify-center px-5 ${className ?? ""}`}
+      className={cn(
+        "pointer-events-none fixed inset-x-0 z-100 flex justify-center px-5",
+        className,
+      )}
       style={{ top: layerTop }}
       aria-hidden={activeValue ? undefined : true}
     >

@@ -1,4 +1,5 @@
 import { type ComponentPropsWithoutRef } from "react";
+import { cn } from "@/lib/cn";
 
 type PushNavViewportProps = ComponentPropsWithoutRef<"div">;
 
@@ -9,7 +10,7 @@ export function PushNavViewport({
   return (
     <div
       {...props}
-      className={`relative h-full min-h-0 overflow-hidden ${className ?? ""}`}
+      className={cn("relative h-full min-h-0 overflow-hidden", className)}
     />
   );
 }

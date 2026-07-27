@@ -13,6 +13,7 @@ import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
 import { MobileNavigation } from "./MobileNavigation";
+import { NavbarIconItem } from "./NavbarIconItem";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsMegaMenuContent } from "./ProductsMegaMenuContent";
@@ -23,9 +24,6 @@ import * as MegaMenu from "./MegaMenu";
 
 const menuIconClassName =
   "size-[18px] text-[#70807b] transition-colors duration-150 group-hover:text-green-2 group-data-[state=open]:text-green-2 motion-reduce:transition-none";
-
-const mobileActionClassName =
-  "inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-ink transition-colors duration-150 hover:bg-[#eff3ee] active:bg-[#e5ebe7] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] data-[state=open]:bg-[#eff3ee] motion-reduce:transition-none";
 
 type NavbarProps = {
   hasCartItems?: boolean;
@@ -125,12 +123,9 @@ export function Navbar({
           <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
         </nav>
 
-        <BottomSheet.Root className="ml-auto hidden shrink-0 items-center gap-0 max-md:flex">
+        <BottomSheet.Root>
           <BottomSheet.Item value="product-search">
-            <BottomSheet.Trigger
-              className={mobileActionClassName}
-              aria-label="製品を探す"
-            >
+            <BottomSheet.Trigger aria-label="製品を探す">
               <Search className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
             <BottomSheet.Content title="製品を探す">
@@ -139,10 +134,7 @@ export function Navbar({
           </BottomSheet.Item>
 
           <BottomSheet.Item value="login">
-            <BottomSheet.Trigger
-              className={mobileActionClassName}
-              aria-label="ログイン"
-            >
+            <BottomSheet.Trigger aria-label="ログイン">
               <UserRound className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
             <BottomSheet.Content title="ログイン">
@@ -152,10 +144,7 @@ export function Navbar({
 
           {showCartBottomSheet ? (
             <BottomSheet.Item value="cart">
-              <BottomSheet.Trigger
-                className={mobileActionClassName}
-                aria-label="カート"
-              >
+              <BottomSheet.Trigger aria-label="カート">
                 <ShoppingCart className="size-5" aria-hidden="true" />
               </BottomSheet.Trigger>
               <BottomSheet.Content title="カート">
@@ -163,13 +152,9 @@ export function Navbar({
               </BottomSheet.Content>
             </BottomSheet.Item>
           ) : (
-            <Link
-              className={mobileActionClassName}
-              href="/cart"
-              aria-label="カート"
-            >
+            <NavbarIconItem href="/cart" aria-label="カート">
               <ShoppingCart className="size-5" aria-hidden="true" />
-            </Link>
+            </NavbarIconItem>
           )}
         </BottomSheet.Root>
       </div>
