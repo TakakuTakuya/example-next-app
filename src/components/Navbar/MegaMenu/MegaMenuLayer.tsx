@@ -3,9 +3,9 @@ import { createPortal } from "react-dom";
 import { cn } from "@/lib/cn";
 import { useMegaMenuRoot } from "./MegaMenuRootContext";
 
-type MegaMenuLayerProps = {
+interface MegaMenuLayerProps {
   className?: string;
-};
+}
 
 const subscribeToHydration = () => () => {};
 

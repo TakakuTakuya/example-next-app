@@ -25,10 +25,10 @@ import * as MegaMenu from "./MegaMenu";
 const menuIconClassName =
   "size-[18px] text-[#70807b] transition-colors duration-150 group-hover:text-green-2 group-data-[state=open]:text-green-2 motion-reduce:transition-none";
 
-type NavbarProps = {
+interface NavbarProps {
   hasCartItems?: boolean;
   isLoggedIn?: boolean;
-};
+}
 
 /**
  * Navbar は Server Component のまま。

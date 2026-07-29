@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-type RoutePageProps = {
+interface RoutePageProps {
   params: Promise<{ slug: string[] }>;
-};
+}
 
 export default async function RoutePage({ params }: RoutePageProps) {
   const { slug } = await params;

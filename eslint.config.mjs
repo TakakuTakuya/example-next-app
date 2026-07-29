@@ -7,6 +7,12 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    },
+  },
+  {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
       "better-tailwindcss": betterTailwindcss,

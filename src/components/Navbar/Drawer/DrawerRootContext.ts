@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
 
-export type CloseDrawerOptions = {
+export interface CloseDrawerOptions {
   restoreFocus?: boolean;
-};
+}
 
-export type DrawerRootContextValue = {
+export interface DrawerRootContextValue {
   contentId: string;
   titleId: string;
   open: boolean;
@@ -13,7 +13,7 @@ export type DrawerRootContextValue = {
   openDrawer: (trigger: HTMLButtonElement) => void;
   closeDrawer: (options?: CloseDrawerOptions) => void;
   handleDialogClose: () => void;
-};
+}
 
 export const DrawerRootContext =
   createContext<DrawerRootContextValue | null>(null);

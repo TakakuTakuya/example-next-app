@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
 
-export type BottomSheetItemContextValue = {
+export interface BottomSheetItemContextValue {
   value: string;
   contentId: string;
   titleId: string;
-};
+}
 
 export const BottomSheetItemContext =
   createContext<BottomSheetItemContextValue | null>(null);

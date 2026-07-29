@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export type MegaMenuRootContextValue = {
+export interface MegaMenuRootContextValue {
   activeValue: string | null;
   layerSlot: HTMLDivElement | null;
   layerTop: number;
@@ -10,7 +10,7 @@ export type MegaMenuRootContextValue = {
   cancelScheduledClose: () => void;
   consumeFocusOpenSuppression: (anchor: HTMLAnchorElement) => boolean;
   setLayerSlot: (node: HTMLDivElement | null) => void;
-};
+}
 
 export const MegaMenuRootContext =
   createContext<MegaMenuRootContextValue | null>(null);

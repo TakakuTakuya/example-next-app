@@ -4,7 +4,7 @@
 | --- | --- |
 | ステータス | 採用方針（キーボード操作の一部は保留） |
 | 基準実装 | Next.js 16.2.10 / React 19.2.4 |
-| 更新日 | 2026-07-28 |
+| 更新日 | 2026-07-29 |
 | UIライブラリ | Radix UI / shadcn/ui / Base UIは不使用 |
 
 ## 1. この資料の目的
@@ -578,6 +578,8 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/app/globals.css` | Tailwindの読込、デザイントークン、入場アニメーション定義 |
 
 表示スタイルは各コンポーネントのTailwind utility classとして記述する。外部`className`と内部classを合成する場合は共通の`cn`を使い、同一utility groupの競合を呼び出し順で解決する。`globals.css`へコンポーネント固有のセレクタは置かず、Portalで描画されるLayerとContentも同じ方針で扱う。
+
+TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@typescript-eslint/consistent-type-definitions`で強制する。union、intersection、utility typeの別名など、`interface`へ自然に置き換えられない型構成には引き続き`type`を使う。
 
 ## 14. 検証済み事項
 

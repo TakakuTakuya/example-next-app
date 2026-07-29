@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-export type PushNavRootContextValue = {
+export interface PushNavRootContextValue {
   activeValue: string;
   canGoBack: boolean;
   history: readonly string[];
@@ -11,7 +11,7 @@ export type PushNavRootContextValue = {
     value: string,
     element: HTMLDivElement | null,
   ) => void;
-};
+}
 
 export const PushNavRootContext =
   createContext<PushNavRootContextValue | null>(null);

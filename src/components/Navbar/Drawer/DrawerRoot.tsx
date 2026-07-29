@@ -15,9 +15,9 @@ import {
   type DrawerRootContextValue,
 } from "./DrawerRootContext";
 
-type DrawerRootProps = {
+interface DrawerRootProps {
   children: ReactNode;
-};
+}
 
 export function DrawerRoot({ children }: DrawerRootProps) {
   const pathname = usePathname();

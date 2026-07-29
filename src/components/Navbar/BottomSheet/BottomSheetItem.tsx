@@ -4,10 +4,10 @@ import {
   type BottomSheetItemContextValue,
 } from "./BottomSheetItemContext";
 
-type BottomSheetItemProps = {
+interface BottomSheetItemProps {
   children: ReactNode;
   value: string;
-};
+}
 
 export function BottomSheetItem({
   children,

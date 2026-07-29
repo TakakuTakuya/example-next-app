@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
 
-export type MegaMenuItemContextValue = {
+export interface MegaMenuItemContextValue {
   value: string;
   linkId: string;
   contentId: string;
-};
+}
 
 export const MegaMenuItemContext =
   createContext<MegaMenuItemContextValue | null>(null);

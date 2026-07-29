@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
 
-export type CloseBottomSheetOptions = {
+export interface CloseBottomSheetOptions {
   restoreFocus?: boolean;
-};
+}
 
-export type BottomSheetRootContextValue = {
+export interface BottomSheetRootContextValue {
   activeValue: string | null;
   setDialogElement: (
     value: string,
@@ -14,7 +14,7 @@ export type BottomSheetRootContextValue = {
   openSheet: (value: string, trigger: HTMLButtonElement) => void;
   closeSheet: (options?: CloseBottomSheetOptions) => void;
   handleDialogClose: (value: string) => void;
-};
+}
 
 export const BottomSheetRootContext =
   createContext<BottomSheetRootContextValue | null>(null);

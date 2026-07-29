@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { ComponentProps, ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
-type AccessibleName = {
+interface AccessibleName {
   "aria-label": string;
-};
+}
 
 type NavbarIconItemLinkProps = ComponentProps<typeof Link> & AccessibleName;
 type NavbarIconItemButtonProps = ComponentPropsWithoutRef<"button"> &
