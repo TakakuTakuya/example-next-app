@@ -51,7 +51,7 @@ export function Navbar({
           >
             <Menu className="size-5" aria-hidden="true" />
           </Drawer.Trigger>
-          <Drawer.Content title="メニュー">
+          <Drawer.Content title="メインメニュー">
             <MobileNavigation />
           </Drawer.Content>
         </Drawer.Root>
