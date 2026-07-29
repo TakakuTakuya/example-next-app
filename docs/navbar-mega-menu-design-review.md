@@ -4,7 +4,7 @@
 | --- | --- |
 | ステータス | 採用方針（キーボード操作の一部は保留） |
 | 基準実装 | Next.js 16.2.10 / React 19.2.4 |
-| 更新日 | 2026-07-27 |
+| 更新日 | 2026-07-28 |
 | UIライブラリ | Radix UI / shadcn/ui / Base UIは不使用 |
 
 ## 1. この資料の目的
@@ -173,6 +173,10 @@ PortalはDOMの描画先だけを変える。React Context、コード上の所�
 `BottomSheet`は仕組みだけを見れば汎用化できるが、現時点の利用者とライフサイクルはNavbar内に限定される。そのため`src/components/ui`へ先回りして配置せず、`Navbar/BottomSheet`へコロケーションする。Navbar以外に独立した利用者が生まれ、APIとスタイルを共通契約として維持する必要が出た時点で、共有UIへの昇格を検討する。
 
 `Drawer`にも同じ配置方針を適用する。`Drawer.Root`は開閉とライフサイクル、`Drawer.Trigger`はハンバーガーボタンの開閉操作とARIA関連付け、`Drawer.Content`はbody Portalとネイティブ`dialog`を担当する。`Drawer.Trigger`のbutton描画と共通のアイコン項目スタイルは`NavbarIconItem`へ委譲する。Drawerは階層履歴や右から左への画面遷移を知らず、Navbarローカルな`PushNav` Compound Componentsが担当する。
+
+Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重ならないよう右辺の外側へ隙間なく接して配置する。本体の基本幅は320pxとし、44pxのボタンと8pxの画面右余白が狭い画面でも収まるよう、実際の幅は`min(320px, calc(100dvw - 52px))`とする。ボタンと本体を同じ入場アニメーションのラッパーに置き、視覚的なまとまりと初期focus順を維持する。
+
+PushNavのViewportと全ScreenはDrawer本体と同じ幅・高さで重ねる。Drawer側には固定の可視ヘッダーを置かず、dialogのaccessible nameを提供する見出しだけを`sr-only`で保持する。可視の「メニュー」見出しはroot Screenへ置き、各カテゴリScreenの見出しと同様にScreen全体のpush遷移へ含める。
 
 `MobileNavigation`は、モバイル用`nav`ランドマーク、上位項目、可視サブテキスト、カテゴリ固有Contentの意味構造を担当するServer Componentである。上位3項目は`PushNav.Trigger`の`button`であり、ページ遷移しない。push後の画面にカテゴリ一覧と個別ページへの最終リンクを置く。
 

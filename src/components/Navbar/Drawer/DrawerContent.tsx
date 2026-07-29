@@ -111,22 +111,20 @@ export function DrawerContent({
       onClose={handleClose}
       onKeyDown={handleKeyDown}
     >
-      <div className="flex h-dvh w-[min(88dvw,400px)] max-w-full animate-drawer-in flex-col bg-white shadow-[24px_0_60px_rgb(21_47_38/18%)] motion-reduce:animate-none">
-        <div className="relative z-40 flex shrink-0 items-center justify-between gap-4 border-b border-line bg-white px-5 py-4">
-          <h2 id={titleId} className="text-lg font-[760]">
+      <div className="relative h-dvh w-[min(320px,calc(100dvw-52px))] animate-drawer-in motion-reduce:animate-none">
+        <button
+          type="button"
+          className="absolute top-4 left-full z-10 inline-flex size-11 items-center justify-center rounded-full border border-line bg-white text-muted shadow-[0_8px_24px_rgb(21_47_38/18%)] transition-colors duration-150 hover:bg-[#eff3ee] hover:text-ink focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
+          aria-label="メニューを閉じる"
+          onClick={handleCloseButtonClick}
+        >
+          <X className="size-5" aria-hidden="true" />
+        </button>
+
+        <div className="size-full bg-white shadow-[24px_0_60px_rgb(21_47_38/18%)]">
+          <h2 id={titleId} className="sr-only">
             {title}
           </h2>
-          <button
-            type="button"
-            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:bg-[#eff3ee] hover:text-ink focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
-            aria-label="メニューを閉じる"
-            onClick={handleCloseButtonClick}
-          >
-            <X className="size-5" aria-hidden="true" />
-          </button>
-        </div>
-
-        <div className="min-h-0 flex-1 overflow-hidden">
           {children}
         </div>
       </div>

@@ -29,49 +29,51 @@ export function MobileNavigation() {
     <nav className="h-full min-h-0" aria-label="メイン">
       <PushNav.Root initialValue="root">
         <PushNav.Viewport>
-          <PushNav.Screen
-            className="px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))]"
-            value="root"
-          >
-            <ul className="divide-y divide-line">
-              <li>
-                <PushNav.Trigger className={triggerClassName} to="products">
-                  <Layers3 className={iconClassName} aria-hidden="true" />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-base font-[750]">製品</span>
-                    <span className="text-sm/6 text-muted">
-                      キーワードやカテゴリから探す
+          <PushNav.Screen value="root">
+            <div className="sticky top-0 z-30 flex items-center border-b border-line bg-white px-5 py-4">
+              <h2 className="text-lg font-[760]">メニュー</h2>
+            </div>
+            <div className="px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))]">
+              <ul className="divide-y divide-line">
+                <li>
+                  <PushNav.Trigger className={triggerClassName} to="products">
+                    <Layers3 className={iconClassName} aria-hidden="true" />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-base font-[750]">製品</span>
+                      <span className="text-sm/6 text-muted">
+                        キーワードやカテゴリから探す
+                      </span>
                     </span>
-                  </span>
-                </PushNav.Trigger>
-              </li>
+                  </PushNav.Trigger>
+                </li>
 
-              <li>
-                <PushNav.Trigger className={triggerClassName} to="solutions">
-                  <Lightbulb className={iconClassName} aria-hidden="true" />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-base font-[750]">
-                      ソリューション
+                <li>
+                  <PushNav.Trigger className={triggerClassName} to="solutions">
+                    <Lightbulb className={iconClassName} aria-hidden="true" />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-base font-[750]">
+                        ソリューション
+                      </span>
+                      <span className="text-sm/6 text-muted">
+                        チームに合った解決策を探す
+                      </span>
                     </span>
-                    <span className="text-sm/6 text-muted">
-                      チームに合った解決策を探す
-                    </span>
-                  </span>
-                </PushNav.Trigger>
-              </li>
+                  </PushNav.Trigger>
+                </li>
 
-              <li>
-                <PushNav.Trigger className={triggerClassName} to="resources">
-                  <BookOpen className={iconClassName} aria-hidden="true" />
-                  <span className="flex flex-col gap-1">
-                    <span className="text-base font-[750]">リソース</span>
-                    <span className="text-sm/6 text-muted">
-                      学習資料やサポート情報を探す
+                <li>
+                  <PushNav.Trigger className={triggerClassName} to="resources">
+                    <BookOpen className={iconClassName} aria-hidden="true" />
+                    <span className="flex flex-col gap-1">
+                      <span className="text-base font-[750]">リソース</span>
+                      <span className="text-sm/6 text-muted">
+                        学習資料やサポート情報を探す
+                      </span>
                     </span>
-                  </span>
-                </PushNav.Trigger>
-              </li>
-            </ul>
+                  </PushNav.Trigger>
+                </li>
+              </ul>
+            </div>
           </PushNav.Screen>
 
           <PushNav.Screen value="products">
