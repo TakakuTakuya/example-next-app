@@ -166,7 +166,10 @@ export function PushNavRoot({
       <nav
         {...props}
         ref={rootRef}
-        className={cn("relative h-full min-h-0 outline-none", className)}
+        className={cn(
+          "relative h-full min-h-0 overflow-hidden outline-none",
+          className,
+        )}
         tabIndex={-1}
       >
         {children}

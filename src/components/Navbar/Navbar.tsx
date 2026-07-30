@@ -57,23 +57,21 @@ export function Navbar({
           </Drawer.Trigger>
           <Drawer.Content title="メインメニュー">
             <PushNav.Root aria-label="メイン">
-              <PushNav.Viewport>
-                <PushNav.Screen value="root">
-                  <RootPushNavContent />
-                </PushNav.Screen>
+              <PushNav.Screen value="root">
+                <RootPushNavContent />
+              </PushNav.Screen>
 
-                <PushNav.Screen value="products">
-                  <ProductsPushNavContent />
-                </PushNav.Screen>
+              <PushNav.Screen value="products">
+                <ProductsPushNavContent />
+              </PushNav.Screen>
 
-                <PushNav.Screen value="solutions">
-                  <SolutionsPushNavContent />
-                </PushNav.Screen>
+              <PushNav.Screen value="solutions">
+                <SolutionsPushNavContent />
+              </PushNav.Screen>
 
-                <PushNav.Screen value="resources">
-                  <ResourcesPushNavContent />
-                </PushNav.Screen>
-              </PushNav.Viewport>
+              <PushNav.Screen value="resources">
+                <ResourcesPushNavContent />
+              </PushNav.Screen>
             </PushNav.Root>
           </Drawer.Content>
         </Drawer.Root>

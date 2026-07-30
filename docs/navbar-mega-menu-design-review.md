@@ -86,7 +86,7 @@ Navbarはデスクトップでは左から次の要素で構成する。
 | スマホ右側操作 | Navbar内へ直接宣言 | MegaMenuと同様にTrigger、Content、遷移先の対応を上位構造から読めるようにするため |
 | Drawer描画 | body Portal + ネイティブ`dialog`のtop layer | Header祖先のクリッピングを避け、モーダル操作をブラウザへ委ねるため |
 | Drawer内の階層移動 | Navbarローカルな`PushNav` Compound Components | Drawerのモーダル責務と画面履歴／push遷移を分離するため |
-| PushNavのcomposition | `Navbar`でRoot、Viewport、Screen、Server Contentを直接対応付ける | 画面遷移の構造を上位から追跡し、構成だけの中間コンポーネントを置かないため |
+| PushNavのcomposition | `Navbar`でRoot、Screen、Server Contentを直接対応付ける | 画面遷移の構造を上位から追跡し、構成だけの中間コンポーネントを置かないため |
 | PushNavの画面値 | `as const`のtupleから導出したunion型 | `Trigger.to`、`Screen.value`、履歴、Contextの文字列を同じ許可値へ制限するため |
 | モバイル上位項目 | `PushNav.Trigger`が描画する`button` | ページ遷移ではなくDrawer内の画面切り替えだから |
 | Bottom sheet描画 | body Portal + ネイティブ`dialog`のtop layer | 実DOMをHeaderから分離し、モーダルのフォーカス制約をブラウザへ委ねるため |
@@ -99,20 +99,19 @@ Navbar                                      Server Component
 │  ├─ Drawer.Trigger                       hamburger trigger
 │  │  └─ NavbarIconItem                    icon button
 │  └─ Drawer.Content                       body Portal + native dialog
-│     └─ PushNav.Root (nav)                history + focus / Client
-│        └─ PushNav.Viewport               clipped stack / Client
-│           ├─ PushNav.Screen              value: root / Client shell
-│           │  └─ RootPushNavContent       Server Component
-│           │     └─ PushNav.Trigger × 3   category buttons / Client
-│           ├─ PushNav.Screen              value: products / Client shell
-│           │  └─ ProductsPushNavContent   Server Component
-│           │     └─ PushNavScreenLayout   shared Server layout
-│           ├─ PushNav.Screen              value: solutions / Client shell
-│           │  └─ SolutionsPushNavContent  Server Component
-│           │     └─ PushNavScreenLayout   shared Server layout
-│           └─ PushNav.Screen              value: resources / Client shell
-│              └─ ResourcesPushNavContent  Server Component
-│                 └─ PushNavScreenLayout   shared Server layout
+│     └─ PushNav.Root (nav)                history + focus + clipped stack / Client
+│        ├─ PushNav.Screen                 value: root / Client shell
+│        │  └─ RootPushNavContent          Server Component
+│        │     └─ PushNav.Trigger × 3      category buttons / Client
+│        ├─ PushNav.Screen                 value: products / Client shell
+│        │  └─ ProductsPushNavContent      Server Component
+│        │     └─ PushNavScreenLayout      shared Server layout
+│        ├─ PushNav.Screen                 value: solutions / Client shell
+│        │  └─ SolutionsPushNavContent     Server Component
+│        │     └─ PushNavScreenLayout      shared Server layout
+│        └─ PushNav.Screen                 value: resources / Client shell
+│           └─ ResourcesPushNavContent     Server Component
+│              └─ PushNavScreenLayout      shared Server layout
 ├─ SiteLogo                                 Server Component
 ├─ MegaMenu.Root (nav)                      desktop Client Component
 │  ├─ MegaMenu.List                         Client shell
@@ -181,9 +180,9 @@ PortalはDOMの描画先だけを変える。React Context、コード上の所�
 
 Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重ならないよう右辺の外側へ隙間なく接して配置する。本体の基本幅は320pxとし、44pxのボタンと8pxの画面右余白が狭い画面でも収まるよう、実際の幅は`min(320px, calc(100dvw - 52px))`とする。ボタンと本体を同じ入場アニメーションのラッパーに置き、視覚的なまとまりと初期focus順を維持する。
 
-PushNavのViewportと全ScreenはDrawer本体と同じ幅・高さで重ねる。Drawer側には固定の可視ヘッダーを置かず、dialogのaccessible nameを提供する見出しだけを`sr-only`で保持する。可視の「メニュー」見出しはroot Screenへ置き、各カテゴリScreenの見出しと同様にScreen全体のpush遷移へ含める。
+`PushNav.Root`はDrawer本体と同じ幅・高さの表示窓となり、絶対配置した全Screenを同じ領域へ重ねて、領域外へ移動したScreenをクリップする。Drawer側には固定の可視ヘッダーを置かず、dialogのaccessible nameを提供する見出しだけを`sr-only`で保持する。可視の「メニュー」見出しはroot Screenへ置き、各カテゴリScreenの見出しと同様にScreen全体のpush遷移へ含める。
 
-`Navbar`は`Drawer.Content`内で`PushNav.Root`、`PushNav.Viewport`、4つの`PushNav.Screen`を直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。
+`Navbar`は`Drawer.Content`内で`PushNav.Root`と4つの`PushNav.Screen`を直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。Rootと常に一対一になる表示窓コンポーネントは設けず、座標系、高さ、クリップをRootへ集約する。
 
 root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは可視の「メニュー」見出し、上位3項目、可視サブテキストを担当する。上位項目は`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenの`children`には対応する`*PushNavContent`を渡す。各Contentはカテゴリ固有の意味構造、本文レイアウト、最終リンクを持ち、共通する単独の戻る行と、カテゴリタイトルおよび「トップ」のリンクを置く行はServer Componentの`PushNavScreenLayout`へ委譲する。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。「トップ」はリンクのセマンティクスを維持しながらghost button相当の見た目と最小44pxの高さを持つ操作領域にする。タイトルと「トップ」はどちらも対応するカテゴリトップへ遷移する。
 
@@ -209,7 +208,7 @@ Sheet本体はビューポート下端へ固定し、高さを`calc(100dvh - 70p
 
 閉じるボタンはSheet内部のヘッダー行に含めず、Sheet本体の右上辺から8px上へ配置する。本体とは重ねない。`dialog`をoverflow可能な外枠、本体を角丸とスクロールを担当する内側要素に分け、ボタンが本体のクリップ領域で切れないようにする。
 
-Navbarのcomposition layerでは、Drawer、PushNavのRoot／Viewport／Screen、MegaMenu、Bottom Sheetと、それぞれのTrigger、Content、遷移先を直接宣言する。構成だけを包む`MobileNavigation`や、`MobileNavbarActions`のような状態を持たない中間コンポーネントは設けない。Screenの中身だけを目的別のServer Componentへ分離することで、画面値とContentの対応を`Navbar.tsx`から追跡できる。
+Navbarのcomposition layerでは、Drawer、PushNavのRoot／Screen、MegaMenu、Bottom Sheetと、それぞれのTrigger、Content、遷移先を直接宣言する。構成だけを包む`MobileNavigation`や、`MobileNavbarActions`のような状態を持たない中間コンポーネントは設けない。Screenの中身だけを目的別のServer Componentへ分離することで、画面値とContentの対応を`Navbar.tsx`から追跡できる。
 
 Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所有する。これにより、同時に開けるSheetを1つに限定し、body scroll lock、route変更、breakpoint変更、フォーカス復帰の監視と状態を重複させない。
 
@@ -223,7 +222,7 @@ Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所�
 
 - Navbar全体の意味構造と項目順序
 - 各Item、Link、固有Contentの宣言的な組み合わせ
-- Drawer内の`PushNav.Root`、`PushNav.Viewport`、`PushNav.Screen`の構成
+- Drawer内の`PushNav.Root`と`PushNav.Screen`の構成
 - Screenの`value`と`RootPushNavContent`／各`*PushNavContent`の対応付け
 - Server Componentとして固有ContentをClient shellの`children`へ渡すこと
 - ロゴ、ログイン、お客様専用ページ、カートの配置
@@ -388,7 +387,7 @@ RootPushNavContent (Server)
    └─ imports PushNav.Back (Client)
 
 PushNav/index.ts（公開Client entrypoint）
-├─ re-exports Root / Viewport / Screen / Trigger / Back
+├─ re-exports Root / Screen / Trigger / Back
 └─ does not import or re-export Navbar-specific Server Components
 ```
 
@@ -589,8 +588,7 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/Drawer/DrawerContent.tsx` | native dialogのbody Portal／top layer表示、backdrop／Escape／閉じるボタン操作 |
 | `src/components/Navbar/Drawer/DrawerRootContext.ts` | Drawer Contextの型、Context、専用hook |
 | `src/components/Navbar/PushNav/index.ts` | Navbar内のPushNav Compound Componentsを公開するClient entrypoint |
-| `src/components/Navbar/PushNav/PushNavRoot.tsx` | `nav`ランドマーク、型付き履歴、push／back、遷移ロック、focus移動、Screen登録 |
-| `src/components/Navbar/PushNav/PushNavViewport.tsx` | 重ねたScreenをクリップする表示領域 |
+| `src/components/Navbar/PushNav/PushNavRoot.tsx` | `nav`ランドマーク、表示窓、型付き履歴、push／back、遷移ロック、focus移動、Screen登録 |
 | `src/components/Navbar/PushNav/PushNavScreen.tsx` | `PushNavScreenValue`を受け取り、active／previous／nextの位置、`inert`、個別scrollを管理 |
 | `src/components/Navbar/PushNav/PushNavTrigger.tsx` | `PushNavScreenValue`で指定したScreenへのpushを開始する`button` |
 | `src/components/Navbar/PushNav/PushNavBack.tsx` | 1階層backする`button` |
