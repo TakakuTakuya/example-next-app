@@ -12,14 +12,18 @@ import * as BottomSheet from "./BottomSheet";
 import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
-import { MobileNavigation } from "./MobileNavigation";
 import { NavbarIconItem } from "./NavbarIconItem";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsMegaMenuContent } from "./ProductsMegaMenuContent";
+import { ProductsPushNavContent } from "./ProductsPushNavContent";
+import * as PushNav from "./PushNav";
 import { ResourcesMegaMenuContent } from "./ResourcesMegaMenuContent";
+import { ResourcesPushNavContent } from "./ResourcesPushNavContent";
+import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
 import { SolutionsMegaMenuContent } from "./SolutionsMegaMenuContent";
+import { SolutionsPushNavContent } from "./SolutionsPushNavContent";
 import * as MegaMenu from "./MegaMenu";
 
 const menuIconClassName =
@@ -52,7 +56,25 @@ export function Navbar({
             <Menu className="size-5" aria-hidden="true" />
           </Drawer.Trigger>
           <Drawer.Content title="メインメニュー">
-            <MobileNavigation />
+            <PushNav.Root aria-label="メイン">
+              <PushNav.Viewport>
+                <PushNav.Screen value="root">
+                  <RootPushNavContent />
+                </PushNav.Screen>
+
+                <PushNav.Screen value="products">
+                  <ProductsPushNavContent />
+                </PushNav.Screen>
+
+                <PushNav.Screen value="solutions">
+                  <SolutionsPushNavContent />
+                </PushNav.Screen>
+
+                <PushNav.Screen value="resources">
+                  <ResourcesPushNavContent />
+                </PushNav.Screen>
+              </PushNav.Viewport>
+            </PushNav.Root>
           </Drawer.Content>
         </Drawer.Root>
 

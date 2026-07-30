@@ -3,13 +3,14 @@ import {
   type ComponentPropsWithoutRef,
 } from "react";
 import { cn } from "@/lib/cn";
+import type { PushNavScreenValue } from "../constants";
 import { usePushNavRoot } from "./PushNavRootContext";
 
 type PushNavScreenProps = Omit<
   ComponentPropsWithoutRef<"div">,
   "aria-hidden" | "id" | "inert"
 > & {
-  value: string;
+  value: PushNavScreenValue;
 };
 
 export function PushNavScreen({
@@ -46,7 +47,7 @@ export function PushNavScreen({
       ref={setElement}
       id={getScreenId(value)}
       className={cn(
-        "absolute inset-0 min-h-0 overflow-y-auto overscroll-contain bg-white transition-transform duration-280 ease-[cubic-bezier(0.2,0.75,0.3,1)] motion-reduce:transition-none",
+        "absolute inset-0 min-h-0 overflow-y-auto overscroll-contain bg-white pb-[calc(24px+env(safe-area-inset-bottom))] transition-transform duration-280 ease-[cubic-bezier(0.2,0.75,0.3,1)] motion-reduce:transition-none",
         className,
         positionClassName,
       )}

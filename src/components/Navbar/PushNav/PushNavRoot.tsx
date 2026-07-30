@@ -8,14 +8,17 @@ import {
   type ComponentPropsWithoutRef,
 } from "react";
 import { cn } from "@/lib/cn";
-import { NAVIGATION_FOCUSABLE_SELECTOR } from "../constants";
+import {
+  NAVIGATION_FOCUSABLE_SELECTOR,
+  type PushNavScreenValue,
+} from "../constants";
 import {
   PushNavRootContext,
   type PushNavRootContextValue,
 } from "./PushNavRootContext";
 
 type PushNavRootProps = ComponentPropsWithoutRef<"nav"> & {
-  initialValue?: string;
+  initialValue?: PushNavScreenValue;
 };
 
 export function PushNavRoot({
@@ -25,22 +28,29 @@ export function PushNavRoot({
   ...props
 }: PushNavRootProps) {
   const id = useId();
-  const historyRef = useRef<string[]>([initialValue]);
+  const historyRef = useRef<PushNavScreenValue[]>([initialValue]);
   const rootRef = useRef<HTMLElement>(null);
   const triggerHistoryRef = useRef<HTMLButtonElement[]>([]);
   const transitionLockedRef = useRef(false);
   const transitionTimerRef = useRef<number | null>(null);
-  const screenElementsRef = useRef(new Map<string, HTMLDivElement>());
-  const [history, setHistory] = useState<string[]>([initialValue]);
+  const screenElementsRef = useRef(
+    new Map<PushNavScreenValue, HTMLDivElement>(),
+  );
+  const [history, setHistory] = useState<PushNavScreenValue[]>([
+    initialValue,
+  ]);
   const activeValue = history.at(-1) ?? initialValue;
 
   const getScreenId = useCallback(
-    (value: string) => `${id}-${value}`,
+    (value: PushNavScreenValue) => `${id}-${value}`,
     [id],
   );
 
   const setScreenElement = useCallback(
-    (value: string, element: HTMLDivElement | null) => {
+    (
+      value: PushNavScreenValue,
+      element: HTMLDivElement | null,
+    ) => {
       if (element) {
         screenElementsRef.current.set(value, element);
       } else {
@@ -50,7 +60,7 @@ export function PushNavRoot({
     [],
   );
 
-  const focusScreen = useCallback((value: string) => {
+  const focusScreen = useCallback((value: PushNavScreenValue) => {
     window.requestAnimationFrame(() => {
       const screen = screenElementsRef.current.get(value);
       const focusTarget =
@@ -91,7 +101,7 @@ export function PushNavRoot({
   );
 
   const push = useCallback(
-    (value: string, trigger: HTMLButtonElement) => {
+    (value: PushNavScreenValue, trigger: HTMLButtonElement) => {
       const currentHistory = historyRef.current;
 
       if (

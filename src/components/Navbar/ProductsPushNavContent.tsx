@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import * as Drawer from "./Drawer";
+import { PushNavScreenLayout } from "./PushNavScreenLayout";
 
 const productLinks = [
   {
@@ -26,49 +27,51 @@ const productLinks = [
 
 export function ProductsPushNavContent() {
   return (
-    <div className="space-y-6">
-      <Drawer.Link
-        className="group flex items-center justify-between gap-4 rounded-2xl bg-green p-5 text-white focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
-        href="/products"
-      >
-        <span>
-          <strong className="block text-base">製品一覧を見る</strong>
-          <span className="mt-1 block text-sm/6 text-white/75">
-            Orbitのすべての製品を確認する
+    <PushNavScreenLayout title="製品" titleHref="/products">
+      <div className="space-y-6 px-5 pt-5">
+        <Drawer.Link
+          className="group flex items-center justify-between gap-4 rounded-2xl bg-green p-5 text-white focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
+          href="/products"
+        >
+          <span>
+            <strong className="block text-base">製品一覧を見る</strong>
+            <span className="mt-1 block text-sm/6 text-white/75">
+              Orbitのすべての製品を確認する
+            </span>
           </span>
-        </span>
-        <ArrowRight
-          className="size-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
-          aria-hidden="true"
-        />
-      </Drawer.Link>
+          <ArrowRight
+            className="size-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
+            aria-hidden="true"
+          />
+        </Drawer.Link>
 
-      <div>
-        <p className="mb-3 text-xs font-extrabold tracking-[0.12em] text-muted uppercase">
-          プロダクト
-        </p>
-        <ul className="space-y-2">
-          {productLinks.map(({ description, href, title }) => (
-            <li key={href}>
-              <Drawer.Link
-                className="group flex items-start justify-between gap-4 rounded-xl border border-line p-4 transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
-                href={href}
-              >
-                <span>
-                  <strong className="block text-sm">{title}</strong>
-                  <span className="mt-1 block text-xs/5 text-muted">
-                    {description}
+        <div>
+          <p className="mb-3 text-xs font-extrabold tracking-[0.12em] text-muted uppercase">
+            プロダクト
+          </p>
+          <ul className="space-y-2">
+            {productLinks.map(({ description, href, title }) => (
+              <li key={href}>
+                <Drawer.Link
+                  className="group flex w-full items-start justify-between gap-4 rounded-xl border border-line p-4 transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
+                  href={href}
+                >
+                  <span>
+                    <strong className="block text-sm">{title}</strong>
+                    <span className="mt-1 block text-xs/5 text-muted">
+                      {description}
+                    </span>
                   </span>
-                </span>
-                <ArrowRight
-                  className="mt-0.5 size-4 shrink-0 text-muted transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
-                  aria-hidden="true"
-                />
-              </Drawer.Link>
-            </li>
-          ))}
-        </ul>
+                  <ArrowRight
+                    className="mt-0.5 size-4 shrink-0 text-muted transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                </Drawer.Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-    </div>
+    </PushNavScreenLayout>
   );
 }

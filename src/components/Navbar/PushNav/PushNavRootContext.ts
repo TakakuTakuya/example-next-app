@@ -1,14 +1,18 @@
 import { createContext, useContext } from "react";
+import type { PushNavScreenValue } from "../constants";
 
 export interface PushNavRootContextValue {
-  activeValue: string;
+  activeValue: PushNavScreenValue;
   canGoBack: boolean;
-  history: readonly string[];
+  history: readonly PushNavScreenValue[];
   back: () => void;
-  getScreenId: (value: string) => string;
-  push: (value: string, trigger: HTMLButtonElement) => void;
+  getScreenId: (value: PushNavScreenValue) => string;
+  push: (
+    value: PushNavScreenValue,
+    trigger: HTMLButtonElement,
+  ) => void;
   setScreenElement: (
-    value: string,
+    value: PushNavScreenValue,
     element: HTMLDivElement | null,
   ) => void;
 }

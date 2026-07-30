@@ -2,13 +2,14 @@ import {
   type ComponentPropsWithoutRef,
   type MouseEventHandler,
 } from "react";
+import type { PushNavScreenValue } from "../constants";
 import { usePushNavRoot } from "./PushNavRootContext";
 
 type PushNavTriggerProps = Omit<
   ComponentPropsWithoutRef<"button">,
   "aria-controls" | "type"
 > & {
-  to: string;
+  to: PushNavScreenValue;
 };
 
 export function PushNavTrigger({
