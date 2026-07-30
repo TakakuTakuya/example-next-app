@@ -14,19 +14,19 @@ import {
   type PushNavRootContextValue,
 } from "./PushNavRootContext";
 
-type PushNavRootProps = ComponentPropsWithoutRef<"div"> & {
-  initialValue: string;
+type PushNavRootProps = ComponentPropsWithoutRef<"nav"> & {
+  initialValue?: string;
 };
 
 export function PushNavRoot({
   children,
   className,
-  initialValue,
+  initialValue = "root",
   ...props
 }: PushNavRootProps) {
   const id = useId();
   const historyRef = useRef<string[]>([initialValue]);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
   const triggerHistoryRef = useRef<HTMLButtonElement[]>([]);
   const transitionLockedRef = useRef(false);
   const transitionTimerRef = useRef<number | null>(null);
@@ -153,14 +153,14 @@ export function PushNavRoot({
 
   return (
     <PushNavRootContext.Provider value={contextValue}>
-      <div
+      <nav
         {...props}
         ref={rootRef}
         className={cn("relative h-full min-h-0 outline-none", className)}
         tabIndex={-1}
       >
         {children}
-      </div>
+      </nav>
     </PushNavRootContext.Provider>
   );
 }

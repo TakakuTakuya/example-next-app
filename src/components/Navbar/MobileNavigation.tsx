@@ -21,107 +21,105 @@ const screenBodyClassName =
   "p-5 pb-[calc(24px+env(safe-area-inset-bottom))]";
 
 /**
- * モバイル用メインナビゲーションの意味構造を担当するServer Component。
+ * モバイル用メインナビゲーションの内容を構成するServer Component。
  * PushNavのClient shellへ、各画面のServer Contentをchildrenとして渡す。
  */
 export function MobileNavigation() {
   return (
-    <nav className="h-full min-h-0" aria-label="メイン">
-      <PushNav.Root initialValue="root">
-        <PushNav.Viewport>
-          <PushNav.Screen value="root">
-            <div className="sticky top-0 z-30 flex items-center border-b border-line bg-white px-5 py-4">
-              <h2 className="text-lg font-[760]">メニュー</h2>
-            </div>
-            <div className="px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))]">
-              <ul className="divide-y divide-line">
-                <li>
-                  <PushNav.Trigger className={triggerClassName} to="products">
-                    <Layers3 className={iconClassName} aria-hidden="true" />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-base font-[750]">製品</span>
-                      <span className="text-sm/6 text-muted">
-                        キーワードやカテゴリから探す
-                      </span>
+    <PushNav.Root aria-label="メイン">
+      <PushNav.Viewport>
+        <PushNav.Screen value="root">
+          <div className="sticky top-0 z-30 flex items-center border-b border-line bg-white px-5 py-4">
+            <h2 className="text-lg font-[760]">メニュー</h2>
+          </div>
+          <div className="px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom))]">
+            <ul className="divide-y divide-line">
+              <li>
+                <PushNav.Trigger className={triggerClassName} to="products">
+                  <Layers3 className={iconClassName} aria-hidden="true" />
+                  <span className="flex flex-col gap-1">
+                    <span className="text-base font-[750]">製品</span>
+                    <span className="text-sm/6 text-muted">
+                      キーワードやカテゴリから探す
                     </span>
-                  </PushNav.Trigger>
-                </li>
+                  </span>
+                </PushNav.Trigger>
+              </li>
 
-                <li>
-                  <PushNav.Trigger className={triggerClassName} to="solutions">
-                    <Lightbulb className={iconClassName} aria-hidden="true" />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-base font-[750]">
-                        ソリューション
-                      </span>
-                      <span className="text-sm/6 text-muted">
-                        チームに合った解決策を探す
-                      </span>
+              <li>
+                <PushNav.Trigger className={triggerClassName} to="solutions">
+                  <Lightbulb className={iconClassName} aria-hidden="true" />
+                  <span className="flex flex-col gap-1">
+                    <span className="text-base font-[750]">
+                      ソリューション
                     </span>
-                  </PushNav.Trigger>
-                </li>
-
-                <li>
-                  <PushNav.Trigger className={triggerClassName} to="resources">
-                    <BookOpen className={iconClassName} aria-hidden="true" />
-                    <span className="flex flex-col gap-1">
-                      <span className="text-base font-[750]">リソース</span>
-                      <span className="text-sm/6 text-muted">
-                        学習資料やサポート情報を探す
-                      </span>
+                    <span className="text-sm/6 text-muted">
+                      チームに合った解決策を探す
                     </span>
-                  </PushNav.Trigger>
-                </li>
-              </ul>
-            </div>
-          </PushNav.Screen>
+                  </span>
+                </PushNav.Trigger>
+              </li>
 
-          <PushNav.Screen value="products">
-            <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
-              <PushNav.Back
-                className={backClassName}
-                aria-label="メニューへ戻る"
-              >
-                <ArrowLeft className="size-5" aria-hidden="true" />
-              </PushNav.Back>
-              <h3 className="text-base font-[760]">製品</h3>
-            </div>
-            <div className={screenBodyClassName}>
-              <ProductsPushNavContent />
-            </div>
-          </PushNav.Screen>
+              <li>
+                <PushNav.Trigger className={triggerClassName} to="resources">
+                  <BookOpen className={iconClassName} aria-hidden="true" />
+                  <span className="flex flex-col gap-1">
+                    <span className="text-base font-[750]">リソース</span>
+                    <span className="text-sm/6 text-muted">
+                      学習資料やサポート情報を探す
+                    </span>
+                  </span>
+                </PushNav.Trigger>
+              </li>
+            </ul>
+          </div>
+        </PushNav.Screen>
 
-          <PushNav.Screen value="solutions">
-            <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
-              <PushNav.Back
-                className={backClassName}
-                aria-label="メニューへ戻る"
-              >
-                <ArrowLeft className="size-5" aria-hidden="true" />
-              </PushNav.Back>
-              <h3 className="text-base font-[760]">ソリューション</h3>
-            </div>
-            <div className={screenBodyClassName}>
-              <SolutionsPushNavContent />
-            </div>
-          </PushNav.Screen>
+        <PushNav.Screen value="products">
+          <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
+            <PushNav.Back
+              className={backClassName}
+              aria-label="メニューへ戻る"
+            >
+              <ArrowLeft className="size-5" aria-hidden="true" />
+            </PushNav.Back>
+            <h3 className="text-base font-[760]">製品</h3>
+          </div>
+          <div className={screenBodyClassName}>
+            <ProductsPushNavContent />
+          </div>
+        </PushNav.Screen>
 
-          <PushNav.Screen value="resources">
-            <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
-              <PushNav.Back
-                className={backClassName}
-                aria-label="メニューへ戻る"
-              >
-                <ArrowLeft className="size-5" aria-hidden="true" />
-              </PushNav.Back>
-              <h3 className="text-base font-[760]">リソース</h3>
-            </div>
-            <div className={screenBodyClassName}>
-              <ResourcesPushNavContent />
-            </div>
-          </PushNav.Screen>
-        </PushNav.Viewport>
-      </PushNav.Root>
-    </nav>
+        <PushNav.Screen value="solutions">
+          <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
+            <PushNav.Back
+              className={backClassName}
+              aria-label="メニューへ戻る"
+            >
+              <ArrowLeft className="size-5" aria-hidden="true" />
+            </PushNav.Back>
+            <h3 className="text-base font-[760]">ソリューション</h3>
+          </div>
+          <div className={screenBodyClassName}>
+            <SolutionsPushNavContent />
+          </div>
+        </PushNav.Screen>
+
+        <PushNav.Screen value="resources">
+          <div className="sticky top-0 z-30 flex items-center gap-2 border-b border-line bg-white px-4 py-2">
+            <PushNav.Back
+              className={backClassName}
+              aria-label="メニューへ戻る"
+            >
+              <ArrowLeft className="size-5" aria-hidden="true" />
+            </PushNav.Back>
+            <h3 className="text-base font-[760]">リソース</h3>
+          </div>
+          <div className={screenBodyClassName}>
+            <ResourcesPushNavContent />
+          </div>
+        </PushNav.Screen>
+      </PushNav.Viewport>
+    </PushNav.Root>
   );
 }
