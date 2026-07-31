@@ -20,7 +20,10 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body className="min-w-[720px] bg-paper font-sans text-ink antialiased">
-        <Navbar isLoggedIn hasCartItems />
+        <Navbar
+        // auth={{ status: "authenticated", userName: "山田 太郎" }}
+        // hasCartItems
+        />
         {children}
       </body>
     </html>

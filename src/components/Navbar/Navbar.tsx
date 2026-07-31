@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   BookOpen,
   Layers3,
@@ -13,6 +12,7 @@ import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
 import { NavbarIconItem } from "./NavbarIconItem";
+import { NavbarLoginLink } from "./NavbarLoginLink";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsMegaMenuContent } from "./ProductsMegaMenuContent";
@@ -24,14 +24,15 @@ import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
 import { SolutionsMegaMenuContent } from "./SolutionsMegaMenuContent";
 import { SolutionsPushNavContent } from "./SolutionsPushNavContent";
+import type { NavbarAuthState } from "./types";
 import * as MegaMenu from "./MegaMenu";
 
 const menuIconClassName =
   "size-[18px] text-[#70807b] transition-colors duration-150 group-hover:text-green-2 group-data-[state=open]:text-green-2 motion-reduce:transition-none";
 
 interface NavbarProps {
+  auth?: NavbarAuthState;
   hasCartItems?: boolean;
-  isLoggedIn?: boolean;
 }
 
 /**
@@ -40,10 +41,12 @@ interface NavbarProps {
  * Server Component の各 Content を children として渡す。
  */
 export function Navbar({
+  auth = { status: "anonymous" },
   hasCartItems = false,
-  isLoggedIn = false,
 }: NavbarProps) {
+  const isLoggedIn = auth.status === "authenticated";
   const showCartBottomSheet = isLoggedIn && hasCartItems;
+  const accountSheetTitle = isLoggedIn ? "アカウント" : "ログイン";
 
   return (
     <header className="sticky top-0 z-20 overflow-hidden border-b border-ink/10 bg-white/92 shadow-[0_8px_28px_rgb(30_50_43/5%)] backdrop-blur-lg max-md:w-dvw">
@@ -58,7 +61,7 @@ export function Navbar({
           <Drawer.Content title="メインメニュー">
             <PushNav.Root aria-label="メイン">
               <PushNav.Screen value="root">
-                <RootPushNavContent />
+                <RootPushNavContent auth={auth} />
               </PushNav.Screen>
 
               <PushNav.Screen value="products">
@@ -133,12 +136,9 @@ export function Navbar({
           className="ml-auto flex h-full items-center gap-0.5 max-md:hidden"
           aria-label="お客様専用ページとカート"
         >
-          <Link
-            className="mr-1.5 inline-flex h-[42px] items-center justify-center rounded-full bg-ink px-[19px] text-sm font-[720] text-white transition-[background-color,transform] duration-150 hover:bg-green active:translate-y-px focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
-            href="/login"
-          >
+          <NavbarLoginLink className="mr-1.5" href="/login">
             ログイン
-          </Link>
+          </NavbarLoginLink>
           <NavbarMenuItem href="/account">お客様専用ページ</NavbarMenuItem>
           <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
         </nav>
@@ -154,11 +154,11 @@ export function Navbar({
           </BottomSheet.Item>
 
           <BottomSheet.Item value="login">
-            <BottomSheet.Trigger aria-label="ログイン">
+            <BottomSheet.Trigger aria-label={accountSheetTitle}>
               <UserRound className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
-            <BottomSheet.Content title="ログイン">
-              <LoginBottomSheetContent />
+            <BottomSheet.Content title={accountSheetTitle}>
+              <LoginBottomSheetContent auth={auth} />
             </BottomSheet.Content>
           </BottomSheet.Item>
 

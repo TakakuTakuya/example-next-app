@@ -132,12 +132,12 @@ Navbar                                      Server Component
    │  └─ BottomSheet.Content                body Portal + native dialog
    │     └─ ProductSearchBottomSheetContent
    ├─ BottomSheet.Item                      value: login
-   │  ├─ BottomSheet.Trigger                Login trigger
+   │  ├─ BottomSheet.Trigger                Login / account trigger
    │  │  └─ NavbarIconItem                  icon button
    │  └─ BottomSheet.Content                body Portal + native dialog
-   │     └─ LoginBottomSheetContent
+   │     └─ LoginBottomSheetContent          auth-aware Server Component
    └─ Cart action                           Server-side conditional
-      ├─ logged in + has items
+      ├─ authenticated + has items
       │  └─ BottomSheet.Item
       │     ├─ BottomSheet.Trigger          Cart trigger
       │     │  └─ NavbarIconItem            icon button
@@ -184,7 +184,7 @@ Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重�
 
 `Navbar`は`Drawer.Content`内で`PushNav.Root`と4つの`PushNav.Screen`を直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。Rootと常に一対一になる表示窓コンポーネントは設けず、座標系、高さ、クリップをRootへ集約する。
 
-root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは可視の「メニュー」見出し、上位3項目、可視サブテキストを担当する。上位項目は`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenの`children`には対応する`*PushNavContent`を渡す。各Contentはカテゴリ固有の意味構造、本文レイアウト、最終リンクを持ち、共通する単独の戻る行と、カテゴリタイトルおよび「トップ」のリンクを置く行はServer Componentの`PushNavScreenLayout`へ委譲する。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。「トップ」はリンクのセマンティクスを維持しながらghost button相当の見た目と最小44pxの高さを持つ操作領域にする。タイトルと「トップ」はどちらも対応するカテゴリトップへ遷移する。
+root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名、未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示する。いずれも遷移を目的とするため`button`ではなくリンクとし、Drawer内では`Drawer.Link`によるclose処理を維持する。デスクトップのログインリンクは`NavbarLoginLink`へ抽出し、Drawerのログインリンクとはbutton風のスタイル定義だけを共有する。上位項目は`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenの`children`には対応する`*PushNavContent`を渡す。各Contentはカテゴリ固有の意味構造、本文レイアウト、最終リンクを持ち、共通する単独の戻る行と、カテゴリタイトルおよび「トップ」のリンクを置く行はServer Componentの`PushNavScreenLayout`へ委譲する。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。「トップ」はリンクのセマンティクスを維持しながらghost button相当の見た目と最小44pxの高さを持つ操作領域にする。タイトルと「トップ」はどちらも対応するカテゴリトップへ遷移する。
 
 `PushNav.Root`は値の履歴、push元要素、遷移ロック、Screen要素を管理する。画面値は`PUSH_NAV_SCREEN_VALUES = ["root", "products", "solutions", "resources"] as const`から導出した`PushNavScreenValue`で表し、`initialValue`、`Screen.value`、`Trigger.to`、Context内の履歴と操作へ適用する。JSXでは型検査される文字列リテラルをそのまま使用し、配列のindexでは参照しない。
 
@@ -200,7 +200,9 @@ Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとCo
 
 `NavbarIconItem`はモバイルNavbarのアイコン項目に共通する見た目を担当する。`href`があればNext.jsの`Link`、なければ`button`を描画する。`Drawer.Trigger`と`BottomSheet.Trigger`はbuttonとして内部利用し、Bottom Sheetを開かないカートはLinkとしてServer側から直接利用する。汎用的な`asChild`やSlot機構は持たせない。
 
-モバイルのカート操作は、`Navbar`が受け取る`isLoggedIn`と`hasCartItems`によってServer側で分岐する。両方が`true`のときだけカートを`BottomSheet.Item`として描画し、それ以外は`/cart`への通常Linkを描画する。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。既定値はいずれも`false`とし、情報が未接続の状態では従来のLinkを維持する。
+Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値を`RootPushNavContent`と`LoginBottomSheetContent`へpropsで渡し、両Server Componentの表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
+
+モバイルのカート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるときだけカートを`BottomSheet.Item`として描画し、それ以外は`/cart`への通常Linkを描画する。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。ログイン用Bottom Sheetも同じ`auth`を受け取り、未ログイン時はログイン導線、ログイン時はユーザー名とお客様専用ページ導線を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
 
 Bottom Sheetの表示時は、本体だけを280msかけて48px下から定位置へ移動させる。backdropは動かさず、`prefers-reduced-motion: reduce`では本体のアニメーションも無効化する。
 
@@ -556,16 +558,18 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | --- | --- |
 | `src/components/Navbar/index.ts` | CMS統合時にも利用できるServer Component公開エントリ |
 | `src/components/Navbar/Navbar.tsx` | Server側のNavbar構成、Item宣言、PushNav Screenと各Server Contentの対応付け |
+| `src/components/Navbar/NavbarLoginLink.tsx` | デスクトップのログインリンクと、Drawer内ログインリンクに共有するbutton風スタイル |
+| `src/components/Navbar/types.ts` | `NavbarAuthState`と認証状態ごとの型定義 |
 | `src/components/Navbar/NavbarMenuItem.tsx` | Navbar固有の共通リンクUI |
 | `src/components/Navbar/NavbarIconItem.tsx` | モバイルNavbarの共通icon button／icon link UI |
 | `src/components/Navbar/SiteLogo.tsx` | ロゴリンク |
-| `src/components/Navbar/RootPushNavContent.tsx` | root Screenの見出し、上位Trigger、可視サブテキストを構成するServer Content |
+| `src/components/Navbar/RootPushNavContent.tsx` | root Screenの認証表示、上位Trigger、可視サブテキストを構成するServer Content |
 | `src/components/Navbar/PushNavScreenLayout.tsx` | 下層Screenに共通する戻る行とカテゴリトップへのリンク行のServer Component |
 | `src/components/Navbar/ProductsPushNavContent.tsx` | 共通Screenレイアウトを含む製品画面のServer Content |
 | `src/components/Navbar/SolutionsPushNavContent.tsx` | 共通Screenレイアウトを含むソリューション画面のServer Content |
 | `src/components/Navbar/ResourcesPushNavContent.tsx` | 共通Screenレイアウトを含むリソース画面のServer Content |
 | `src/components/Navbar/ProductSearchBottomSheetContent.tsx` | 製品検索Bottom SheetのServer Content |
-| `src/components/Navbar/LoginBottomSheetContent.tsx` | ログインBottom SheetのServer Content |
+| `src/components/Navbar/LoginBottomSheetContent.tsx` | 共通認証状態に応じてログインまたはアカウント導線を構成するServer Content |
 | `src/components/Navbar/CartBottomSheetContent.tsx` | 商品あり状態のカートBottom Sheet用Server Content |
 | `src/components/Navbar/constants.ts` | 共通Media Query、focus selector、PushNav画面値tupleと導出型 |
 | `src/components/Navbar/MegaMenu/index.ts` | Compound Componentsを明示的にre-exportする公開Client entrypoint |
@@ -644,7 +648,7 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - Bottom sheet本体だけが下部から控えめに表示され、backdropは動かない
 - Bottom sheetを`Escape`または閉じるボタンで閉じ、Triggerへfocusが戻る
 - スマホからデスクトップ幅へ切り替えたとき、開いていたBottom sheetが閉じる
-- `isLoggedIn`と`hasCartItems`が両方`true`のとき、カートがBottom sheet Triggerになる
+- `auth.status === "authenticated"`かつ`hasCartItems`が`true`のとき、カートがBottom sheet Triggerになる
 - どちらかが`false`のとき、カートが`/cart`への通常リンクになる
 - ブラウザconsoleにwarning / errorがない
 
