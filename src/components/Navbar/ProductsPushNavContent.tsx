@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import * as Drawer from "./Drawer";
 import { PushNavScreenLayout } from "./PushNavScreenLayout";
 
@@ -27,7 +27,27 @@ const productLinks = [
 
 export function ProductsPushNavContent() {
   return (
-    <PushNavScreenLayout title="製品" titleHref="/products">
+    <PushNavScreenLayout>
+      <div className="flex min-h-14 items-center justify-between gap-4 border-b border-line px-5 py-1.5">
+        <h3>
+          <Drawer.Link
+            className="rounded-md text-base font-[760] text-ink transition-colors duration-150 hover:text-green-2 focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
+            href="/products"
+          >
+            製品
+          </Drawer.Link>
+        </h3>
+
+        <Drawer.Link
+          className="-mr-3 inline-flex min-h-11 items-center justify-center gap-1 rounded-lg px-3 text-sm font-[720] text-green-2 transition-colors duration-150 hover:bg-paper hover:text-green focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
+          href="/products"
+          aria-label="製品トップ"
+        >
+          <span>トップ</span>
+          <ChevronRight className="size-4" aria-hidden="true" />
+        </Drawer.Link>
+      </div>
+
       <div className="space-y-6 px-5 pt-5">
         <Drawer.Link
           className="group flex items-center justify-between gap-4 rounded-2xl bg-green p-5 text-white focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
