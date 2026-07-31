@@ -13,7 +13,7 @@ const topLinkClassName =
   "-mr-3 inline-flex min-h-11 items-center justify-center gap-1 rounded-lg px-3 text-sm font-[720] text-green-2 transition-colors duration-150 hover:bg-paper hover:text-green focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none";
 
 interface PushNavScreenLayoutProps {
-  children: ReactNode;
+  children?: ReactNode;
   title: string;
   titleHref: string;
 }

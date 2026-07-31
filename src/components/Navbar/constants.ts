@@ -4,6 +4,7 @@ export const NAVIGATION_FOCUSABLE_SELECTOR =
 
 export const PUSH_NAV_SCREEN_VALUES = [
   "root",
+  "account",
   "products",
   "solutions",
   "resources",

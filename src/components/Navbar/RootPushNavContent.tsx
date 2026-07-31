@@ -26,14 +26,23 @@ export function RootPushNavContent({
 }: RootPushNavContentProps) {
   return (
     <>
-      <div className="sticky top-0 z-30 border-b border-line bg-white p-4">
+      <div className="sticky top-0 z-30 border-b border-line bg-white">
         {auth.status === "authenticated" ? (
-          <p className="flex min-h-[42px] min-w-0 items-center truncate text-lg font-[760]">
-            <span className="sr-only">ログイン中のユーザー：</span>
-            {auth.userName}
-          </p>
+          <PushNav.Trigger
+            className="block w-full p-4 text-left transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
+            to="account"
+          >
+            <span className="flex min-h-[42px] min-w-0 items-center truncate text-lg font-[760]">
+              <span className="sr-only">ログイン中のユーザー：</span>
+              {auth.userName}
+            </span>
+            <span className="flex items-baseline gap-2 text-sm text-muted">
+              <span>ポイント</span>
+              <span>9999</span>
+            </span>
+          </PushNav.Trigger>
         ) : (
-          <>
+          <div className="p-4">
             <div className="flex gap-2">
               <Drawer.Link
                 className={cn(
@@ -57,7 +66,7 @@ export function RootPushNavContent({
             >
               お客様専用ページ
             </Drawer.Link>
-          </>
+          </div>
         )}
       </div>
 

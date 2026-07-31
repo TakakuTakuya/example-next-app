@@ -7,6 +7,7 @@ import {
   ShoppingCart,
   UserRound,
 } from "lucide-react";
+import { AccountPushNavContent } from "./AccountPushNavContent";
 import * as BottomSheet from "./BottomSheet";
 import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import * as Drawer from "./Drawer";
@@ -63,6 +64,12 @@ export function Navbar({
               <PushNav.Screen value="root">
                 <RootPushNavContent auth={auth} />
               </PushNav.Screen>
+
+              {isLoggedIn ? (
+                <PushNav.Screen value="account">
+                  <AccountPushNavContent />
+                </PushNav.Screen>
+              ) : null}
 
               <PushNav.Screen value="products">
                 <ProductsPushNavContent />
