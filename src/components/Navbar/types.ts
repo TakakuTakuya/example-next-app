@@ -12,3 +12,7 @@ export type NavbarAuthState =
   | AnonymousNavbarState;
 
 export type NavigationContentSurface = "mega-menu" | "push-nav";
+
+export interface NavigationContentProps {
+  surface: NavigationContentSurface;
+}

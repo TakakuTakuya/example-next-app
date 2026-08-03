@@ -1,7 +1,5 @@
+import type { ComponentType } from "react";
 import {
-  BookOpen,
-  Layers3,
-  Lightbulb,
   Menu,
   Search,
   ShoppingCart,
@@ -12,6 +10,10 @@ import * as BottomSheet from "./BottomSheet";
 import { CartBottomSheetContent } from "./CartBottomSheetContent";
 import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
+import {
+  primaryNavigationItems,
+  type PrimaryNavigationValue,
+} from "./navigationItems";
 import { NavbarIconItem } from "./NavbarIconItem";
 import { NavbarLoginLink } from "./NavbarLoginLink";
 import { NavbarMenuItem } from "./NavbarMenuItem";
@@ -23,11 +25,23 @@ import { ResourcesNavigationContent } from "./ResourcesNavigationContent";
 import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
 import { SolutionsNavigationContent } from "./SolutionsNavigationContent";
-import type { NavbarAuthState } from "./types";
+import type {
+  NavbarAuthState,
+  NavigationContentProps,
+} from "./types";
 import * as MegaMenu from "./MegaMenu";
 
 const menuIconClassName =
   "size-[18px] text-[#70807b] transition-colors duration-150 group-hover:text-green-2 group-data-[state=open]:text-green-2 motion-reduce:transition-none";
+
+const navigationContentByValue = {
+  products: ProductsNavigationContent,
+  solutions: SolutionsNavigationContent,
+  resources: ResourcesNavigationContent,
+} satisfies Record<
+  PrimaryNavigationValue,
+  ComponentType<NavigationContentProps>
+>;
 
 interface NavbarProps {
   auth?: NavbarAuthState;
@@ -69,23 +83,18 @@ export function Navbar({
                 </PushNav.Screen>
               ) : null}
 
-              <PushNav.Screen value="products">
-                <PushNavScreenLayout>
-                  <ProductsNavigationContent surface="push-nav" />
-                </PushNavScreenLayout>
-              </PushNav.Screen>
+              {primaryNavigationItems.map(({ value }) => {
+                const NavigationContent =
+                  navigationContentByValue[value];
 
-              <PushNav.Screen value="solutions">
-                <PushNavScreenLayout>
-                  <SolutionsNavigationContent surface="push-nav" />
-                </PushNavScreenLayout>
-              </PushNav.Screen>
-
-              <PushNav.Screen value="resources">
-                <PushNavScreenLayout>
-                  <ResourcesNavigationContent surface="push-nav" />
-                </PushNavScreenLayout>
-              </PushNav.Screen>
+                return (
+                  <PushNav.Screen key={value} value={value}>
+                    <PushNavScreenLayout>
+                      <NavigationContent surface="push-nav" />
+                    </PushNavScreenLayout>
+                  </PushNav.Screen>
+                );
+              })}
             </PushNav.Root>
           </Drawer.Content>
         </Drawer.Root>
@@ -94,50 +103,30 @@ export function Navbar({
 
         <MegaMenu.Root className="h-full max-md:hidden" aria-label="メイン">
           <MegaMenu.List>
-            <MegaMenu.Item value="products">
-              <MegaMenu.Link href="/products">
-                <Layers3 className={menuIconClassName} aria-hidden="true" />
-                <span className="flex flex-col items-start">
-                  <span>製品</span>
-                  <span className="sr-only">
-                    キーワードやカテゴリから探す
-                  </span>
-                </span>
-              </MegaMenu.Link>
-              <MegaMenu.Content>
-                <ProductsNavigationContent surface="mega-menu" />
-              </MegaMenu.Content>
-            </MegaMenu.Item>
+            {primaryNavigationItems.map(
+              ({ description, href, icon: Icon, label, value }) => {
+                const NavigationContent =
+                  navigationContentByValue[value];
 
-            <MegaMenu.Item value="solutions">
-              <MegaMenu.Link href="/solutions">
-                <Lightbulb className={menuIconClassName} aria-hidden="true" />
-                <span className="flex flex-col items-start">
-                  <span>ソリューション</span>
-                  <span className="sr-only">
-                    チームに合った解決策を探す
-                  </span>
-                </span>
-              </MegaMenu.Link>
-              <MegaMenu.Content>
-                <SolutionsNavigationContent surface="mega-menu" />
-              </MegaMenu.Content>
-            </MegaMenu.Item>
-
-            <MegaMenu.Item value="resources">
-              <MegaMenu.Link href="/resources">
-                <BookOpen className={menuIconClassName} aria-hidden="true" />
-                <span className="flex flex-col items-start">
-                  <span>リソース</span>
-                  <span className="sr-only">
-                    学習資料やサポート情報を探す
-                  </span>
-                </span>
-              </MegaMenu.Link>
-              <MegaMenu.Content>
-                <ResourcesNavigationContent surface="mega-menu" />
-              </MegaMenu.Content>
-            </MegaMenu.Item>
+                return (
+                  <MegaMenu.Item key={value} value={value}>
+                    <MegaMenu.Link href={href}>
+                      <Icon
+                        className={menuIconClassName}
+                        aria-hidden="true"
+                      />
+                      <span className="flex flex-col items-start">
+                        <span>{label}</span>
+                        <span className="sr-only">{description}</span>
+                      </span>
+                    </MegaMenu.Link>
+                    <MegaMenu.Content>
+                      <NavigationContent surface="mega-menu" />
+                    </MegaMenu.Content>
+                  </MegaMenu.Item>
+                );
+              },
+            )}
           </MegaMenu.List>
 
           <MegaMenu.Layer className="max-md:hidden" />

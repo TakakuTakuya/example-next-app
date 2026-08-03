@@ -1,6 +1,6 @@
-import { BookOpen, Layers3, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/cn";
 import * as Drawer from "./Drawer";
+import { primaryNavigationItems } from "./navigationItems";
 import { navbarLoginLinkClassName } from "./NavbarLoginLink";
 import * as PushNav from "./PushNav";
 import type { NavbarAuthState } from "./types";
@@ -72,43 +72,26 @@ export function RootPushNavContent({
 
       <div className="px-5 pt-4">
         <ul className="divide-y divide-line">
-          <li>
-            <PushNav.Trigger className={triggerClassName} to="products">
-              <Layers3 className={iconClassName} aria-hidden="true" />
-              <span className="flex flex-col gap-1">
-                <span className="text-base font-[750]">製品</span>
-                <span className="text-sm/6 text-muted">
-                  キーワードやカテゴリから探す
-                </span>
-              </span>
-            </PushNav.Trigger>
-          </li>
-
-          <li>
-            <PushNav.Trigger className={triggerClassName} to="solutions">
-              <Lightbulb className={iconClassName} aria-hidden="true" />
-              <span className="flex flex-col gap-1">
-                <span className="text-base font-[750]">
-                  ソリューション
-                </span>
-                <span className="text-sm/6 text-muted">
-                  チームに合った解決策を探す
-                </span>
-              </span>
-            </PushNav.Trigger>
-          </li>
-
-          <li>
-            <PushNav.Trigger className={triggerClassName} to="resources">
-              <BookOpen className={iconClassName} aria-hidden="true" />
-              <span className="flex flex-col gap-1">
-                <span className="text-base font-[750]">リソース</span>
-                <span className="text-sm/6 text-muted">
-                  学習資料やサポート情報を探す
-                </span>
-              </span>
-            </PushNav.Trigger>
-          </li>
+          {primaryNavigationItems.map(
+            ({ description, icon: Icon, label, value }) => (
+              <li key={value}>
+                <PushNav.Trigger
+                  className={triggerClassName}
+                  to={value}
+                >
+                  <Icon className={iconClassName} aria-hidden="true" />
+                  <span className="flex flex-col gap-1">
+                    <span className="text-base font-[750]">
+                      {label}
+                    </span>
+                    <span className="text-sm/6 text-muted">
+                      {description}
+                    </span>
+                  </span>
+                </PushNav.Trigger>
+              </li>
+            ),
+          )}
         </ul>
       </div>
     </>

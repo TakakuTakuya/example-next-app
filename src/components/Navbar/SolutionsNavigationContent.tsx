@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import * as Drawer from "./Drawer";
-import type { NavigationContentSurface } from "./types";
+import type { NavigationContentProps } from "./types";
 
 const solutionLinks = [
   {
@@ -26,13 +26,9 @@ const solutionLinks = [
   },
 ] as const;
 
-interface SolutionsNavigationContentProps {
-  surface: NavigationContentSurface;
-}
-
 export function SolutionsNavigationContent({
   surface,
-}: SolutionsNavigationContentProps) {
+}: NavigationContentProps) {
   const ContentLink = surface === "push-nav" ? Drawer.Link : Link;
   return (
     <>

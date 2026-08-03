@@ -80,6 +80,7 @@ Navbarはデスクトップでは左から次の要素で構成する。
 | React上の構造 | LinkとContentを同じItem内に置く | 対応関係、固有構造、保守性を明示する |
 | 実DOM上の構造 | activeなContentをbody直下へPortal | Header祖先のクリッピングとスタッキングコンテキストを回避する |
 | Contentの構造 | メニューごとのServer Component | 各メニューの構造が異なるため、過度にデータ駆動化しない |
+| 上位3項目のメタデータ | `primaryNavigationItems`で共有 | value、href、label、サブテキスト、LucideアイコンをMegaMenuとPushNavで一致させるため |
 | アイコン | Linkの静的childrenとして渡す | 開閉状態を管理する部品ではなく、項目固有の表示だから |
 | 開閉用シェブロン | 追加しない | 項目全体を単一Linkとして維持するため |
 | デスクトップ右側リンク | 専用コンポーネント化しない | 現状は右寄せレイアウト以外の独立責務がないため |
@@ -188,13 +189,15 @@ Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重�
 
 `Navbar`は`Drawer.Content`内で`PushNav.Root`、常設する4つの`PushNav.Screen`、ログイン時だけ追加するaccount Screenを直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。Rootと常に一対一になる表示窓コンポーネントは設けず、座標系、高さ、クリップをRootへ集約する。
 
-root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップのログインリンクは`NavbarLoginLink`へ抽出し、Drawerのログインリンクとはbutton風のスタイル定義だけを共有する。上位3項目も`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*NavigationContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。root Screenとaccount Screenにはこのタイトル／トップ行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
+root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップのログインリンクは`NavbarLoginLink`へ抽出し、Drawerのログインリンクとはbutton風のスタイル定義だけを共有する。上位3項目のvalue、href、label、サブテキスト、Lucideアイコンは`primaryNavigationItems`へ集約し、`RootPushNavContent`は同じ配列を`PushNav.Trigger`としてループ描画する。Triggerは`button`であり、ページ遷移しない。各カテゴリScreenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*NavigationContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。root Screenとaccount Screenにはこのタイトル／トップ行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
 
 `PushNav.Root`は値の履歴、push元要素、遷移ロック、Screen要素を管理する。画面値は`PUSH_NAV_SCREEN_VALUES = ["root", "account", "products", "solutions", "resources"] as const`から導出した`PushNavScreenValue`で表し、`initialValue`、`Screen.value`、`Trigger.to`、Context内の履歴と操作へ適用する。JSXでは型検査される文字列リテラルをそのまま使用し、配列のindexでは参照しない。
 
 `PushNav.Screen`は全画面をmountしたままtransformで移動し、activeでない画面へ`inert`と`aria-hidden`を付ける。各Screenはスクロール領域として、画面下端の固定余白と`safe-area-inset-bottom`も共通して確保する。push後は新しい画面のBackへ、back後は元のTriggerへfocusを移す。Drawerを閉じるとPushNav全体がunmountされるため、再度開いたときは既定のroot Screenへ戻る。`PushNav/`には制御機構だけを置き、`RootPushNavContent`、`PushNavScreenLayout`、カテゴリ固有ContentはNavbar直下に置く。
 
 各`*NavigationContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。これにより、PushNavの最終ページ遷移では同じpathnameを選択した場合もDrawerを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではDrawerを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
+
+`Navbar`は`primaryNavigationItems`からカテゴリScreenと`MegaMenu.Item`をそれぞれループ描画する。値ごとのServer Contentは`navigationContentByValue`で対応付け、`Record<PrimaryNavigationValue, ComponentType<NavigationContentProps>>`によって全項目分のContentが存在することを型検査する。MegaMenuではループ内でLinkとContentを同じItemへ配置するため、データ駆動化後もReact上の論理的な隣接関係を維持する。配列そのものをClient Componentのpropsへ渡さず、Server Component上で展開した文字列propsとReact childrenだけを各Client shellへ渡す。
 
 `MegaMenu/`にも同じ境界を適用する。Root、List、Item、Link、Content、Layerなど開閉機構を構成するCompound Componentsだけをディレクトリ内に置き、製品・ソリューション・リソース固有のServer ContentはNavbar直下に置く。これにより「仕組み」と「Navbarが宣言する中身」をファイル配置でも区別する。
 
@@ -227,7 +230,8 @@ Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所�
 担当すること：
 
 - Navbar全体の意味構造と項目順序
-- 各Item、Link、固有Contentの宣言的な組み合わせ
+- `primaryNavigationItems`から各Item、Link、Screenを組み立てること
+- 値と固有Contentの型付き対応付け
 - Drawer内の`PushNav.Root`と`PushNav.Screen`の構成
 - Screenの`value`と`RootPushNavContent`／各`*NavigationContent`の対応付け
 - Server Componentとして固有ContentをClient shellの`children`へ渡すこと
@@ -374,6 +378,7 @@ Client制御ファイルからこれらをimportしないことが重要であ�
 Navbar (Server)
 ├─ imports MegaMenu named Client Components
 ├─ imports PushNav named Client Components
+├─ imports primaryNavigationItems
 ├─ imports RootPushNavContent (Server)
 ├─ imports ProductsNavigationContent (Server)
 ├─ imports SolutionsNavigationContent (Server)
@@ -384,6 +389,7 @@ MegaMenu/index.ts（公開Client entrypoint）
 └─ does not import or re-export any menu-specific Server Component
 
 RootPushNavContent (Server)
+├─ imports primaryNavigationItems
 └─ imports PushNav.Trigger (Client)
 
 *NavigationContent (Server)
@@ -523,15 +529,21 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 現在の記述イメージ：
 
 ```tsx
-<MegaMenu.Item value="products">
-  <MegaMenu.Link href="/products">
-    <Layers3 aria-hidden="true" />
-    <span>製品</span>
-  </MegaMenu.Link>
-  <MegaMenu.Content>
-    <ProductsNavigationContent surface="mega-menu" />
-  </MegaMenu.Content>
-</MegaMenu.Item>
+{primaryNavigationItems.map(({ href, icon: Icon, label, value }) => {
+  const NavigationContent = navigationContentByValue[value];
+
+  return (
+    <MegaMenu.Item key={value} value={value}>
+      <MegaMenu.Link href={href}>
+        <Icon aria-hidden="true" />
+        <span>{label}</span>
+      </MegaMenu.Link>
+      <MegaMenu.Content>
+        <NavigationContent surface="mega-menu" />
+      </MegaMenu.Content>
+    </MegaMenu.Item>
+  );
+})}
 ```
 
 アイコンが開閉アニメーション、状態表示、アクセシブルなラベルを担うようになった場合に限り、専用責務の追加を再検討する。
@@ -564,7 +576,8 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/index.ts` | CMS統合時にも利用できるServer Component公開エントリ |
 | `src/components/Navbar/Navbar.tsx` | Server側のNavbar構成、Item宣言、PushNav Screenと各Server Contentの対応付け |
 | `src/components/Navbar/NavbarLoginLink.tsx` | デスクトップのログインリンクと、Drawer内ログインリンクに共有するbutton風スタイル |
-| `src/components/Navbar/types.ts` | `NavbarAuthState`と認証状態ごとの型定義、共有Contentの描画surface型 |
+| `src/components/Navbar/types.ts` | `NavbarAuthState`と認証状態ごとの型定義、共有Contentの共通props型 |
+| `src/components/Navbar/navigationItems.ts` | 上位3項目のvalue、href、label、サブテキスト、Lucideアイコンと導出型 |
 | `src/components/Navbar/NavbarMenuItem.tsx` | Navbar固有の共通リンクUI |
 | `src/components/Navbar/NavbarIconItem.tsx` | モバイルNavbarの共通icon button／icon link UI |
 | `src/components/Navbar/SiteLogo.tsx` | ロゴリンク |
