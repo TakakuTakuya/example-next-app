@@ -16,13 +16,13 @@ import { NavbarIconItem } from "./NavbarIconItem";
 import { NavbarLoginLink } from "./NavbarLoginLink";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
-import { ProductsPushNavContent } from "./ProductsPushNavContent";
+import { ProductsNavigationContent } from "./ProductsNavigationContent";
 import * as PushNav from "./PushNav";
 import { PushNavScreenLayout } from "./PushNavScreenLayout";
-import { ResourcesPushNavContent } from "./ResourcesPushNavContent";
+import { ResourcesNavigationContent } from "./ResourcesNavigationContent";
 import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
-import { SolutionsPushNavContent } from "./SolutionsPushNavContent";
+import { SolutionsNavigationContent } from "./SolutionsNavigationContent";
 import type { NavbarAuthState } from "./types";
 import * as MegaMenu from "./MegaMenu";
 
@@ -71,19 +71,19 @@ export function Navbar({
 
               <PushNav.Screen value="products">
                 <PushNavScreenLayout>
-                  <ProductsPushNavContent surface="push-nav" />
+                  <ProductsNavigationContent surface="push-nav" />
                 </PushNavScreenLayout>
               </PushNav.Screen>
 
               <PushNav.Screen value="solutions">
                 <PushNavScreenLayout>
-                  <SolutionsPushNavContent surface="push-nav" />
+                  <SolutionsNavigationContent surface="push-nav" />
                 </PushNavScreenLayout>
               </PushNav.Screen>
 
               <PushNav.Screen value="resources">
                 <PushNavScreenLayout>
-                  <ResourcesPushNavContent surface="push-nav" />
+                  <ResourcesNavigationContent surface="push-nav" />
                 </PushNavScreenLayout>
               </PushNav.Screen>
             </PushNav.Root>
@@ -105,7 +105,7 @@ export function Navbar({
                 </span>
               </MegaMenu.Link>
               <MegaMenu.Content>
-                <ProductsPushNavContent surface="mega-menu" />
+                <ProductsNavigationContent surface="mega-menu" />
               </MegaMenu.Content>
             </MegaMenu.Item>
 
@@ -120,7 +120,7 @@ export function Navbar({
                 </span>
               </MegaMenu.Link>
               <MegaMenu.Content>
-                <SolutionsPushNavContent surface="mega-menu" />
+                <SolutionsNavigationContent surface="mega-menu" />
               </MegaMenu.Content>
             </MegaMenu.Item>
 
@@ -135,7 +135,7 @@ export function Navbar({
                 </span>
               </MegaMenu.Link>
               <MegaMenu.Content>
-                <ResourcesPushNavContent surface="mega-menu" />
+                <ResourcesNavigationContent surface="mega-menu" />
               </MegaMenu.Content>
             </MegaMenu.Item>
           </MegaMenu.List>

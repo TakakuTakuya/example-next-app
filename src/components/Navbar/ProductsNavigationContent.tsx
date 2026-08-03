@@ -3,36 +3,36 @@ import { ArrowRight, ChevronRight } from "lucide-react";
 import * as Drawer from "./Drawer";
 import type { NavigationContentSurface } from "./types";
 
-const solutionLinks = [
+const productLinks = [
   {
-    title: "スタートアップ",
-    description: "スピードを落とさず、業務の土台を整える",
-    href: "/solutions/startups",
+    href: "/products/analytics",
+    title: "Orbit Analytics",
+    description: "チームの動きを、ひとつのビューで可視化します。",
   },
   {
-    title: "エンタープライズ",
-    description: "複数部門のプロセスと権限を一元管理",
-    href: "/solutions/enterprise",
+    href: "/products/automations",
+    title: "Orbit Automations",
+    description: "繰り返し作業を、ルールに沿って自動化します。",
   },
   {
-    title: "プロフェッショナル",
-    description: "顧客ごとの案件とナレッジをひとつに",
-    href: "/solutions/professional",
+    href: "/products/connect",
+    title: "Orbit Connect",
+    description: "既存の業務ツールと安全につなぎます。",
   },
   {
-    title: "リモートチーム",
-    description: "場所を問わず、同じ文脈でコラボレーション",
-    href: "/solutions/remote",
+    href: "/products/mobile",
+    title: "Mobile App",
+    description: "外出先でも、重要な仕事を止めません。",
   },
 ] as const;
 
-interface SolutionsPushNavContentProps {
+interface ProductsNavigationContentProps {
   surface: NavigationContentSurface;
 }
 
-export function SolutionsPushNavContent({
+export function ProductsNavigationContent({
   surface,
-}: SolutionsPushNavContentProps) {
+}: ProductsNavigationContentProps) {
   const ContentLink = surface === "push-nav" ? Drawer.Link : Link;
   return (
     <>
@@ -40,16 +40,16 @@ export function SolutionsPushNavContent({
         <h3>
           <ContentLink
             className="rounded-md text-base font-[760] text-ink transition-colors duration-150 hover:text-green-2 focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
-            href="/solutions"
+            href="/products"
           >
-            ソリューション
+            製品
           </ContentLink>
         </h3>
 
         <ContentLink
           className="-mr-3 inline-flex min-h-11 items-center justify-center gap-1 rounded-lg px-3 text-sm font-[720] text-green-2 transition-colors duration-150 hover:bg-paper hover:text-green focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
-          href="/solutions"
-          aria-label="ソリューショントップ"
+          href="/products"
+          aria-label="製品トップ"
         >
           <span>トップ</span>
           <ChevronRight className="size-4" aria-hidden="true" />
@@ -58,29 +58,27 @@ export function SolutionsPushNavContent({
 
       <div className="space-y-6 px-5 pt-5">
         <ContentLink
-          className="group flex items-center justify-between gap-4 rounded-2xl bg-[#eff1ff] p-5 focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
-          href="/solutions"
+          className="group flex items-center justify-between gap-4 rounded-2xl bg-green p-5 text-white focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
+          href="/products"
         >
           <span>
-            <strong className="block text-base">
-              ソリューション一覧を見る
-            </strong>
-            <span className="mt-1 block text-sm/6 text-muted">
-              チームに合った活用方法を確認する
+            <strong className="block text-base">製品一覧を見る</strong>
+            <span className="mt-1 block text-sm/6 text-white/75">
+              Orbitのすべての製品を確認する
             </span>
           </span>
           <ArrowRight
-            className="size-5 shrink-0 text-[#6758b3] transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
+            className="size-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
             aria-hidden="true"
           />
         </ContentLink>
 
         <div>
           <p className="mb-3 text-xs font-extrabold tracking-[0.12em] text-muted uppercase">
-            チーム別のソリューション
+            プロダクト
           </p>
           <ul className="space-y-2">
-            {solutionLinks.map(({ description, href, title }) => (
+            {productLinks.map(({ description, href, title }) => (
               <li key={href}>
                 <ContentLink
                   className="group flex w-full items-start justify-between gap-4 rounded-xl border border-line p-4 transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
@@ -101,24 +99,6 @@ export function SolutionsPushNavContent({
             ))}
           </ul>
         </div>
-
-        <ContentLink
-          className="group flex items-center justify-between gap-4 rounded-2xl bg-[#28224d] p-5 text-white focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px]"
-          href="/solutions/case-study"
-        >
-          <span>
-            <span className="mb-1 block text-xs font-extrabold tracking-[0.12em] text-[#c9c2ff] uppercase">
-              Customer story
-            </span>
-            <strong className="block text-sm/6">
-              Northstarは意思決定の時間を32%短縮
-            </strong>
-          </span>
-          <ArrowRight
-            className="size-5 shrink-0 transition-transform duration-150 group-hover:translate-x-0.5 motion-reduce:transition-none"
-            aria-hidden="true"
-          />
-        </ContentLink>
       </div>
     </>
   );

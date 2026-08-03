@@ -109,24 +109,24 @@ Navbar                                      Server Component
 │        │     └─ PushNavScreenLayout      shared back control
 │        ├─ PushNav.Screen                 value: products / Client shell
 │        │  └─ PushNavScreenLayout         shared back control
-│        │     └─ ProductsPushNavContent   shared Server Content
+│        │     └─ ProductsNavigationContent shared Server Content
 │        ├─ PushNav.Screen                 value: solutions / Client shell
 │        │  └─ PushNavScreenLayout         shared back control
-│        │     └─ SolutionsPushNavContent  shared Server Content
+│        │     └─ SolutionsNavigationContent shared Server Content
 │        └─ PushNav.Screen                 value: resources / Client shell
 │           └─ PushNavScreenLayout         shared back control
-│              └─ ResourcesPushNavContent  shared Server Content
+│              └─ ResourcesNavigationContent shared Server Content
 ├─ SiteLogo                                 Server Component
 ├─ MegaMenu.Root (nav)                      desktop Client Component
 │  ├─ MegaMenu.List                         Client shell
 │  │  ├─ MegaMenu.Item                      Client shell
 │  │  │  ├─ MegaMenu.Link                   Client interaction + Link
 │  │  │  └─ MegaMenu.Content                Client portal wrapper
-│  │  │     └─ ProductsPushNavContent       shared Server Content
+│  │  │     └─ ProductsNavigationContent    shared Server Content
 │  │  ├─ MegaMenu.Item
-│  │  │  └─ SolutionsPushNavContent         shared Server Content
+│  │  │  └─ SolutionsNavigationContent      shared Server Content
 │  │  └─ MegaMenu.Item
-│  │     └─ ResourcesPushNavContent         shared Server Content
+│  │     └─ ResourcesNavigationContent      shared Server Content
 │  └─ MegaMenu.Layer                        Client portal host
 ├─ Login / Customer page / Cart             desktop Server-rendered links
 └─ BottomSheet.Root (div)                   mobile Client Component
@@ -188,13 +188,13 @@ Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重�
 
 `Navbar`は`Drawer.Content`内で`PushNav.Root`、常設する4つの`PushNav.Screen`、ログイン時だけ追加するaccount Screenを直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。Rootと常に一対一になる表示窓コンポーネントは設けず、座標系、高さ、クリップをRootへ集約する。
 
-root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップのログインリンクは`NavbarLoginLink`へ抽出し、Drawerのログインリンクとはbutton風のスタイル定義だけを共有する。上位3項目も`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*PushNavContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。root Screenとaccount Screenにはこのタイトル／トップ行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
+root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップのログインリンクは`NavbarLoginLink`へ抽出し、Drawerのログインリンクとはbutton風のスタイル定義だけを共有する。上位3項目も`PushNav.Trigger`が描画する`button`であり、ページ遷移しない。各カテゴリScreenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*NavigationContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。root Screenとaccount Screenにはこのタイトル／トップ行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
 
 `PushNav.Root`は値の履歴、push元要素、遷移ロック、Screen要素を管理する。画面値は`PUSH_NAV_SCREEN_VALUES = ["root", "account", "products", "solutions", "resources"] as const`から導出した`PushNavScreenValue`で表し、`initialValue`、`Screen.value`、`Trigger.to`、Context内の履歴と操作へ適用する。JSXでは型検査される文字列リテラルをそのまま使用し、配列のindexでは参照しない。
 
 `PushNav.Screen`は全画面をmountしたままtransformで移動し、activeでない画面へ`inert`と`aria-hidden`を付ける。各Screenはスクロール領域として、画面下端の固定余白と`safe-area-inset-bottom`も共通して確保する。push後は新しい画面のBackへ、back後は元のTriggerへfocusを移す。Drawerを閉じるとPushNav全体がunmountされるため、再度開いたときは既定のroot Screenへ戻る。`PushNav/`には制御機構だけを置き、`RootPushNavContent`、`PushNavScreenLayout`、カテゴリ固有ContentはNavbar直下に置く。
 
-各`*PushNavContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。これにより、PushNavの最終ページ遷移では同じpathnameを選択した場合もDrawerを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではDrawerを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
+各`*NavigationContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。これにより、PushNavの最終ページ遷移では同じpathnameを選択した場合もDrawerを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではDrawerを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
 
 `MegaMenu/`にも同じ境界を適用する。Root、List、Item、Link、Content、Layerなど開閉機構を構成するCompound Componentsだけをディレクトリ内に置き、製品・ソリューション・リソース固有のServer ContentはNavbar直下に置く。これにより「仕組み」と「Navbarが宣言する中身」をファイル配置でも区別する。
 
@@ -229,7 +229,7 @@ Bottom SheetはItemごとにRootを作らず、単一Rootが`activeValue`を所�
 - Navbar全体の意味構造と項目順序
 - 各Item、Link、固有Contentの宣言的な組み合わせ
 - Drawer内の`PushNav.Root`と`PushNav.Screen`の構成
-- Screenの`value`と`RootPushNavContent`／各`*PushNavContent`の対応付け
+- Screenの`value`と`RootPushNavContent`／各`*NavigationContent`の対応付け
 - Server Componentとして固有ContentをClient shellの`children`へ渡すこと
 - ロゴ、ログイン、お客様専用ページ、カートの配置
 - デスクトップ用UIとスマートフォン用UIの宣言的な配置
@@ -355,7 +355,7 @@ focus、矢印キー、`Escape`、`aria-expanded`の最終仕様は今回の検�
 
 Layerは固有Contentを直接選択しない。どのContentを表示するかは、各`MegaMenu.Content`がItem ContextとRoot Contextを使って判断する。
 
-### 各`*PushNavContent`（MegaMenu／PushNav共有）
+### 各`*NavigationContent`（MegaMenu／PushNav共有）
 
 担当すること：
 
@@ -375,9 +375,9 @@ Navbar (Server)
 ├─ imports MegaMenu named Client Components
 ├─ imports PushNav named Client Components
 ├─ imports RootPushNavContent (Server)
-├─ imports ProductsPushNavContent (Server)
-├─ imports SolutionsPushNavContent (Server)
-└─ imports ResourcesPushNavContent (Server)
+├─ imports ProductsNavigationContent (Server)
+├─ imports SolutionsNavigationContent (Server)
+└─ imports ResourcesNavigationContent (Server)
 
 MegaMenu/index.ts（公開Client entrypoint）
 ├─ re-exports Root / List / Item / Link / Content / Layer
@@ -386,7 +386,7 @@ MegaMenu/index.ts（公開Client entrypoint）
 RootPushNavContent (Server)
 └─ imports PushNav.Trigger (Client)
 
-*PushNavContent (Server)
+*NavigationContent (Server)
 ├─ renders Next Link for MegaMenu
 └─ renders Drawer.Link (Client) for PushNav
 
@@ -529,7 +529,7 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
     <span>製品</span>
   </MegaMenu.Link>
   <MegaMenu.Content>
-    <ProductsPushNavContent surface="mega-menu" />
+    <ProductsNavigationContent surface="mega-menu" />
   </MegaMenu.Content>
 </MegaMenu.Item>
 ```
@@ -571,9 +571,9 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 | `src/components/Navbar/RootPushNavContent.tsx` | root Screenの認証表示、上位Trigger、可視サブテキストを構成するServer Content |
 | `src/components/Navbar/PushNavScreenLayout.tsx` | 下層Screenに共通する戻る行のServer Component |
 | `src/components/Navbar/AccountPushNavContent.tsx` | ログイン済みユーザー向けaccount ScreenのServer Content |
-| `src/components/Navbar/ProductsPushNavContent.tsx` | MegaMenu／PushNavで共有する製品画面のServer Content |
-| `src/components/Navbar/SolutionsPushNavContent.tsx` | MegaMenu／PushNavで共有するソリューション画面のServer Content |
-| `src/components/Navbar/ResourcesPushNavContent.tsx` | MegaMenu／PushNavで共有するリソース画面のServer Content |
+| `src/components/Navbar/ProductsNavigationContent.tsx` | MegaMenu／PushNavで共有する製品画面のServer Content |
+| `src/components/Navbar/SolutionsNavigationContent.tsx` | MegaMenu／PushNavで共有するソリューション画面のServer Content |
+| `src/components/Navbar/ResourcesNavigationContent.tsx` | MegaMenu／PushNavで共有するリソース画面のServer Content |
 | `src/components/Navbar/ProductSearchBottomSheetContent.tsx` | 製品検索Bottom SheetのServer Content |
 | `src/components/Navbar/LoginBottomSheetContent.tsx` | 共通認証状態に応じてログインまたはアカウント導線を構成するServer Content |
 | `src/components/Navbar/CartBottomSheetContent.tsx` | 商品あり状態のカートBottom Sheet用Server Content |
