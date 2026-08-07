@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 export interface MegaMenuItemContextValue {
   value: string;
-  linkId: string;
+  triggerId: string;
   contentId: string;
 }
 
@@ -14,7 +14,7 @@ export function useMegaMenuItem() {
 
   if (!context) {
     throw new Error(
-      "MegaMenu.Link and Content must be used inside MegaMenu.Item",
+      "MegaMenu.Link, Trigger, and Content must be used inside MegaMenu.Item",
     );
   }
 

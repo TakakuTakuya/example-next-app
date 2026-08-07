@@ -4,11 +4,12 @@ export interface MegaMenuRootContextValue {
   activeValue: string | null;
   layerSlot: HTMLDivElement | null;
   layerTop: number;
-  openMenu: (value: string, anchor: HTMLAnchorElement) => void;
+  triggerInlineEndOffset: number;
+  openMenu: (value: string, trigger: HTMLElement) => void;
   closeMenu: (restoreFocus?: boolean) => void;
   scheduleClose: (delay?: number) => void;
   cancelScheduledClose: () => void;
-  consumeFocusOpenSuppression: (anchor: HTMLAnchorElement) => boolean;
+  consumeFocusOpenSuppression: (trigger: HTMLElement) => boolean;
   setLayerSlot: (node: HTMLDivElement | null) => void;
 }
 

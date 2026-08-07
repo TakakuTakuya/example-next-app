@@ -18,7 +18,7 @@ export function MegaMenuItem({
   const contextValue = useMemo<MegaMenuItemContextValue>(
     () => ({
       value,
-      linkId: `mega-menu-link-${id}`,
+      triggerId: `mega-menu-trigger-${id}`,
       contentId: `mega-menu-content-${id}`,
     }),
     [id, value],

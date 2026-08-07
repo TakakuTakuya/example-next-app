@@ -9,14 +9,20 @@ import { FOCUS_CLOSE_DELAY_MS } from "./constants";
 import { useMegaMenuItem } from "./MegaMenuItemContext";
 import { useMegaMenuRoot } from "./MegaMenuRootContext";
 
-type MegaMenuContentProps = Omit<
+type MegaMenuContentAlign = "trigger-end" | "viewport-center";
+
+interface MegaMenuContentProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "aria-labelledby" | "id" | "role"
->;
+> {
+  align?: MegaMenuContentAlign;
+}
 
 export function MegaMenuContent({
+  align = "viewport-center",
   className,
   children,
+  style,
   onPointerEnter: onPointerEnterProp,
   onPointerLeave: onPointerLeaveProp,
   onFocusCapture: onFocusCaptureProp,
@@ -72,10 +78,16 @@ export function MegaMenuContent({
       {...props}
       id={item.contentId}
       role="region"
-      aria-labelledby={item.linkId}
+      aria-labelledby={item.triggerId}
+      style={
+        align === "trigger-end"
+          ? { ...style, insetInlineEnd: menu.triggerInlineEndOffset }
+          : style
+      }
       className={cn(
         "pointer-events-auto max-h-[min(680px,calc(100vh-100px))] w-full origin-top overflow-auto rounded-[18px] border border-[#1c382f]/13 bg-white/98 shadow-[0_28px_70px_rgb(21_47_38/18%),0_4px_16px_rgb(21_47_38/8%)] animate-mega-menu-in motion-reduce:animate-none",
         className,
+        align === "trigger-end" && "absolute top-0 origin-top-right",
       )}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}

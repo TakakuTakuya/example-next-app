@@ -15,6 +15,10 @@ import {
   MegaMenuRootContext,
   type MegaMenuRootContextValue,
 } from "./MegaMenuRootContext";
+import {
+  activateMegaMenuRoot,
+  deactivateMegaMenuRoot,
+} from "./MegaMenuRootCoordinator";
 
 type MegaMenuRootProps = ComponentPropsWithoutRef<"nav">;
 
@@ -26,13 +30,15 @@ export function MegaMenuRoot({
 }: MegaMenuRootProps) {
   const pathname = usePathname();
   const rootRef = useRef<HTMLElement>(null);
-  const activeAnchorRef = useRef<HTMLAnchorElement | null>(null);
-  const suppressedFocusAnchorRef = useRef<HTMLAnchorElement | null>(null);
+  const rootKeyRef = useRef<object>({});
+  const activeTriggerRef = useRef<HTMLElement | null>(null);
+  const suppressedFocusTriggerRef = useRef<HTMLElement | null>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousPathnameRef = useRef(pathname);
   const [activeValue, setActiveValue] = useState<string | null>(null);
   const [layerSlot, setLayerSlotState] = useState<HTMLDivElement | null>(null);
   const [layerTop, setLayerTop] = useState(0);
+  const [triggerInlineEndOffset, setTriggerInlineEndOffset] = useState(0);
 
   const cancelScheduledClose = useCallback(() => {
     if (closeTimerRef.current) {
@@ -41,30 +47,22 @@ export function MegaMenuRoot({
     }
   }, []);
 
-  const openMenu = useCallback(
-    (value: string, anchor: HTMLAnchorElement) => {
-      cancelScheduledClose();
-      activeAnchorRef.current = anchor;
-      setActiveValue(value);
-    },
-    [cancelScheduledClose],
-  );
-
   const closeMenu = useCallback(
     (restoreFocus = false) => {
       cancelScheduledClose();
+      deactivateMegaMenuRoot(rootKeyRef.current);
       setActiveValue(null);
 
-      const anchor = activeAnchorRef.current;
-      activeAnchorRef.current = null;
+      const trigger = activeTriggerRef.current;
+      activeTriggerRef.current = null;
 
-      if (restoreFocus && anchor && document.activeElement !== anchor) {
-        suppressedFocusAnchorRef.current = anchor;
-        anchor.focus({ preventScroll: true });
+      if (restoreFocus && trigger && document.activeElement !== trigger) {
+        suppressedFocusTriggerRef.current = trigger;
+        trigger.focus({ preventScroll: true });
 
         // focus events are synchronous. Clear a stale suppression when focus failed.
-        if (suppressedFocusAnchorRef.current === anchor) {
-          suppressedFocusAnchorRef.current = null;
+        if (suppressedFocusTriggerRef.current === trigger) {
+          suppressedFocusTriggerRef.current = null;
         }
 
         // Moving focus out of Content fires its blur handler during focus().
@@ -74,23 +72,31 @@ export function MegaMenuRoot({
     [cancelScheduledClose],
   );
 
+  const openMenu = useCallback(
+    (value: string, trigger: HTMLElement) => {
+      cancelScheduledClose();
+      activateMegaMenuRoot(rootKeyRef.current, closeMenu);
+      activeTriggerRef.current = trigger;
+      setActiveValue(value);
+    },
+    [cancelScheduledClose, closeMenu],
+  );
+
   const scheduleClose = useCallback(
     (delay = POINTER_CLOSE_DELAY_MS) => {
       cancelScheduledClose();
       closeTimerRef.current = setTimeout(() => {
-        activeAnchorRef.current = null;
-        setActiveValue(null);
-        closeTimerRef.current = null;
+        closeMenu();
       }, delay);
     },
-    [cancelScheduledClose],
+    [cancelScheduledClose, closeMenu],
   );
 
   const consumeFocusOpenSuppression = useCallback(
-    (anchor: HTMLAnchorElement) => {
-      if (suppressedFocusAnchorRef.current !== anchor) return false;
+    (trigger: HTMLElement) => {
+      if (suppressedFocusTriggerRef.current !== trigger) return false;
 
-      suppressedFocusAnchorRef.current = null;
+      suppressedFocusTriggerRef.current = null;
       return true;
     },
     [],
@@ -104,10 +110,21 @@ export function MegaMenuRoot({
     if (!activeValue) return;
 
     const updatePosition = () => {
-      const anchor = activeAnchorRef.current;
-      if (!anchor) return;
+      const trigger = activeTriggerRef.current;
+      if (!trigger) return;
 
-      setLayerTop(anchor.getBoundingClientRect().bottom);
+      const triggerRect = trigger.getBoundingClientRect();
+      const slotRect = layerSlot?.getBoundingClientRect();
+      const isRightToLeft = getComputedStyle(trigger).direction === "rtl";
+
+      setLayerTop(triggerRect.bottom);
+      setTriggerInlineEndOffset(
+        slotRect
+          ? isRightToLeft
+            ? triggerRect.left - slotRect.left
+            : slotRect.right - triggerRect.right
+          : 0,
+      );
     };
 
     updatePosition();
@@ -118,7 +135,7 @@ export function MegaMenuRoot({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [activeValue]);
+  }, [activeValue, layerSlot]);
 
   useEffect(() => {
     if (!activeValue) return;
@@ -146,7 +163,12 @@ export function MegaMenuRoot({
   }, [closeMenu, pathname]);
 
   useEffect(() => {
-    return () => cancelScheduledClose();
+    const rootKey = rootKeyRef.current;
+
+    return () => {
+      cancelScheduledClose();
+      deactivateMegaMenuRoot(rootKey);
+    };
   }, [cancelScheduledClose]);
 
   useEffect(() => {
@@ -170,6 +192,7 @@ export function MegaMenuRoot({
       activeValue,
       layerSlot,
       layerTop,
+      triggerInlineEndOffset,
       openMenu,
       closeMenu,
       scheduleClose,
@@ -184,6 +207,7 @@ export function MegaMenuRoot({
       consumeFocusOpenSuppression,
       layerSlot,
       layerTop,
+      triggerInlineEndOffset,
       openMenu,
       scheduleClose,
       setLayerSlot,

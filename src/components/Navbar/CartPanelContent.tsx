@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, ShoppingCart } from "lucide-react";
 
-export function CartBottomSheetContent() {
+/** デスクトップのCartパネルとモバイルのBottom Sheetで共有する内容。 */
+export function CartPanelContent() {
   return (
     <div>
       <div className="mb-5 flex items-start gap-3 rounded-2xl bg-paper p-4">

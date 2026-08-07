@@ -6,3 +6,4 @@ export { MegaMenuLayer as Layer } from "./MegaMenuLayer";
 export { MegaMenuLink as Link } from "./MegaMenuLink";
 export { MegaMenuList as List } from "./MegaMenuList";
 export { MegaMenuRoot as Root } from "./MegaMenuRoot";
+export { MegaMenuTrigger as Trigger } from "./MegaMenuTrigger";

@@ -30,7 +30,7 @@ export function MegaMenuLayer({ className }: MegaMenuLayerProps) {
     >
       <div
         ref={setLayerSlot}
-        className="flex w-[min(1120px,calc(100vw-40px))] justify-center"
+        className="relative flex w-[min(1120px,calc(100vw-40px))] justify-center"
       />
     </div>,
     document.body,

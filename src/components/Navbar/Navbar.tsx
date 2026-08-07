@@ -5,9 +5,10 @@ import {
   ShoppingCart,
   UserRound,
 } from "lucide-react";
-import { AccountPushNavContent } from "./AccountPushNavContent";
+import { cn } from "@/lib/cn";
+import { AccountNavigationContent } from "./AccountNavigationContent";
 import * as BottomSheet from "./BottomSheet";
-import { CartBottomSheetContent } from "./CartBottomSheetContent";
+import { CartPanelContent } from "./CartPanelContent";
 import * as Drawer from "./Drawer";
 import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
 import {
@@ -15,7 +16,10 @@ import {
   type PrimaryNavigationValue,
 } from "./navigationItems";
 import { NavbarIconItem } from "./NavbarIconItem";
-import { NavbarLoginLink } from "./NavbarLoginLink";
+import {
+  navbarLoginLinkClassName,
+  NavbarLoginLink,
+} from "./NavbarLoginLink";
 import { NavbarMenuItem } from "./NavbarMenuItem";
 import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsNavigationContent } from "./ProductsNavigationContent";
@@ -43,6 +47,12 @@ const navigationContentByValue = {
   ComponentType<NavigationContentProps>
 >;
 
+const megaMenuContentClassNameByValue = {
+  products: "max-w-[1120px] xl:relative xl:-left-10",
+  solutions: "max-w-[960px]",
+  resources: "max-w-[800px]",
+} satisfies Record<PrimaryNavigationValue, string>;
+
 interface NavbarProps {
   auth?: NavbarAuthState;
   hasCartItems?: boolean;
@@ -58,7 +68,7 @@ export function Navbar({
   hasCartItems = false,
 }: NavbarProps) {
   const isLoggedIn = auth.status === "authenticated";
-  const showCartBottomSheet = isLoggedIn && hasCartItems;
+  const showCartPanel = isLoggedIn && hasCartItems;
   const accountSheetTitle = isLoggedIn ? "アカウント" : "ログイン";
 
   return (
@@ -79,7 +89,9 @@ export function Navbar({
 
               {isLoggedIn ? (
                 <PushNav.Screen value="account">
-                  <AccountPushNavContent />
+                  <PushNavScreenLayout>
+                    <AccountNavigationContent surface="push-nav" />
+                  </PushNavScreenLayout>
                 </PushNav.Screen>
               ) : null}
 
@@ -120,7 +132,9 @@ export function Navbar({
                         <span className="sr-only">{description}</span>
                       </span>
                     </MegaMenu.Link>
-                    <MegaMenu.Content>
+                    <MegaMenu.Content
+                      className={megaMenuContentClassNameByValue[value]}
+                    >
                       <NavigationContent surface="mega-menu" />
                     </MegaMenu.Content>
                   </MegaMenu.Item>
@@ -132,16 +146,74 @@ export function Navbar({
           <MegaMenu.Layer className="max-md:hidden" />
         </MegaMenu.Root>
 
-        <nav
-          className="ml-auto flex h-full items-center gap-0.5 max-md:hidden"
-          aria-label="お客様専用ページとカート"
-        >
-          <NavbarLoginLink className="mr-1.5" href="/login">
-            ログイン
-          </NavbarLoginLink>
-          <NavbarMenuItem href="/account">お客様専用ページ</NavbarMenuItem>
-          <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
-        </nav>
+        {auth.status === "authenticated" ? (
+          <MegaMenu.Root
+            className="ml-auto flex h-full items-center gap-0.5 max-md:hidden"
+            aria-label="お客様専用ページとカート"
+          >
+            <MegaMenu.List>
+              <MegaMenu.Item value="account">
+                <MegaMenu.Trigger
+                  className={cn(
+                    navbarLoginLinkClassName,
+                    "mr-1.5 max-w-48",
+                  )}
+                >
+                  <span className="truncate">{auth.userName}</span>
+                  <span className="sr-only">
+                    のアカウントメニュー
+                  </span>
+                </MegaMenu.Trigger>
+                <MegaMenu.Content
+                  align="trigger-end"
+                  className="max-w-[400px]"
+                >
+                  <AccountNavigationContent surface="mega-menu" />
+                </MegaMenu.Content>
+              </MegaMenu.Item>
+              {showCartPanel ? (
+                <MegaMenu.Item value="cart">
+                  <MegaMenu.Link href="/cart">カート</MegaMenu.Link>
+                  <MegaMenu.Content
+                    align="trigger-end"
+                    className="max-w-[400px]"
+                  >
+                    <div className="p-5">
+                      <CartPanelContent />
+                    </div>
+                  </MegaMenu.Content>
+                </MegaMenu.Item>
+              ) : (
+                <li className="flex h-full items-center">
+                  <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
+                </li>
+              )}
+            </MegaMenu.List>
+
+            <MegaMenu.Layer className="max-md:hidden" />
+          </MegaMenu.Root>
+        ) : (
+          <nav
+            className="ml-auto flex h-full items-center gap-0.5 max-md:hidden"
+            aria-label="お客様専用ページとカート"
+          >
+            <ul className="flex h-full list-none items-center gap-0.5 p-0">
+              <li className="flex h-full items-center">
+                <NavbarLoginLink className="mr-1.5" href="/login">
+                  ログイン
+                </NavbarLoginLink>
+              </li>
+              <li className="flex h-full items-center">
+                <NavbarMenuItem href="/account">
+                  お客様専用ページ
+                </NavbarMenuItem>
+              </li>
+              <li className="flex h-full items-center">
+                <NavbarMenuItem href="/cart">カート</NavbarMenuItem>
+              </li>
+            </ul>
+          </nav>
+        )}
 
         <BottomSheet.Root>
           <BottomSheet.Item value="product-search">
@@ -162,13 +234,13 @@ export function Navbar({
             </BottomSheet.Content>
           </BottomSheet.Item>
 
-          {showCartBottomSheet ? (
+          {showCartPanel ? (
             <BottomSheet.Item value="cart">
               <BottomSheet.Trigger aria-label="カート">
                 <ShoppingCart className="size-5" aria-hidden="true" />
               </BottomSheet.Trigger>
               <BottomSheet.Content title="カート">
-                <CartBottomSheetContent />
+                <CartPanelContent />
               </BottomSheet.Content>
             </BottomSheet.Item>
           ) : (
