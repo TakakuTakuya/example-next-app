@@ -19,12 +19,14 @@ type BottomSheetContentProps = Omit<
   ComponentPropsWithoutRef<"dialog">,
   "aria-labelledby" | "id" | "open" | "title"
 > & {
+  contentClassName?: string;
   title: string;
 };
 
 export function BottomSheetContent({
   children,
   className,
+  contentClassName,
   title,
   onCancel: onCancelProp,
   onClick: onClickProp,
@@ -122,7 +124,12 @@ export function BottomSheetContent({
               {title}
             </h2>
           </div>
-          <div className="min-h-0 overflow-y-auto overscroll-contain px-5 pt-5 pb-[calc(24px+env(safe-area-inset-bottom))]">
+          <div
+            className={cn(
+              "min-h-0 overflow-y-auto overscroll-contain px-5 pt-5 pb-[calc(24px+env(safe-area-inset-bottom))]",
+              contentClassName,
+            )}
+          >
             {children}
           </div>
         </div>

@@ -13,6 +13,14 @@ export type NavbarAuthState =
 
 export type NavigationContentSurface = "mega-menu" | "push-nav";
 
+export type ProductsNavigationContentSurface =
+  | "bottom-sheet"
+  | NavigationContentSurface;
+
 export interface NavigationContentProps {
   surface: NavigationContentSurface;
+}
+
+export interface ProductsNavigationContentProps {
+  surface: ProductsNavigationContentSurface;
 }

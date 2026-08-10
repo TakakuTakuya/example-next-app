@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import * as BottomSheet from "./BottomSheet";
 import * as Drawer from "./Drawer";
-import type { NavigationContentProps } from "./types";
+import type { ProductsNavigationContentProps } from "./types";
 
 const productLinks = [
   {
@@ -28,8 +29,13 @@ const productLinks = [
 
 export function ProductsNavigationContent({
   surface,
-}: NavigationContentProps) {
-  const ContentLink = surface === "push-nav" ? Drawer.Link : Link;
+}: ProductsNavigationContentProps) {
+  const ContentLink =
+    surface === "push-nav"
+      ? Drawer.Link
+      : surface === "bottom-sheet"
+        ? BottomSheet.Link
+        : Link;
   return (
     <>
       <div className="flex min-h-14 items-center justify-between gap-4 border-b border-line px-5 py-1.5">

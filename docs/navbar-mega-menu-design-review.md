@@ -27,7 +27,7 @@ Next.js App Routerで実装したNavbarとメガメニューについて、現�
 
 リンクと固有コンテンツは、Reactのコンポーネントツリー上では同じ`MegaMenu.Item`内に配置する。実際に表示するContentだけを`document.body`直下の共有LayerへPortalし、Headerや祖先要素の`overflow`、`transform`、スタッキングコンテキストから切り離す。
 
-`md`未満ではデスクトップ用MegaMenuと右側リンク群を非表示にする。ロゴ左側のハンバーガーボタンは`document.body`直下へPortalしたネイティブ`dialog`によるDrawerを開き、ロゴ右側には「製品を探す」「ログイン」「カート」のアイコン操作を表示する。製品検索とログインは同じ描画方式のBottom sheetを開く。カートはログイン済みかつ商品ありの場合だけBottom sheetを開き、それ以外は通常リンクとして直接遷移する。PortalによるDOM配置と`dialog`のtop layerを併用するため、DrawerとBottom sheetはHeaderの`overflow`やスタッキングコンテキストに制限されない。
+`md`未満ではデスクトップ用MegaMenuと右側リンク群を非表示にする。ロゴ左側のハンバーガーボタンは`document.body`直下へPortalしたネイティブ`dialog`によるDrawerを開き、ロゴ右側には「製品を探す」「ログイン」「カート」のアイコン操作を表示する。「製品を探す」とログインは同じ描画方式のBottom sheetを開く。カートはログイン済みかつ商品ありの場合だけBottom sheetを開き、それ以外は通常リンクとして直接遷移する。PortalによるDOM配置と`dialog`のtop layerを併用するため、DrawerとBottom sheetはHeaderの`overflow`やスタッキングコンテキストに制限されない。
 
 この方針は、次の条件に適合している。
 
@@ -54,7 +54,7 @@ Navbarはデスクトップでは左から次の要素で構成する。
 
 未ログイン時のログイン、お客様専用ページ、カートは通常のリンクである。ログイン時はログインリンクと直置きのお客様専用ページリンクをユーザー名ボタンへ集約し、同ボタンから開くAccountパネル内にお客様専用ページへの導線を置く。カートは常に`/cart`へのリンクであり、認証済みかつ商品ありの場合だけ、デスクトップではホバーでCartパネルも表示する。
 
-スマートフォン幅では、ロゴの左にハンバーガーボタン、右に「製品を探す」「ログイン」「カート」のアイコン操作を表示する。ハンバーガーボタンはモーダルDrawerを開く。製品・ソリューション・リソースは`button`として各カテゴリ画面を右から左へpushし、各画面内の最終リンクだけがページ遷移する。製品検索とログインはBottom sheetを開く。カートはログイン済みかつ商品ありならBottom sheetを開き、それ以外は`/cart`へ遷移する。
+スマートフォン幅では、ロゴの左にハンバーガーボタン、右に「製品を探す」「ログイン」「カート」のアイコン操作を表示する。ハンバーガーボタンはモーダルDrawerを開く。製品・ソリューション・リソースは`button`として各カテゴリ画面を右から左へpushし、各画面内の最終リンクだけがページ遷移する。「製品を探す」はMegaMenu／PushNavと共通の製品ContentをBottom sheetで開き、ログインも専用Bottom sheetを開く。カートはログイン済みかつ商品ありならBottom sheetを開き、それ以外は`/cart`へ遷移する。
 
 ### 対象外
 
@@ -85,6 +85,7 @@ Navbarはデスクトップでは左から次の要素で構成する。
 | 開閉用シェブロン | 追加しない | 項目全体を単一Linkとして維持するため |
 | デスクトップ認証表示 | 未ログイン時はログインLink、ログイン時はユーザー名の`MegaMenu.Trigger` | 遷移とAccountパネル開閉のセマンティクスを認証状態に応じて分けるため |
 | Account Content | MegaMenu／PushNavで共有するServer Component | Account固有の導線を共有し、PushNavの戻る操作は外側のshellへ分離するため |
+| Products Content | MegaMenu／PushNav／Bottom Sheetで共有するServer Component | 製品固有の意味構造と導線を3つの描画shellで一致させるため |
 | デスクトップCart | 商品ありの場合も`MegaMenu.Link`、商品なしは通常Link | ホバーでは内容を先読みし、click／tap／`Enter`では常に`/cart`へ遷移するため |
 | Cart Content | MegaMenu／Bottom Sheetで共有するServer Component | 同じ商品あり表示を描画shellから独立させるため |
 | スマホ右側操作 | Navbar内へ直接宣言 | MegaMenuと同様にTrigger、Content、遷移先の対応を上位構造から読めるようにするため |
@@ -155,7 +156,7 @@ Navbar                                      Server Component
    │  ├─ BottomSheet.Trigger                Product search trigger
    │  │  └─ NavbarIconItem                  icon button
    │  └─ BottomSheet.Content                body Portal + native dialog
-   │     └─ ProductSearchBottomSheetContent
+   │     └─ ProductsNavigationContent       shared Server Content
    ├─ BottomSheet.Item                      value: login
    │  ├─ BottomSheet.Trigger                Login / account trigger
    │  │  └─ NavbarIconItem                  icon button
@@ -217,7 +218,7 @@ root Screenの`children`には`RootPushNavContent`を渡す。このServer Compo
 
 `PushNav.Screen`は全画面をmountしたままtransformで移動し、activeでない画面へ`inert`と`aria-hidden`を付ける。各Screenはスクロール領域として、画面下端の固定余白と`safe-area-inset-bottom`も共通して確保する。push後は新しい画面のBackへ、back後は元のTriggerへfocusを移す。Drawerを閉じるとPushNav全体がunmountされるため、再度開いたときは既定のroot Screenへ戻る。`PushNav/`には制御機構だけを置き、`RootPushNavContent`、`PushNavScreenLayout`、カテゴリ固有ContentはNavbar直下に置く。
 
-各`*NavigationContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。これにより、PushNavの最終ページ遷移では同じpathnameを選択した場合もDrawerを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではDrawerを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。`AccountNavigationContent`にも同じ境界を適用する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
+各`*NavigationContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。`ProductsNavigationContent`はさらに`"bottom-sheet"`へ対応し、その場合は`BottomSheet.Link`を描画する。Drawer／Bottom Sheet内の最終ページ遷移では同じpathnameを選択した場合も各modal shellを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではshellを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。`AccountNavigationContent`にもPushNavとの同じ境界を適用する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
 
 `Navbar`は`primaryNavigationItems`からカテゴリScreenと`MegaMenu.Item`をそれぞれループ描画する。値ごとのServer Contentは`navigationContentByValue`で対応付け、`Record<PrimaryNavigationValue, ComponentType<NavigationContentProps>>`によって全項目分のContentが存在することを型検査する。MegaMenuの項目固有の最大幅と水平位置は、同じvalueをキーにした`megaMenuContentClassNameByValue`で指定する。パネル外枠の幅を文言量から独立させ、内側の横並びレイアウトが`flex`によって余剰幅を分配する前提とする。MegaMenuではループ内でLinkとContentを同じItemへ配置するため、データ駆動化後もReact上の論理的な隣接関係を維持する。配列そのものをClient Componentのpropsへ渡さず、Server Component上で展開した文字列props、表示class、React childrenだけを各Client shellへ渡す。
 
@@ -225,13 +226,17 @@ root Screenの`children`には`RootPushNavContent`を渡す。このServer Compo
 
 Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとContentは同じ`BottomSheet.Item`内にあり、複数Itemを単一`BottomSheet.Root`が管理する。一方、active Itemの`dialog`実DOMだけが`document.body`直下に置かれる。`createPortal`はDOM配置を、`showModal()`はtop layer、モーダルフォーカス、backdropを担当する。
 
+「製品を探す」のBottom Sheetには`ProductsNavigationContent surface="bottom-sheet"`を渡し、MegaMenu／PushNavと同じ製品Contentを使用する。製品Content自身が見出し行と本文の水平余白を持つため、この配置だけは`BottomSheet.Content`の`contentClassName`で既定の水平・上余白を外し、二重余白を避ける。Bottom Sheet内のリンクは`BottomSheet.Link`を使い、通常遷移ではfocusをTriggerへ戻さずSheetを先に閉じる。
+
 `BottomSheet.Root`はContext Providerに加えてモバイルアイコン項目群の`div`を描画し、右寄せ、デスクトップでの非表示、縮小抑止をRoot固有のclassとして持つ。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
 
 `NavbarIconItem`はモバイルNavbarのアイコン項目に共通する見た目を担当する。`href`があればNext.jsの`Link`、なければ`button`を描画する。`Drawer.Trigger`と`BottomSheet.Trigger`はbuttonとして内部利用し、Bottom Sheetを開かないカートはLinkとしてServer側から直接利用する。汎用的な`asChild`やSlot機構は持たせない。
 
+Bottom Sheet内からページ遷移する製品・ログイン・Account・Cartの導線には`BottomSheet.Link`を使う。通常のclickではpathname変更前にSheetを閉じ、同じpathnameへの遷移でも開いたままになることを防ぐ。一方、修飾キー、`target="_blank"`、downloadなど別のブラウジングコンテキストを意図する操作ではSheetを維持する。
+
 Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値をデスクトップ認証分岐、`RootPushNavContent`、`LoginBottomSheetContent`へ適用し、表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
 
-カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有する。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。ログイン用Bottom Sheetも同じ`auth`を受け取り、未ログイン時はログイン導線、ログイン時はユーザー名とお客様専用ページ導線を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
+カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。ログイン用Bottom Sheetも同じ`auth`を受け取り、未ログイン時はログイン導線、ログイン時はユーザー名とお客様専用ページ導線を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
 
 Bottom Sheetの表示時は、本体だけを280msかけて48px下から定位置へ移動させる。backdropは動かさず、`prefers-reduced-motion: reduce`では本体のアニメーションも無効化する。
 
@@ -438,10 +443,12 @@ RootPushNavContent (Server)
 
 *NavigationContent (Server)
 ├─ renders Next Link for MegaMenu
-└─ renders Drawer.Link (Client) for PushNav
+├─ renders Drawer.Link (Client) for PushNav
+└─ Products renders BottomSheet.Link (Client) for Bottom Sheet
 
 CartPanelContent (Server)
-└─ renders Next Link in MegaMenu and Bottom Sheet
+├─ renders Next Link for MegaMenu
+└─ renders BottomSheet.Link (Client) for Bottom Sheet
 
 PushNavScreenLayout (Server)
 └─ imports PushNav.Back (Client)
@@ -642,10 +649,9 @@ AccountとCartは、Content幅とは独立して各Triggerの右辺へ揃える�
 | `src/components/Navbar/RootPushNavContent.tsx` | root Screenの認証表示、上位Trigger、可視サブテキストを構成するServer Content |
 | `src/components/Navbar/PushNavScreenLayout.tsx` | 下層Screenに共通する戻る行のServer Component |
 | `src/components/Navbar/AccountNavigationContent.tsx` | MegaMenu／PushNavで共有するログイン済みユーザー向けServer Content |
-| `src/components/Navbar/ProductsNavigationContent.tsx` | MegaMenu／PushNavで共有する製品画面のServer Content |
+| `src/components/Navbar/ProductsNavigationContent.tsx` | MegaMenu／PushNav／Bottom Sheetで共有する製品画面のServer Content |
 | `src/components/Navbar/SolutionsNavigationContent.tsx` | MegaMenu／PushNavで共有するソリューション画面のServer Content |
 | `src/components/Navbar/ResourcesNavigationContent.tsx` | MegaMenu／PushNavで共有するリソース画面のServer Content |
-| `src/components/Navbar/ProductSearchBottomSheetContent.tsx` | 製品検索Bottom SheetのServer Content |
 | `src/components/Navbar/LoginBottomSheetContent.tsx` | 共通認証状態に応じてログインまたはアカウント導線を構成するServer Content |
 | `src/components/Navbar/CartPanelContent.tsx` | MegaMenu／Bottom Sheetで共有する商品あり状態のServer Content |
 | `src/components/Navbar/constants.ts` | 共通Media Query、focus selector、PushNav画面値tupleと導出型 |
@@ -678,7 +684,8 @@ AccountとCartは、Content幅とは独立して各Triggerの右辺へ揃える�
 | `src/components/Navbar/BottomSheet/BottomSheetRoot.tsx` | モバイルアイコン項目群の配置、単一activeValue、route／breakpoint close、scroll lock、focus復帰 |
 | `src/components/Navbar/BottomSheet/BottomSheetItem.tsx` | valueとTrigger／Content固有IDの関連付け |
 | `src/components/Navbar/BottomSheet/BottomSheetTrigger.tsx` | `NavbarIconItem`をbuttonとして使い、dialogとARIA関連付け |
-| `src/components/Navbar/BottomSheet/BottomSheetContent.tsx` | native dialogのbody Portal／top layer表示、backdrop装飾、backdropクリック／Escape／閉じるボタン操作 |
+| `src/components/Navbar/BottomSheet/BottomSheetLink.tsx` | 最終遷移リンクとBottom Sheetの明示的なclose |
+| `src/components/Navbar/BottomSheet/BottomSheetContent.tsx` | native dialogのbody Portal／top layer表示、backdrop装飾、backdropクリック／Escape／閉じるボタン操作、スクロール領域の余白調整 |
 | `src/components/Navbar/BottomSheet/BottomSheetRootContext.ts` | Bottom Sheet Contextの型、Context、専用hook |
 | `src/components/Navbar/BottomSheet/BottomSheetItemContext.ts` | Item Contextの型、Context、専用hook |
 | `src/lib/cn.ts` | `clsx`と`tailwind-merge`による条件付きclassNameの結合とTailwind utilityの競合解決 |
@@ -731,7 +738,9 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - 最終リンクでDrawerが閉じ、ページ遷移する
 - Drawerを閉じて再度開くとPushNavがルート画面へ戻る
 - 子Screenで`Escape`を押すと、1階層backではなくDrawer全体が閉じる
-- 製品検索とログインのBottom sheetが各Triggerから開く
+- 「製品を探す」とログインのBottom sheetが各Triggerから開く
+- 「製品を探す」のBottom sheetとMegaMenu／PushNavが同じ`ProductsNavigationContent`を使う
+- 製品Contentの最終リンクでBottom sheetが閉じ、ページ遷移する
 - 開いているBottom sheetの`dialog`がHeader配下ではなく`document.body`直下に存在する
 - Bottom sheetのbackdropをクリックすると閉じる
 - Bottom sheet本体だけが下部から控えめに表示され、backdropは動かない
@@ -778,7 +787,7 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - [x] Drawer内へ`PushNav`の階層履歴、push／back、画面遷移を実装する
 - [ ] `PushNav`の内部履歴をブラウザ履歴／端末Back操作と連携する必要があるか
 - [ ] DrawerをiOS Safari、Android Chromeで検証する
-- [ ] 製品検索／ログインBottom sheetをiOS Safari、Android Chromeで検証する
+- [ ] 「製品を探す」／ログインBottom sheetをiOS Safari、Android Chromeで検証する
 - [ ] iOS Safari、Android Chromeで1回目のtapが確実に遷移するか
 - [ ] hover可能なタッチ端末で意図しないopenが起きないか
 

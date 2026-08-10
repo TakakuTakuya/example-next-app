@@ -21,7 +21,6 @@ import {
   NavbarLoginLink,
 } from "./NavbarLoginLink";
 import { NavbarMenuItem } from "./NavbarMenuItem";
-import { ProductSearchBottomSheetContent } from "./ProductSearchBottomSheetContent";
 import { ProductsNavigationContent } from "./ProductsNavigationContent";
 import * as PushNav from "./PushNav";
 import { PushNavScreenLayout } from "./PushNavScreenLayout";
@@ -179,7 +178,7 @@ export function Navbar({
                     className="max-w-[400px]"
                   >
                     <div className="p-5">
-                      <CartPanelContent />
+                      <CartPanelContent surface="mega-menu" />
                     </div>
                   </MegaMenu.Content>
                 </MegaMenu.Item>
@@ -220,8 +219,11 @@ export function Navbar({
             <BottomSheet.Trigger aria-label="製品を探す">
               <Search className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
-            <BottomSheet.Content title="製品を探す">
-              <ProductSearchBottomSheetContent />
+            <BottomSheet.Content
+              title="製品を探す"
+              contentClassName="px-0 pt-0"
+            >
+              <ProductsNavigationContent surface="bottom-sheet" />
             </BottomSheet.Content>
           </BottomSheet.Item>
 
@@ -240,7 +242,7 @@ export function Navbar({
                 <ShoppingCart className="size-5" aria-hidden="true" />
               </BottomSheet.Trigger>
               <BottomSheet.Content title="カート">
-                <CartPanelContent />
+                <CartPanelContent surface="bottom-sheet" />
               </BottomSheet.Content>
             </BottomSheet.Item>
           ) : (

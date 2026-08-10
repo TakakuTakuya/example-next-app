@@ -1,8 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, ShoppingCart } from "lucide-react";
+import * as BottomSheet from "./BottomSheet";
+
+interface CartPanelContentProps {
+  surface: "bottom-sheet" | "mega-menu";
+}
 
 /** デスクトップのCartパネルとモバイルのBottom Sheetで共有する内容。 */
-export function CartPanelContent() {
+export function CartPanelContent({ surface }: CartPanelContentProps) {
+  const ContentLink = surface === "bottom-sheet" ? BottomSheet.Link : Link;
+
   return (
     <div>
       <div className="mb-5 flex items-start gap-3 rounded-2xl bg-paper p-4">
@@ -17,13 +24,13 @@ export function CartPanelContent() {
         </div>
       </div>
 
-      <Link
+      <ContentLink
         className="flex min-h-14 items-center justify-between rounded-xl bg-green px-5 text-sm font-[750] text-white transition-colors duration-150 hover:bg-[#0d3b2f] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
         href="/cart"
       >
         カートの内容を確認
         <ArrowRight className="size-[18px]" aria-hidden="true" />
-      </Link>
+      </ContentLink>
     </div>
   );
 }
