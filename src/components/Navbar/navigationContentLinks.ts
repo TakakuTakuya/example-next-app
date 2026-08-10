@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ComponentPropsWithoutRef, ElementType } from "react";
 import * as BottomSheet from "./BottomSheet";
 import * as Drawer from "./Drawer";
-import type { BottomSheetNavigationContentSurface } from "./types";
+import type { NavigationContentSurface } from "./types";
 
 type NavigationContentLink = ElementType<
   ComponentPropsWithoutRef<typeof Link>
@@ -13,6 +13,6 @@ export const navigationContentLinkBySurface = {
   "mega-menu": Link,
   "push-nav": Drawer.Link,
 } satisfies Record<
-  BottomSheetNavigationContentSurface,
+  NavigationContentSurface,
   NavigationContentLink
 >;

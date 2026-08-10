@@ -11,16 +11,15 @@ export type NavbarAuthState =
   | AuthenticatedNavbarState
   | AnonymousNavbarState;
 
-export type NavigationContentSurface = "mega-menu" | "push-nav";
+export const NAVIGATION_CONTENT_SURFACES = [
+  "bottom-sheet",
+  "mega-menu",
+  "push-nav",
+] as const;
 
-export type BottomSheetNavigationContentSurface =
-  | "bottom-sheet"
-  | NavigationContentSurface;
+export type NavigationContentSurface =
+  (typeof NAVIGATION_CONTENT_SURFACES)[number];
 
 export interface NavigationContentProps {
   surface: NavigationContentSurface;
-}
-
-export interface BottomSheetNavigationContentProps {
-  surface: BottomSheetNavigationContentSurface;
 }

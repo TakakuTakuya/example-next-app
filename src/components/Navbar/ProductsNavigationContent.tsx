@@ -1,6 +1,6 @@
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { navigationContentLinkBySurface } from "./navigationContentLinks";
-import type { BottomSheetNavigationContentProps } from "./types";
+import type { NavigationContentProps } from "./types";
 
 const productLinks = [
   {
@@ -27,7 +27,7 @@ const productLinks = [
 
 export function ProductsNavigationContent({
   surface,
-}: BottomSheetNavigationContentProps) {
+}: NavigationContentProps) {
   const ContentLink = navigationContentLinkBySurface[surface];
   return (
     <>

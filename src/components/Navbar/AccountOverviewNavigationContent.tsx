@@ -1,11 +1,11 @@
 import { ArrowRight } from "lucide-react";
 import { navigationContentLinkBySurface } from "./navigationContentLinks";
-import type { BottomSheetNavigationContentProps } from "./types";
+import type { NavigationContentProps } from "./types";
 
 /** Accountパネル、account Screen、Bottom Sheetで共有する導線。 */
-export function AccountNavigationContent({
+export function AccountOverviewNavigationContent({
   surface,
-}: BottomSheetNavigationContentProps) {
+}: NavigationContentProps) {
   const ContentLink = navigationContentLinkBySurface[surface];
 
   return (

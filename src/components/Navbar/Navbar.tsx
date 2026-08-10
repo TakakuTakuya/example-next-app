@@ -6,11 +6,11 @@ import {
   UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { AccountNavigationContent } from "./AccountNavigationContent";
+import { AccountAccessNavigationContent } from "./AccountAccessNavigationContent";
+import { AccountOverviewNavigationContent } from "./AccountOverviewNavigationContent";
 import * as BottomSheet from "./BottomSheet";
 import { CartPanelContent } from "./CartPanelContent";
 import * as Drawer from "./Drawer";
-import { LoginBottomSheetContent } from "./LoginBottomSheetContent";
 import {
   primaryNavigationItems,
   type PrimaryNavigationValue,
@@ -89,7 +89,7 @@ export function Navbar({
               {isLoggedIn ? (
                 <PushNav.Screen value="account">
                   <PushNavScreenLayout>
-                    <AccountNavigationContent surface="push-nav" />
+                    <AccountOverviewNavigationContent surface="push-nav" />
                   </PushNavScreenLayout>
                 </PushNav.Screen>
               ) : null}
@@ -167,7 +167,7 @@ export function Navbar({
                   align="trigger-end"
                   className="max-w-[400px]"
                 >
-                  <AccountNavigationContent surface="mega-menu" />
+                  <AccountOverviewNavigationContent surface="mega-menu" />
                 </MegaMenu.Content>
               </MegaMenu.Item>
               {showCartPanel ? (
@@ -227,7 +227,7 @@ export function Navbar({
             </BottomSheet.Content>
           </BottomSheet.Item>
 
-          <BottomSheet.Item value="login">
+          <BottomSheet.Item value="account">
             <BottomSheet.Trigger aria-label={accountSheetTitle}>
               <UserRound className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
@@ -236,9 +236,9 @@ export function Navbar({
               contentClassName={isLoggedIn ? "px-0 pt-0" : undefined}
             >
               {isLoggedIn ? (
-                <AccountNavigationContent surface="bottom-sheet" />
+                <AccountOverviewNavigationContent surface="bottom-sheet" />
               ) : (
-                <LoginBottomSheetContent />
+                <AccountAccessNavigationContent surface="bottom-sheet" />
               )}
             </BottomSheet.Content>
           </BottomSheet.Item>
