@@ -15,19 +15,18 @@ import { useBottomSheetRoot } from "./BottomSheetRootContext";
 
 const subscribeToHydration = () => () => {};
 
-type BottomSheetContentProps = Omit<
-  ComponentPropsWithoutRef<"dialog">,
-  "aria-labelledby" | "id" | "open" | "title"
-> & {
-  contentClassName?: string;
-  title: string;
-};
+interface BottomSheetContentProps
+  extends Omit<
+    ComponentPropsWithoutRef<"dialog">,
+    "aria-label" | "aria-labelledby" | "id" | "open"
+  > {
+  label: string;
+}
 
 export function BottomSheetContent({
   children,
   className,
-  contentClassName,
-  title,
+  label,
   onCancel: onCancelProp,
   onClick: onClickProp,
   onClose: onCloseProp,
@@ -41,7 +40,7 @@ export function BottomSheetContent({
     setDialogElement,
     showDialog,
   } = useBottomSheetRoot();
-  const { contentId, titleId, value } = useBottomSheetItem();
+  const { contentId, value } = useBottomSheetItem();
   const open = activeValue === value;
   const mounted = useSyncExternalStore(
     subscribeToHydration,
@@ -102,7 +101,7 @@ export function BottomSheetContent({
         "fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none animate-bottom-sheet-in overflow-visible border-0 bg-transparent p-0 text-ink backdrop:bg-ink/45 backdrop:backdrop-blur-[2px] motion-reduce:animate-none",
         className,
       )}
-      aria-labelledby={titleId}
+      aria-label={label}
       onCancel={handleCancel}
       onClick={handleDialogClick}
       onClose={handleClose}
@@ -119,17 +118,7 @@ export function BottomSheetContent({
         </button>
 
         <div className="flex h-[calc(100dvh-70px)] min-h-0 flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-24px_60px_rgb(21_47_38/18%)]">
-          <div className="flex shrink-0 items-center border-b border-line px-5 py-4">
-            <h2 id={titleId} className="text-lg font-[760]">
-              {title}
-            </h2>
-          </div>
-          <div
-            className={cn(
-              "min-h-0 overflow-y-auto overscroll-contain px-5 pt-5 pb-[calc(24px+env(safe-area-inset-bottom))]",
-              contentClassName,
-            )}
-          >
+          <div className="min-h-0 overflow-y-auto overscroll-contain pb-[calc(24px+env(safe-area-inset-bottom))]">
             {children}
           </div>
         </div>

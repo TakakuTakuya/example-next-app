@@ -68,7 +68,7 @@ export function Navbar({
 }: NavbarProps) {
   const isLoggedIn = auth.status === "authenticated";
   const showCartPanel = isLoggedIn && hasCartItems;
-  const accountSheetTitle = isLoggedIn ? "アカウント" : "ログイン";
+  const accountTriggerLabel = isLoggedIn ? "アカウント" : "ログイン";
 
   return (
     <header className="sticky top-0 z-20 overflow-hidden border-b border-ink/10 bg-white/92 shadow-[0_8px_28px_rgb(30_50_43/5%)] backdrop-blur-lg max-md:w-dvw">
@@ -177,9 +177,7 @@ export function Navbar({
                     align="trigger-end"
                     className="max-w-[400px]"
                   >
-                    <div className="p-5">
-                      <CartPanelContent surface="mega-menu" />
-                    </div>
+                    <CartPanelContent surface="mega-menu" />
                   </MegaMenu.Content>
                 </MegaMenu.Item>
               ) : (
@@ -219,22 +217,16 @@ export function Navbar({
             <BottomSheet.Trigger aria-label="製品を探す">
               <Search className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
-            <BottomSheet.Content
-              title="製品を探す"
-              contentClassName="px-0 pt-0"
-            >
+            <BottomSheet.Content label="製品を探す">
               <ProductsNavigationContent surface="bottom-sheet" />
             </BottomSheet.Content>
           </BottomSheet.Item>
 
           <BottomSheet.Item value="account">
-            <BottomSheet.Trigger aria-label={accountSheetTitle}>
+            <BottomSheet.Trigger aria-label={accountTriggerLabel}>
               <UserRound className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
-            <BottomSheet.Content
-              title={accountSheetTitle}
-              contentClassName={isLoggedIn ? "px-0 pt-0" : undefined}
-            >
+            <BottomSheet.Content label="アカウント">
               {isLoggedIn ? (
                 <AccountOverviewNavigationContent surface="bottom-sheet" />
               ) : (
@@ -248,7 +240,7 @@ export function Navbar({
               <BottomSheet.Trigger aria-label="カート">
                 <ShoppingCart className="size-5" aria-hidden="true" />
               </BottomSheet.Trigger>
-              <BottomSheet.Content title="カート">
+              <BottomSheet.Content label="カート">
                 <CartPanelContent surface="bottom-sheet" />
               </BottomSheet.Content>
             </BottomSheet.Item>

@@ -8,7 +8,7 @@ export function AccountAccessNavigationContent({
   const ContentLink = navigationContentLinkBySurface[surface];
 
   return (
-    <div>
+    <div className="px-5 pt-5">
       <p className="mb-5 text-sm/7 text-muted">
         アカウントにログインするか、お客様専用ページへ移動します。
       </p>

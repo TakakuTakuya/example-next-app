@@ -14,10 +14,9 @@ export function BottomSheetItem({
   value,
 }: BottomSheetItemProps) {
   const contentId = useId();
-  const titleId = useId();
   const contextValue = useMemo<BottomSheetItemContextValue>(
-    () => ({ value, contentId, titleId }),
-    [contentId, titleId, value],
+    () => ({ value, contentId }),
+    [contentId, value],
   );
 
   return (

@@ -227,7 +227,7 @@ root Screenの`children`には`RootPushNavContent`を渡す。このServer Compo
 
 Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとContentは同じ`BottomSheet.Item`内にあり、複数Itemを単一`BottomSheet.Root`が管理する。一方、active Itemの`dialog`実DOMだけが`document.body`直下に置かれる。`createPortal`はDOM配置を、`showModal()`はtop layer、モーダルフォーカス、backdropを担当する。
 
-「製品を探す」のBottom Sheetには`ProductsNavigationContent surface="bottom-sheet"`を渡し、MegaMenu／PushNavと同じ製品Contentを使用する。ログイン済みのAccount Bottom Sheetにも`AccountOverviewNavigationContent surface="bottom-sheet"`を渡す。両Content自身が水平余白を持つため、これらの配置では`BottomSheet.Content`の`contentClassName`で既定の水平・上余白を外し、二重余白を避ける。Bottom Sheet内のリンクは`BottomSheet.Link`を使い、通常遷移ではfocusをTriggerへ戻さずSheetを先に閉じる。
+「製品を探す」のBottom Sheetには`ProductsNavigationContent surface="bottom-sheet"`を渡し、MegaMenu／PushNavと同じ製品Contentを使用する。ログイン済みのAccount Bottom Sheetにも`AccountOverviewNavigationContent surface="bottom-sheet"`を渡す。各Contentが自身の水平・上余白を所有し、`BottomSheet.Content`は共通の可視見出しや水平・上余白を加えない。Sheet固有の下部safe-area余白だけはスクロール領域が担当する。`dialog`のaccessible nameは必須の`label` propから`aria-label`として設定する。Bottom Sheet内のリンクは`BottomSheet.Link`を使い、通常遷移ではfocusをTriggerへ戻さずSheetを先に閉じる。
 
 `BottomSheet.Root`はContext Providerに加えてモバイルアイコン項目群の`div`を描画し、右寄せ、デスクトップでの非表示、縮小抑止をRoot固有のclassとして持つ。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
 
@@ -237,7 +237,7 @@ Bottom Sheet内からページ遷移する製品・ログイン・Account・Cart
 
 Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値をデスクトップ認証分岐、`RootPushNavContent`、モバイルのAccount／ログインContent分岐へ適用し、表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
 
-カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。モバイルのAccount操作は未ログイン時に`AccountAccessNavigationContent`、ログイン時に共有`AccountOverviewNavigationContent`を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
+カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。モバイルのAccount操作は未ログイン時に`AccountAccessNavigationContent`、ログイン時に共有`AccountOverviewNavigationContent`を表示する。Triggerのaccessible nameは状態に応じて「ログイン」または「アカウント」とし、`dialog`のaccessible nameは両状態を包含する「アカウント」に固定する。これらを同じ変数で兼用せず、Trigger用の`accountTriggerLabel`だけを認証状態から導出する。
 
 Bottom Sheetの表示時は、本体だけを280msかけて48px下から定位置へ移動させる。backdropは動かさず、`prefers-reduced-motion: reduce`では本体のアニメーションも無効化する。
 
@@ -684,10 +684,10 @@ AccountとCartは、Content幅とは独立して各Triggerの右辺へ揃える�
 | `src/components/Navbar/PushNav/PushNavRootContext.ts` | 型付きactive値、履歴、push／back、Screen登録API、Context、専用hook |
 | `src/components/Navbar/BottomSheet/index.ts` | Navbar内のBottom Sheet Compound Componentsを公開するClient entrypoint |
 | `src/components/Navbar/BottomSheet/BottomSheetRoot.tsx` | モバイルアイコン項目群の配置、単一activeValue、route／breakpoint close、scroll lock、focus復帰 |
-| `src/components/Navbar/BottomSheet/BottomSheetItem.tsx` | valueとTrigger／Content固有IDの関連付け |
+| `src/components/Navbar/BottomSheet/BottomSheetItem.tsx` | valueとTrigger／Contentを関連付けるContent IDの生成 |
 | `src/components/Navbar/BottomSheet/BottomSheetTrigger.tsx` | `NavbarIconItem`をbuttonとして使い、dialogとARIA関連付け |
 | `src/components/Navbar/BottomSheet/BottomSheetLink.tsx` | 最終遷移リンクとBottom Sheetの明示的なclose |
-| `src/components/Navbar/BottomSheet/BottomSheetContent.tsx` | native dialogのbody Portal／top layer表示、backdrop装飾、backdropクリック／Escape／閉じるボタン操作、スクロール領域の余白調整 |
+| `src/components/Navbar/BottomSheet/BottomSheetContent.tsx` | native dialogのbody Portal／top layer表示、`aria-label`による命名、backdrop装飾、backdropクリック／Escape／閉じるボタン操作、下部safe-area対応 |
 | `src/components/Navbar/BottomSheet/BottomSheetRootContext.ts` | Bottom Sheet Contextの型、Context、専用hook |
 | `src/components/Navbar/BottomSheet/BottomSheetItemContext.ts` | Item Contextの型、Context、専用hook |
 | `src/lib/cn.ts` | `clsx`と`tailwind-merge`による条件付きclassNameの結合とTailwind utilityの競合解決 |
