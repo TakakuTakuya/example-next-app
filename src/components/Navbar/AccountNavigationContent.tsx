@@ -1,13 +1,12 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import * as Drawer from "./Drawer";
-import type { NavigationContentProps } from "./types";
+import { navigationContentLinkBySurface } from "./navigationContentLinks";
+import type { BottomSheetNavigationContentProps } from "./types";
 
-/** デスクトップのAccountパネルとモバイルのaccount Screenで共有する導線。 */
+/** Accountパネル、account Screen、Bottom Sheetで共有する導線。 */
 export function AccountNavigationContent({
   surface,
-}: NavigationContentProps) {
-  const ContentLink = surface === "push-nav" ? Drawer.Link : Link;
+}: BottomSheetNavigationContentProps) {
+  const ContentLink = navigationContentLinkBySurface[surface];
 
   return (
     <div className="p-5">

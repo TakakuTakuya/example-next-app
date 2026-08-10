@@ -231,8 +231,15 @@ export function Navbar({
             <BottomSheet.Trigger aria-label={accountSheetTitle}>
               <UserRound className="size-5" aria-hidden="true" />
             </BottomSheet.Trigger>
-            <BottomSheet.Content title={accountSheetTitle}>
-              <LoginBottomSheetContent auth={auth} />
+            <BottomSheet.Content
+              title={accountSheetTitle}
+              contentClassName={isLoggedIn ? "px-0 pt-0" : undefined}
+            >
+              {isLoggedIn ? (
+                <AccountNavigationContent surface="bottom-sheet" />
+              ) : (
+                <LoginBottomSheetContent />
+              )}
             </BottomSheet.Content>
           </BottomSheet.Item>
 

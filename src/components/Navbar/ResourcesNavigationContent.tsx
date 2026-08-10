@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
-import * as Drawer from "./Drawer";
+import { navigationContentLinkBySurface } from "./navigationContentLinks";
 import type { NavigationContentProps } from "./types";
 
 const resourceLinks = [
@@ -29,7 +28,7 @@ const resourceLinks = [
 export function ResourcesNavigationContent({
   surface,
 }: NavigationContentProps) {
-  const ContentLink = surface === "push-nav" ? Drawer.Link : Link;
+  const ContentLink = navigationContentLinkBySurface[surface];
   return (
     <>
       <div className="flex min-h-14 items-center justify-between gap-4 border-b border-line px-5 py-1.5">

@@ -84,7 +84,7 @@ Navbarはデスクトップでは左から次の要素で構成する。
 | アイコン | Linkの静的childrenとして渡す | 開閉状態を管理する部品ではなく、項目固有の表示だから |
 | 開閉用シェブロン | 追加しない | 項目全体を単一Linkとして維持するため |
 | デスクトップ認証表示 | 未ログイン時はログインLink、ログイン時はユーザー名の`MegaMenu.Trigger` | 遷移とAccountパネル開閉のセマンティクスを認証状態に応じて分けるため |
-| Account Content | MegaMenu／PushNavで共有するServer Component | Account固有の導線を共有し、PushNavの戻る操作は外側のshellへ分離するため |
+| Account Content | MegaMenu／PushNav／Bottom Sheetで共有するServer Component | ログイン済みのAccount固有導線を3つのshellで共有し、PushNavの戻る操作は外側へ分離するため |
 | Products Content | MegaMenu／PushNav／Bottom Sheetで共有するServer Component | 製品固有の意味構造と導線を3つの描画shellで一致させるため |
 | デスクトップCart | 商品ありの場合も`MegaMenu.Link`、商品なしは通常Link | ホバーでは内容を先読みし、click／tap／`Enter`では常に`/cart`へ遷移するため |
 | Cart Content | MegaMenu／Bottom Sheetで共有するServer Component | 同じ商品あり表示を描画shellから独立させるため |
@@ -161,7 +161,8 @@ Navbar                                      Server Component
    │  ├─ BottomSheet.Trigger                Login / account trigger
    │  │  └─ NavbarIconItem                  icon button
    │  └─ BottomSheet.Content                body Portal + native dialog
-   │     └─ LoginBottomSheetContent          auth-aware Server Component
+   │     ├─ authenticated: AccountNavigationContent
+   │     └─ anonymous: LoginBottomSheetContent
    └─ Cart action                           Server-side conditional
       ├─ authenticated + has items
       │  └─ BottomSheet.Item
@@ -210,15 +211,15 @@ Drawerの閉じるボタンは本体ヘッダー内に含めず、本体と重�
 
 `Navbar`は`Drawer.Content`内で`PushNav.Root`、常設する4つの`PushNav.Screen`、ログイン時だけ追加するaccount Screenを直接宣言し、各`value`とScreen Contentの対応をcomposition layerに明示する。`PushNav.Root`自身が`aria-label="メイン"`を受け取って`nav`ランドマークを描画するため、構成だけを包む`MobileNavigation`は設けない。Rootと常に一対一になる表示窓コンポーネントは設けず、座標系、高さ、クリップをRootへ集約する。
 
-root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップでは未ログイン時だけ`NavbarLoginLink`と直置きのお客様専用ページリンクを表示する。ログイン時はユーザー名の`MegaMenu.Trigger`へ集約し、お客様専用ページへの導線はAccountパネル内だけに置く。上位3項目のvalue、href、label、サブテキスト、Lucideアイコンは`primaryNavigationItems`へ集約し、`RootPushNavContent`は同じ配列を`PushNav.Trigger`としてループ描画する。Triggerは`button`であり、ページ遷移しない。各カテゴリScreenとaccount Screenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*NavigationContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。Account固有の導線も`AccountNavigationContent`としてMegaMenuとPushNavで共有し、戻るボタンは含めない。root Screenには戻る行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
+root Screenの`children`には`RootPushNavContent`を渡す。このServer Componentは認証状態に応じた上部領域、上位3項目、可視サブテキストを担当する。ログイン時はユーザー名とポイントを表示する領域全体を`PushNav.Trigger`とし、account Screenへpushする。未ログイン時は横並びのログイン／新規ID作成リンクと、その下段のお客様専用ページリンクを表示し、`Drawer.Link`によるclose処理を維持する。デスクトップでは未ログイン時だけ`NavbarLoginLink`と直置きのお客様専用ページリンクを表示する。ログイン時はユーザー名の`MegaMenu.Trigger`へ集約し、お客様専用ページへの導線はAccountパネル内だけに置く。上位3項目のvalue、href、label、サブテキスト、Lucideアイコンは`primaryNavigationItems`へ集約し、`RootPushNavContent`は同じ配列を`PushNav.Trigger`としてループ描画する。Triggerは`button`であり、ページ遷移しない。各カテゴリScreenとaccount Screenでは、全画面に共通する戻る行を持つServer Componentの`PushNavScreenLayout`が、対応する`*NavigationContent`を包む。製品・ソリューション・リソースの各Contentは、固有のタイトルとカテゴリトップリンク、意味構造、本文レイアウト、最終リンクを所有し、同じContentをMegaMenuでも使用する。Account固有の導線も`AccountNavigationContent`としてMegaMenu、PushNav、ログイン済みのBottom Sheetで共有し、戻るボタンは含めない。root Screenには戻る行を設けない。戻るボタンと各Contentのメニューリスト項目は、利用可能な横幅全体を操作領域とし、上下左右に16pxの内側余白を持つ。
 
-現在の`AccountNavigationContent`内は、共有境界を確認するための「お客様専用ページ」1リンクだけを置いた暫定内容である。実際のAccount項目が確定した際はこのServer Componentの中身を拡張し、MegaMenuとPushNavのshellは変更しない。
+現在の`AccountNavigationContent`内は、共有境界を確認するための「お客様専用ページ」1リンクだけを置いた暫定内容である。実際のAccount項目が確定した際はこのServer Componentの中身を拡張し、MegaMenu、PushNav、Bottom Sheetのshellは変更しない。
 
 `PushNav.Root`は値の履歴、push元要素、遷移ロック、Screen要素を管理する。画面値は`PUSH_NAV_SCREEN_VALUES = ["root", "account", "products", "solutions", "resources"] as const`から導出した`PushNavScreenValue`で表し、`initialValue`、`Screen.value`、`Trigger.to`、Context内の履歴と操作へ適用する。JSXでは型検査される文字列リテラルをそのまま使用し、配列のindexでは参照しない。
 
 `PushNav.Screen`は全画面をmountしたままtransformで移動し、activeでない画面へ`inert`と`aria-hidden`を付ける。各Screenはスクロール領域として、画面下端の固定余白と`safe-area-inset-bottom`も共通して確保する。push後は新しい画面のBackへ、back後は元のTriggerへfocusを移す。Drawerを閉じるとPushNav全体がunmountされるため、再度開いたときは既定のroot Screenへ戻る。`PushNav/`には制御機構だけを置き、`RootPushNavContent`、`PushNavScreenLayout`、カテゴリ固有ContentはNavbar直下に置く。
 
-各`*NavigationContent`は`surface`を必須で受け取り、`"push-nav"`では`Drawer.Link`、`"mega-menu"`ではNext.jsの`Link`を描画する。`ProductsNavigationContent`はさらに`"bottom-sheet"`へ対応し、その場合は`BottomSheet.Link`を描画する。Drawer／Bottom Sheet内の最終ページ遷移では同じpathnameを選択した場合も各modal shellを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではshellを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。`AccountNavigationContent`にもPushNavとの同じ境界を適用する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
+各`*NavigationContent`は`surface`を必須で受け取り、`navigationContentLinkBySurface`から対応するLinkを取得する。対応表は`Record<BottomSheetNavigationContentSurface, NavigationContentLink>`として、`"push-nav"`を`Drawer.Link`、`"bottom-sheet"`を`BottomSheet.Link`、`"mega-menu"`をNext.jsの`Link`へ対応付ける。`NavigationContentLink`はNext.js `Link`のpropsを受け取れる`ElementType`として定義する。これにより、各Contentへ条件分岐を重複させず、surface追加時の対応漏れと互換性のない要素を型検査する。`ProductsNavigationContent`と`AccountNavigationContent`は3種類すべて、Solutions／Resourcesは`"mega-menu" | "push-nav"`だけを受け取る。Drawer／Bottom Sheet内の最終ページ遷移では同じpathnameを選択した場合も各modal shellを明示的に閉じ、新しいタブなど別のブラウジングコンテキストを開く操作ではshellを維持しながら、MegaMenuと同じ内容・意味構造・レイアウトを共有する。戻るボタンと画面遷移シェルは共有Contentへ含めず、PushNav側のcompositionでのみ追加する。
 
 `Navbar`は`primaryNavigationItems`からカテゴリScreenと`MegaMenu.Item`をそれぞれループ描画する。値ごとのServer Contentは`navigationContentByValue`で対応付け、`Record<PrimaryNavigationValue, ComponentType<NavigationContentProps>>`によって全項目分のContentが存在することを型検査する。MegaMenuの項目固有の最大幅と水平位置は、同じvalueをキーにした`megaMenuContentClassNameByValue`で指定する。パネル外枠の幅を文言量から独立させ、内側の横並びレイアウトが`flex`によって余剰幅を分配する前提とする。MegaMenuではループ内でLinkとContentを同じItemへ配置するため、データ駆動化後もReact上の論理的な隣接関係を維持する。配列そのものをClient Componentのpropsへ渡さず、Server Component上で展開した文字列props、表示class、React childrenだけを各Client shellへ渡す。
 
@@ -226,7 +227,7 @@ root Screenの`children`には`RootPushNavContent`を渡す。このServer Compo
 
 Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとContentは同じ`BottomSheet.Item`内にあり、複数Itemを単一`BottomSheet.Root`が管理する。一方、active Itemの`dialog`実DOMだけが`document.body`直下に置かれる。`createPortal`はDOM配置を、`showModal()`はtop layer、モーダルフォーカス、backdropを担当する。
 
-「製品を探す」のBottom Sheetには`ProductsNavigationContent surface="bottom-sheet"`を渡し、MegaMenu／PushNavと同じ製品Contentを使用する。製品Content自身が見出し行と本文の水平余白を持つため、この配置だけは`BottomSheet.Content`の`contentClassName`で既定の水平・上余白を外し、二重余白を避ける。Bottom Sheet内のリンクは`BottomSheet.Link`を使い、通常遷移ではfocusをTriggerへ戻さずSheetを先に閉じる。
+「製品を探す」のBottom Sheetには`ProductsNavigationContent surface="bottom-sheet"`を渡し、MegaMenu／PushNavと同じ製品Contentを使用する。ログイン済みのAccount Bottom Sheetにも`AccountNavigationContent surface="bottom-sheet"`を渡す。両Content自身が水平余白を持つため、これらの配置では`BottomSheet.Content`の`contentClassName`で既定の水平・上余白を外し、二重余白を避ける。Bottom Sheet内のリンクは`BottomSheet.Link`を使い、通常遷移ではfocusをTriggerへ戻さずSheetを先に閉じる。
 
 `BottomSheet.Root`はContext Providerに加えてモバイルアイコン項目群の`div`を描画し、右寄せ、デスクトップでの非表示、縮小抑止をRoot固有のclassとして持つ。Bottom Sheetを開かないカートリンクも、同じ表示グループに属する子要素としてRoot直下へ置く。
 
@@ -234,9 +235,9 @@ Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとCo
 
 Bottom Sheet内からページ遷移する製品・ログイン・Account・Cartの導線には`BottomSheet.Link`を使う。通常のclickではpathname変更前にSheetを閉じ、同じpathnameへの遷移でも開いたままになることを防ぐ。一方、修飾キー、`target="_blank"`、downloadなど別のブラウジングコンテキストを意図する操作ではSheetを維持する。
 
-Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値をデスクトップ認証分岐、`RootPushNavContent`、`LoginBottomSheetContent`へ適用し、表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
+Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値をデスクトップ認証分岐、`RootPushNavContent`、モバイルのAccount／ログインContent分岐へ適用し、表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
 
-カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。ログイン用Bottom Sheetも同じ`auth`を受け取り、未ログイン時はログイン導線、ログイン時はユーザー名とお客様専用ページ導線を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
+カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。モバイルの認証操作は未ログイン時に`LoginBottomSheetContent`、ログイン時に共有`AccountNavigationContent`を表示する。Triggerとdialogのaccessible nameも状態に応じて「ログイン」または「アカウント」とする。
 
 Bottom Sheetの表示時は、本体だけを280msかけて48px下から定位置へ移動させる。backdropは動かさず、`prefers-reduced-motion: reduce`では本体のアニメーションも無効化する。
 
@@ -444,7 +445,7 @@ RootPushNavContent (Server)
 *NavigationContent (Server)
 ├─ renders Next Link for MegaMenu
 ├─ renders Drawer.Link (Client) for PushNav
-└─ Products renders BottomSheet.Link (Client) for Bottom Sheet
+└─ Products / Account render BottomSheet.Link (Client) for Bottom Sheet
 
 CartPanelContent (Server)
 ├─ renders Next Link for MegaMenu
@@ -643,16 +644,17 @@ AccountとCartは、Content幅とは独立して各Triggerの右辺へ揃える�
 | `src/components/Navbar/NavbarLoginLink.tsx` | デスクトップのログインリンクと、Drawer内ログインリンクに共有するbutton風スタイル |
 | `src/components/Navbar/types.ts` | `NavbarAuthState`と認証状態ごとの型定義、共有Contentの共通props型 |
 | `src/components/Navbar/navigationItems.ts` | 上位3項目のvalue、href、label、サブテキスト、Lucideアイコンと導出型 |
+| `src/components/Navbar/navigationContentLinks.ts` | surfaceとNext.js／Drawer／Bottom SheetのLink実装を対応付ける型付きRecord |
 | `src/components/Navbar/NavbarMenuItem.tsx` | Navbar固有の共通リンクUI |
 | `src/components/Navbar/NavbarIconItem.tsx` | モバイルNavbarの共通icon button／icon link UI |
 | `src/components/Navbar/SiteLogo.tsx` | ロゴリンク |
 | `src/components/Navbar/RootPushNavContent.tsx` | root Screenの認証表示、上位Trigger、可視サブテキストを構成するServer Content |
 | `src/components/Navbar/PushNavScreenLayout.tsx` | 下層Screenに共通する戻る行のServer Component |
-| `src/components/Navbar/AccountNavigationContent.tsx` | MegaMenu／PushNavで共有するログイン済みユーザー向けServer Content |
+| `src/components/Navbar/AccountNavigationContent.tsx` | MegaMenu／PushNav／Bottom Sheetで共有するログイン済みユーザー向けServer Content |
 | `src/components/Navbar/ProductsNavigationContent.tsx` | MegaMenu／PushNav／Bottom Sheetで共有する製品画面のServer Content |
 | `src/components/Navbar/SolutionsNavigationContent.tsx` | MegaMenu／PushNavで共有するソリューション画面のServer Content |
 | `src/components/Navbar/ResourcesNavigationContent.tsx` | MegaMenu／PushNavで共有するリソース画面のServer Content |
-| `src/components/Navbar/LoginBottomSheetContent.tsx` | 共通認証状態に応じてログインまたはアカウント導線を構成するServer Content |
+| `src/components/Navbar/LoginBottomSheetContent.tsx` | 未ログイン時のログイン／お客様専用ページ導線を構成するServer Content |
 | `src/components/Navbar/CartPanelContent.tsx` | MegaMenu／Bottom Sheetで共有する商品あり状態のServer Content |
 | `src/components/Navbar/constants.ts` | 共通Media Query、focus selector、PushNav画面値tupleと導出型 |
 | `src/components/Navbar/MegaMenu/index.ts` | Compound Componentsを明示的にre-exportする公開Client entrypoint |
@@ -720,6 +722,7 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - ユーザー名buttonのhover、focus、click／tapからAccountパネルを開ける
 - Accountパネル内にお客様専用ページLinkが存在する
 - Accountパネル内の導線とPushNavのaccount Screenが同じServer Contentを使う
+- ログイン済みのAccount Bottom Sheetも同じ`AccountNavigationContent`を使う
 - ユーザー名buttonとAccountパネルの右辺差が`1px`以内である
 - 認証済みかつ商品ありの場合、デスクトップのCart LinkをhoverするとCartパネルが開く
 - Cart LinkとCartパネルの右辺差が`1px`以内である
