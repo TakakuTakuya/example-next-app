@@ -1,26 +1,18 @@
 import Link from "next/link";
 import { ArrowRight, ShoppingCart } from "lucide-react";
-import { cn } from "@/lib/cn";
 import * as BottomSheet from "./BottomSheet";
 
 interface CartPanelContentProps {
-  className?: string;
   surface: "bottom-sheet" | "mega-menu";
 }
 
 /** デスクトップのCartパネルとモバイルのBottom Sheetで共有する内容。 */
-export function CartPanelContent({
-  className,
-  surface,
-}: CartPanelContentProps) {
+export function CartPanelContent({ surface }: CartPanelContentProps) {
   const ContentLink = surface === "bottom-sheet" ? BottomSheet.Link : Link;
 
   return (
     <div
-      className={cn(
-        surface === "bottom-sheet" ? "px-5 pt-5" : "p-5",
-        className,
-      )}
+      className={surface === "bottom-sheet" ? "px-5 pt-5" : "p-5"}
     >
       <div className="mb-5 flex items-start gap-3 rounded-2xl bg-paper p-4">
         <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-white text-green shadow-sm">

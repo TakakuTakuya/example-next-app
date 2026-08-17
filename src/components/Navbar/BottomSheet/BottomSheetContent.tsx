@@ -20,12 +20,14 @@ interface BottomSheetContentProps
     ComponentPropsWithoutRef<"dialog">,
     "aria-label" | "aria-labelledby" | "id" | "open"
   > {
+  contentClassName?: string;
   label: string;
 }
 
 export function BottomSheetContent({
   children,
   className,
+  contentClassName,
   label,
   onCancel: onCancelProp,
   onClick: onClickProp,
@@ -118,7 +120,12 @@ export function BottomSheetContent({
         </button>
 
         <div className="flex h-[calc(100dvh-70px)] min-h-0 flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_-24px_60px_rgb(21_47_38/18%)]">
-          <div className="min-h-0 overflow-y-auto overscroll-contain pb-[calc(24px+env(safe-area-inset-bottom))]">
+          <div
+            className={cn(
+              "min-h-0 overflow-y-auto overscroll-contain pb-[calc(24px+env(safe-area-inset-bottom))]",
+              contentClassName,
+            )}
+          >
             {children}
           </div>
         </div>
