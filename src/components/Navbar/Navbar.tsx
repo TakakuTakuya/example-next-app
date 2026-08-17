@@ -52,6 +52,28 @@ const megaMenuContentClassNameByValue = {
   resources: "max-w-[800px]",
 } satisfies Record<PrimaryNavigationValue, string>;
 
+const ACCOUNT_TRIGGER_TEXT_MAX_LENGTH = 11;
+const accountTriggerTextSuffix = " 様";
+const truncatedAccountTriggerTextSuffix = `…${accountTriggerTextSuffix}`;
+
+function formatAccountTriggerText(userName: string): string {
+  const accountTriggerText = `${userName}${accountTriggerTextSuffix}`;
+  const accountTriggerCharacters = Array.from(accountTriggerText);
+
+  if (accountTriggerCharacters.length <= ACCOUNT_TRIGGER_TEXT_MAX_LENGTH) {
+    return accountTriggerText;
+  }
+
+  const suffixLength = Array.from(
+    truncatedAccountTriggerTextSuffix,
+  ).length;
+  const visibleUserName = Array.from(userName)
+    .slice(0, ACCOUNT_TRIGGER_TEXT_MAX_LENGTH - suffixLength)
+    .join("");
+
+  return `${visibleUserName}${truncatedAccountTriggerTextSuffix}`;
+}
+
 interface NavbarProps {
   auth?: NavbarAuthState;
   hasCartItems?: boolean;
@@ -158,9 +180,14 @@ export function Navbar({
                     "mr-1.5 max-w-48",
                   )}
                 >
-                  <span className="truncate">{auth.userName}</span>
+                  <span
+                    className="max-w-28 text-center leading-tight whitespace-normal wrap-break-word"
+                    aria-hidden="true"
+                  >
+                    {formatAccountTriggerText(auth.userName)}
+                  </span>
                   <span className="sr-only">
-                    のアカウントメニュー
+                    {auth.userName} 様のアカウントメニュー
                   </span>
                 </MegaMenu.Trigger>
                 <MegaMenu.Content

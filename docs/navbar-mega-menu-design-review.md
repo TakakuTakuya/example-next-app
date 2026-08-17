@@ -236,6 +236,7 @@ Bottom SheetでもPortalはReact上の所有関係を変えない。TriggerとCo
 Bottom Sheet内からページ遷移する製品・ログイン・Account・Cartの導線には`BottomSheet.Link`を使う。通常のclickではpathname変更前にSheetを閉じ、同じpathnameへの遷移でも開いたままになることを防ぐ。一方、修飾キー、`target="_blank"`、downloadなど別のブラウジングコンテキストを意図する操作ではSheetを維持する。
 
 Navbarの認証表示には、`authenticated`と`anonymous`からなる`NavbarAuthState`を共通のServer側view modelとして使う。`Navbar`が同じ値をデスクトップ認証分岐、`RootPushNavContent`、モバイルのAccount／ログインContent分岐へ適用し、表示を一致させる。認証情報をClient Contextへ複製せず、ログイン後はサーバー側セッションの更新とRSC refreshによって再評価する。`authenticated`では`userName`を必須にし、ユーザー名のないログイン状態を型で防ぐ。
+デスクトップのAccount Triggerは`userName`に「 様」を付け、半角スペースと敬称を含む11文字までを表示する。超過時は名前部分を短縮して「… 様」を末尾に残し、表示領域は最大112pxで折り返す。省略は視覚表示のみとし、accessible nameには省略前の`userName`と敬称を使う。
 
 カート操作は、`auth.status`と`hasCartItems`によってServer側で分岐する。認証済みかつ商品があるとき、デスクトップでは`MegaMenu.Link`とCartパネル、モバイルでは`BottomSheet.Item`を描画する。デスクトップの上位要素は状態にかかわらず`/cart`へのLinkであり、開閉専用buttonへは変えない。それ以外は両表示とも通常Linkだけを描画する。CartパネルとBottom Sheetの内容は`CartPanelContent`で共有し、`surface`によってMegaMenuのNext.js `Link`と`BottomSheet.Link`だけを切り替える。Navbarは認証情報やカート情報を取得せず、呼び出し側から渡された状態を表示へ反映するだけとする。モバイルのAccount操作は未ログイン時に`AccountAccessNavigationContent`、ログイン時に共有`AccountOverviewNavigationContent`を表示する。Triggerのaccessible nameは状態に応じて「ログイン」または「アカウント」とし、`dialog`のaccessible nameは両状態を包含する「アカウント」に固定する。これらを同じ変数で兼用せず、Trigger用の`accountTriggerLabel`だけを認証状態から導出する。
 
