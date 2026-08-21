@@ -10,7 +10,10 @@ import {
   type KeyboardEventHandler,
 } from "react";
 import { DESKTOP_NAVIGATION_MEDIA_QUERY } from "../constants";
-import { POINTER_CLOSE_DELAY_MS } from "./constants";
+import {
+  CONTENT_ROW_OVERLAP_PX,
+  POINTER_CLOSE_DELAY_MS,
+} from "./constants";
 import {
   MegaMenuRootContext,
   type MegaMenuRootContextValue,
@@ -116,11 +119,14 @@ export function MegaMenuRoot({
       const triggerRect = trigger.getBoundingClientRect();
       const navigationRowRect =
         rootRef.current?.parentElement?.getBoundingClientRect();
+      const itemRect = trigger.parentElement?.getBoundingClientRect();
       const slotRect = layerSlot?.getBoundingClientRect();
       const isRightToLeft = getComputedStyle(trigger).direction === "rtl";
-      const navigationBottom = navigationRowRect?.bottom ?? triggerRect.bottom;
+      const navigationBottom =
+        navigationRowRect?.bottom ?? itemRect?.bottom ?? triggerRect.bottom;
+      const contentTop = navigationBottom - CONTENT_ROW_OVERLAP_PX;
 
-      setLayerTop(navigationBottom);
+      setLayerTop(contentTop);
       setTriggerInlineEndOffset(
         slotRect
           ? isRightToLeft

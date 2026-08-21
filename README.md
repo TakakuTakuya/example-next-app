@@ -15,7 +15,7 @@ pnpm dev
 
 キーボードでは現在、Triggerへのフォーカスでパネルを表示し、`ArrowDown` / `ArrowUp`でパネル内へ移動できます。ただし、これはデモの暫定動作であり、キーボードからContentへ入る最終的な操作仕様は今回の検討範囲外です。
 
-Contentの上辺はNavbar行の下辺へ隙間なく接触させています。Trigger下辺からNavbar行下辺までは透明なpointer bridgeでhoverを接続し、safe polygonは使用していません。
+Contentの上辺はNavbar行の下辺から5px上へ重ねています。Trigger下辺からNavbar行下辺までは透明なpointer bridgeでhoverを接続し、safe polygonは使用していません。
 
 ## Component boundary
 
