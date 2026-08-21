@@ -5,6 +5,7 @@ import {
   type PointerEventHandler,
 } from "react";
 import { cn } from "@/lib/cn";
+import { MegaMenuPointerBridge } from "./MegaMenuPointerBridge";
 import { useMegaMenuTrigger } from "./useMegaMenuTrigger";
 
 type MegaMenuTriggerProps = Omit<
@@ -13,6 +14,7 @@ type MegaMenuTriggerProps = Omit<
 >;
 
 export function MegaMenuTrigger({
+  children,
   className,
   onBlur: onBlurProp,
   onClick: onClickProp,
@@ -82,12 +84,17 @@ export function MegaMenuTrigger({
   };
 
   return (
-    <button
-      {...props}
-      {...triggerProps}
-      type={type}
-      className={cn("cursor-pointer", className)}
-      onClick={handleClick}
-    />
+    <>
+      <button
+        {...props}
+        {...triggerProps}
+        type={type}
+        className={cn("relative z-10 cursor-pointer", className)}
+        onClick={handleClick}
+      >
+        {children}
+      </button>
+      {isOpen ? <MegaMenuPointerBridge /> : null}
+    </>
   );
 }

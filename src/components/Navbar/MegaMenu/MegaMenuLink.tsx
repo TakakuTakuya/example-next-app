@@ -2,7 +2,9 @@ import {
   type ComponentProps,
   type MouseEventHandler,
 } from "react";
+import { cn } from "@/lib/cn";
 import { NavbarMenuItem } from "../NavbarMenuItem";
+import { MegaMenuPointerBridge } from "./MegaMenuPointerBridge";
 import { useMegaMenuTrigger } from "./useMegaMenuTrigger";
 
 type MegaMenuLinkProps = Omit<
@@ -11,6 +13,8 @@ type MegaMenuLinkProps = Omit<
 >;
 
 export function MegaMenuLink({
+  children,
+  className,
   onClick: onClickProp,
   onPointerCancel: onPointerCancelProp,
   onPointerDown: onPointerDownProp,
@@ -22,7 +26,7 @@ export function MegaMenuLink({
   onKeyDown: onKeyDownProp,
   ...props
 }: MegaMenuLinkProps) {
-  const { menu, triggerProps } =
+  const { isOpen, menu, triggerProps } =
     useMegaMenuTrigger<HTMLAnchorElement>({
       onPointerCancel: onPointerCancelProp,
       onPointerDown: onPointerDownProp,
@@ -43,10 +47,16 @@ export function MegaMenuLink({
   };
 
   return (
-    <NavbarMenuItem
-      {...props}
-      {...triggerProps}
-      onClick={handleClick}
-    />
+    <>
+      <NavbarMenuItem
+        {...props}
+        {...triggerProps}
+        className={cn("z-10", className)}
+        onClick={handleClick}
+      >
+        {children}
+      </NavbarMenuItem>
+      {isOpen ? <MegaMenuPointerBridge /> : null}
+    </>
   );
 }

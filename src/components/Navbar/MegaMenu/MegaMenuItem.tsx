@@ -26,7 +26,13 @@ export function MegaMenuItem({
 
   return (
     <MegaMenuItemContext.Provider value={contextValue}>
-      <li className={cn("flex h-full items-center", className)} {...props} />
+      <li
+        className={cn(
+          "relative isolate flex h-full items-center",
+          className,
+        )}
+        {...props}
+      />
     </MegaMenuItemContext.Provider>
   );
 }

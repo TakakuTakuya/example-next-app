@@ -114,10 +114,13 @@ export function MegaMenuRoot({
       if (!trigger) return;
 
       const triggerRect = trigger.getBoundingClientRect();
+      const navigationRowRect =
+        rootRef.current?.parentElement?.getBoundingClientRect();
       const slotRect = layerSlot?.getBoundingClientRect();
       const isRightToLeft = getComputedStyle(trigger).direction === "rtl";
+      const navigationBottom = navigationRowRect?.bottom ?? triggerRect.bottom;
 
-      setLayerTop(triggerRect.bottom);
+      setLayerTop(navigationBottom);
       setTriggerInlineEndOffset(
         slotRect
           ? isRightToLeft
