@@ -32,9 +32,11 @@ export function RootPushNavContent({
             className="block w-full p-4 text-left transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
             to="account"
           >
-            <span className="flex min-h-[42px] min-w-0 items-center truncate text-lg font-[760]">
+            <span className="flex min-h-[42px] w-full min-w-0 items-center text-lg font-[760]">
               <span className="sr-only">ログイン中のユーザー：</span>
-              {auth.userName}
+              <span className="min-w-0 flex-1 truncate">
+                {auth.userName}
+              </span>
             </span>
             <span className="flex items-baseline gap-2 text-sm text-muted">
               <span>ポイント</span>
