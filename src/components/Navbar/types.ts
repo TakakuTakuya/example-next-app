@@ -1,6 +1,12 @@
+export interface AccountSummary {
+  userName: string;
+  pointBalance: number;
+  availableCouponCount: number;
+}
+
 export interface AuthenticatedNavbarState {
   status: "authenticated";
-  userName: string;
+  account: AccountSummary;
 }
 
 export interface AnonymousNavbarState {

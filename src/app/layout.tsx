@@ -21,8 +21,15 @@ export default function RootLayout({
     >
       <body className="min-w-[720px] bg-paper font-sans text-ink antialiased">
         <Navbar
-        // auth={{ status: "authenticated", userName: "山田 太郎" }}
-        // hasCartItems
+          auth={{
+            status: "authenticated",
+            account: {
+              userName: "山田 太郎",
+              pointBalance: 9999,
+              availableCouponCount: 3,
+            },
+          }}
+          hasCartItems
         />
         {children}
       </body>

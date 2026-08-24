@@ -22,9 +22,7 @@ interface RootPushNavContentProps {
 }
 
 /** モバイル用メインナビゲーションの初期画面。 */
-export function RootPushNavContent({
-  auth,
-}: RootPushNavContentProps) {
+export function RootPushNavContent({ auth }: RootPushNavContentProps) {
   return (
     <>
       <div className="sticky top-0 z-30 border-b border-line bg-white">
@@ -33,15 +31,23 @@ export function RootPushNavContent({
             className="flex w-full items-center gap-3 p-4 text-left transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
             to="account"
           >
-            <span className="min-w-0 flex-1">
+            <span className="min-w-0 flex-1 flex flex-col">
               <span className="flex min-h-[42px] w-fit max-w-full min-w-0 items-center text-lg font-[760]">
                 <span className="sr-only">ログイン中のユーザー：</span>
-                <span className="min-w-0 truncate">{auth.userName}</span>
+                <span className="min-w-0 truncate">
+                  {auth.account.userName}
+                </span>
                 <span className="ml-1 shrink-0">様</span>
               </span>
-              <span className="flex items-baseline gap-2 text-sm text-muted">
-                <span>ポイント</span>
-                <span>9999</span>
+              <span className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm text-muted">
+                <span className="flex items-baseline gap-2">
+                  <span>ポイント</span>
+                  <span>{auth.account.pointBalance}</span>
+                </span>
+                <span className="flex items-baseline gap-2">
+                  <span>クーポン</span>
+                  <span>{auth.account.availableCouponCount}枚</span>
+                </span>
               </span>
             </span>
             <ChevronRight
@@ -53,25 +59,16 @@ export function RootPushNavContent({
           <div className="p-4">
             <div className="flex gap-2">
               <Drawer.Link
-                className={cn(
-                  navbarLoginLinkClassName,
-                  "min-w-0 flex-1 px-3",
-                )}
+                className={cn(navbarLoginLinkClassName, "min-w-0 flex-1 px-3")}
                 href="/login"
               >
                 ログイン
               </Drawer.Link>
-              <Drawer.Link
-                className={createIdLinkClassName}
-                href="/register"
-              >
+              <Drawer.Link className={createIdLinkClassName} href="/register">
                 新規ID作成
               </Drawer.Link>
             </div>
-            <Drawer.Link
-              className={accountLinkClassName}
-              href="/account"
-            >
+            <Drawer.Link className={accountLinkClassName} href="/account">
               お客様専用ページ
             </Drawer.Link>
           </div>
@@ -83,18 +80,11 @@ export function RootPushNavContent({
           {primaryNavigationItems.map(
             ({ description, icon: Icon, label, value }) => (
               <li key={value}>
-                <PushNav.Trigger
-                  className={triggerClassName}
-                  to={value}
-                >
+                <PushNav.Trigger className={triggerClassName} to={value}>
                   <Icon className={iconClassName} aria-hidden="true" />
                   <span className="flex flex-col gap-1">
-                    <span className="text-base font-[750]">
-                      {label}
-                    </span>
-                    <span className="text-sm/6 text-muted">
-                      {description}
-                    </span>
+                    <span className="text-base font-[750]">{label}</span>
+                    <span className="text-sm/6 text-muted">{description}</span>
                   </span>
                 </PushNav.Trigger>
               </li>

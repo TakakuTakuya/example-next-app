@@ -112,8 +112,8 @@ export function Navbar({
                 <PushNav.Screen value="account">
                   <PushNavScreenLayout>
                     <AccountOverviewNavigationContent
+                      account={auth.account}
                       surface="push-nav"
-                      userName={auth.userName}
                     />
                   </PushNavScreenLayout>
                 </PushNav.Screen>
@@ -187,10 +187,10 @@ export function Navbar({
                     className="max-w-28 text-center leading-tight whitespace-normal wrap-break-word"
                     aria-hidden="true"
                   >
-                    {formatAccountTriggerText(auth.userName)}
+                    {formatAccountTriggerText(auth.account.userName)}
                   </span>
                   <span className="sr-only">
-                    {auth.userName} 様のアカウントメニュー
+                    {auth.account.userName} 様のアカウントメニュー
                   </span>
                 </MegaMenu.Trigger>
                 <MegaMenu.Content
@@ -198,8 +198,8 @@ export function Navbar({
                   className="max-w-[400px]"
                 >
                   <AccountOverviewNavigationContent
+                    account={auth.account}
                     surface="mega-menu"
-                    userName={auth.userName}
                   />
                 </MegaMenu.Content>
               </MegaMenu.Item>
@@ -262,8 +262,8 @@ export function Navbar({
             <BottomSheet.Content label="アカウント">
               {isLoggedIn ? (
                 <AccountOverviewNavigationContent
+                  account={auth.account}
                   surface="bottom-sheet"
-                  userName={auth.userName}
                 />
               ) : (
                 <AccountAccessNavigationContent surface="bottom-sheet" />
