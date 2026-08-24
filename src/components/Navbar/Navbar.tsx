@@ -111,7 +111,10 @@ export function Navbar({
               {isLoggedIn ? (
                 <PushNav.Screen value="account">
                   <PushNavScreenLayout>
-                    <AccountOverviewNavigationContent surface="push-nav" />
+                    <AccountOverviewNavigationContent
+                      surface="push-nav"
+                      userName={auth.userName}
+                    />
                   </PushNavScreenLayout>
                 </PushNav.Screen>
               ) : null}
@@ -194,7 +197,10 @@ export function Navbar({
                   align="trigger-end"
                   className="max-w-[400px]"
                 >
-                  <AccountOverviewNavigationContent surface="mega-menu" />
+                  <AccountOverviewNavigationContent
+                    surface="mega-menu"
+                    userName={auth.userName}
+                  />
                 </MegaMenu.Content>
               </MegaMenu.Item>
               {showCartPanel ? (
@@ -255,7 +261,10 @@ export function Navbar({
             </BottomSheet.Trigger>
             <BottomSheet.Content label="アカウント">
               {isLoggedIn ? (
-                <AccountOverviewNavigationContent surface="bottom-sheet" />
+                <AccountOverviewNavigationContent
+                  surface="bottom-sheet"
+                  userName={auth.userName}
+                />
               ) : (
                 <AccountAccessNavigationContent surface="bottom-sheet" />
               )}
