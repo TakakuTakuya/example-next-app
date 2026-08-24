@@ -11,7 +11,7 @@ import {
 } from "react";
 import { DESKTOP_NAVIGATION_MEDIA_QUERY } from "../constants";
 import {
-  CONTENT_ROW_OVERLAP_PX,
+  CONTENT_TOP_OFFSET_PX,
   POINTER_CLOSE_DELAY_MS,
 } from "./constants";
 import {
@@ -122,9 +122,9 @@ export function MegaMenuRoot({
       const itemRect = trigger.parentElement?.getBoundingClientRect();
       const slotRect = layerSlot?.getBoundingClientRect();
       const isRightToLeft = getComputedStyle(trigger).direction === "rtl";
-      const navigationBottom =
-        navigationRowRect?.bottom ?? itemRect?.bottom ?? triggerRect.bottom;
-      const contentTop = navigationBottom - CONTENT_ROW_OVERLAP_PX;
+      const navigationTop =
+        navigationRowRect?.top ?? itemRect?.top ?? triggerRect.top;
+      const contentTop = navigationTop + CONTENT_TOP_OFFSET_PX;
 
       setLayerTop(contentTop);
       setTriggerInlineEndOffset(

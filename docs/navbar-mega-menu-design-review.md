@@ -503,7 +503,7 @@ JavaScriptが利用できない場合でも、メイン上位3項目とCartは�
 
 ### TriggerとContentの接続
 
-Contentの上辺は、高さ76pxのNavbar行の下辺から5px上へ重ねる。Rootの親要素の`getBoundingClientRect().bottom`を配置基準とし、Portal Layerの位置を`bottom - 5px`として動的に計算する。Linkやbutton Triggerの高さが異なっても、共有Layerの垂直位置はNavbar行を基準に揃える。
+Contentの上辺は、高さ76pxのNavbar行の上辺から71px下へ配置する。Rootの親要素の`getBoundingClientRect().top`を配置基準とし、Portal Layerの位置を`top + 71px`として動的に計算する。これはNavbar行の下辺から5px上へ重なる位置である。Linkやbutton Triggerの高さが異なっても、共有Layerの垂直位置はNavbar行を基準に揃える。
 
 メニューを開くhover handlerはItemやNavbar行へ広げず、Link／button Triggerだけに置く。ItemがNavbar行と同じ高さでTriggerを垂直中央に配置する構造を前提とし、開いているItem内では、Triggerの兄弟要素として`top-1/2 bottom-0`の透明なpointer bridgeを描画する。Triggerを前面、bridgeを背面に重ねることで、角丸の下端左右に生じるhover領域の抜けだけをbridgeが補い、Trigger本体のクリック領域は維持する。bridgeは新たにメニューを開かず、Link／button Triggerを離れた際に予約されたcloseだけを取り消す。safe polygonは採用しない。
 
@@ -557,7 +557,7 @@ PortalされたContentはbody側のDOMに置かれるため、React上でLinkと
 
 - Layer: `position: fixed`
 - 水平方向: `MegaMenu.Content`の既定値は`align="viewport-center"`。Layer slotはviewport中央、最大利用幅は1120px。製品1120px、ソリューション960px、リソース800pxを上限とし、ソリューションとリソースは中央配置、製品だけは1280px以上で中央位置から40px左へ移動する。AccountとCartは`align="trigger-end"`とし、active TriggerとLayer slotのinline-end差分をRootで計測して、Contentのinline-endを各Triggerへ合わせる。LTRの表示アニメーションは右上をtransform originにして、scale中も右辺を離さない
-- 垂直方向: Navbar行の`getBoundingClientRect().bottom`から5px引いた位置を使用。Navbar行を取得できない場合はItem下辺を基準にする
+- 垂直方向: Navbar行の`getBoundingClientRect().top`へ71px加えた位置を使用。Navbar行を取得できない場合はItem上辺を基準にする
 - scroll / resize時: 垂直方向はNavbar行、inline-end揃えはactive Trigger要素を再計測
 - パネル高: viewportに応じた最大高と内部scroll
 - z-index: Headerより上のLayer値
@@ -661,7 +661,7 @@ AccountとCartは、Content幅とは独立して各Triggerの右辺へ揃える�
 | `src/components/Navbar/CartPanelContent.tsx` | MegaMenu／Bottom Sheetで共有する商品あり状態のServer Content |
 | `src/components/Navbar/constants.ts` | 共通Media Query、focus selector、PushNav画面値tupleと導出型 |
 | `src/components/Navbar/MegaMenu/index.ts` | Compound Componentsを明示的にre-exportする公開Client entrypoint |
-| `src/components/Navbar/MegaMenu/MegaMenuRoot.tsx` | `nav`ランドマーク、active状態、timer、Navbar行下辺から5px重ねた位置／inline-end位置計算、outside・route・Escape制御 |
+| `src/components/Navbar/MegaMenu/MegaMenuRoot.tsx` | `nav`ランドマーク、active状態、timer、Navbar行上辺から71px下の位置／inline-end位置計算、outside・route・Escape制御 |
 | `src/components/Navbar/MegaMenu/MegaMenuList.tsx` | Navbar項目を格納する`ul` |
 | `src/components/Navbar/MegaMenu/MegaMenuItem.tsx` | Item Context、value、LinkとContentのID関連付け |
 | `src/components/Navbar/MegaMenu/MegaMenuLink.tsx` | 上位リンクとpointer・focus・keyboard操作 |
@@ -715,7 +715,7 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - `Escape`で上位リンクへfocusを戻した後、Contentが再openしない
 - 上位リンクのclickでカテゴリページへ遷移する
 - 外側のpointer downでContentが閉じる
-- Content上辺がNavbar行下辺より`5px`上にある
+- Content上辺がNavbar行上辺から`71px`下にあり、Navbar行下辺より`5px`上にある
 - active ContentがHeader配下ではなく`document.body`直下のLayer内に存在する
 - Headerが`overflow: hidden`でもContentがクリップされない
 - 3種類の固有Contentがそれぞれ単独で表示される
@@ -764,7 +764,7 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 - [x] メイン上位3項目は単一Linkとし、開閉用シェブロン／Buttonを追加しない
 - [x] メイン上位3項目を「hoverで展開、click / tapで直接遷移」とする
 - [x] 商品ありのデスクトップCartもLinkのまま同じ操作モデルを使う
-- [x] ContentをNavbar行下辺から5px上へ重ね、Triggerが所有するpointer bridgeで下側余白を接続する
+- [x] ContentをNavbar行上辺から71px下へ配置し、Triggerが所有するpointer bridgeで下側余白を接続する
 - [ ] hover closeの180msは実機確認後に調整する
 - [ ] Contentから別のNavbar項目へ移る際の切り替え感を実機で確認したか
 
@@ -837,6 +837,6 @@ TypeScriptの直接的なオブジェクト形状は`interface`で定義し、`@
 6. body Portalを使い、Header祖先のlayout制約からパネルを分離する。
 7. メイン上位3項目のアイコンはLink childrenとして扱い、専用の状態管理部品を作らない。
 8. メイン上位3項目とCartには開閉用シェブロン／Buttonを追加しない。Accountパネルにはユーザー名のbutton Triggerを使う。
-9. ContentをNavbar行下辺から5px上へ重ね、Link／button Triggerが所有するpointer bridgeで下側余白を接続する。
+9. ContentをNavbar行上辺から71px下へ配置し、Link／button Triggerが所有するpointer bridgeで下側余白を接続する。
 10. キーボードからContentへ入る方法は今回決定せず、後続検討とする。
 11. 本番採用前に、スクリーンリーダー、実タッチ端末、狭いviewport、他Layerとのz-indexを追加検証する。
