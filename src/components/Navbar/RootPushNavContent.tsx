@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import * as Drawer from "./Drawer";
 import { primaryNavigationItems } from "./navigationItems";
@@ -29,18 +30,24 @@ export function RootPushNavContent({
       <div className="sticky top-0 z-30 border-b border-line bg-white">
         {auth.status === "authenticated" ? (
           <PushNav.Trigger
-            className="block w-full p-4 text-left transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
+            className="flex w-full items-center gap-3 p-4 text-left transition-colors duration-150 hover:bg-paper focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[-3px] motion-reduce:transition-none"
             to="account"
           >
-            <span className="flex min-h-[42px] w-fit max-w-full min-w-0 items-center text-lg font-[760]">
-              <span className="sr-only">ログイン中のユーザー：</span>
-              <span className="min-w-0 truncate">{auth.userName}</span>
-              <span className="ml-1 shrink-0">様</span>
+            <span className="min-w-0 flex-1">
+              <span className="flex min-h-[42px] w-fit max-w-full min-w-0 items-center text-lg font-[760]">
+                <span className="sr-only">ログイン中のユーザー：</span>
+                <span className="min-w-0 truncate">{auth.userName}</span>
+                <span className="ml-1 shrink-0">様</span>
+              </span>
+              <span className="flex items-baseline gap-2 text-sm text-muted">
+                <span>ポイント</span>
+                <span>9999</span>
+              </span>
             </span>
-            <span className="flex items-baseline gap-2 text-sm text-muted">
-              <span>ポイント</span>
-              <span>9999</span>
-            </span>
+            <ChevronRight
+              className="size-5 shrink-0 text-muted"
+              aria-hidden="true"
+            />
           </PushNav.Trigger>
         ) : (
           <div className="p-4">
