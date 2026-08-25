@@ -1,6 +1,27 @@
 import type { Metadata } from "next";
-import { Navbar } from "@/components/Navbar";
+import { Navbar, type CartItem } from "@/components/Navbar";
 import "./globals.css";
+
+const demoCartItems = [
+  {
+    id: "orbit-analytics",
+    imageSrc: "/window.svg",
+    name: "Orbit Analytics",
+    price: 12800,
+  },
+  {
+    id: "orbit-automations",
+    imageSrc: "/file.svg",
+    name: "Orbit Automations",
+    price: 8800,
+  },
+  {
+    id: "orbit-connect",
+    imageSrc: "/globe.svg",
+    name: "Orbit Connect",
+    price: 5500,
+  },
+] as const satisfies readonly CartItem[];
 
 export const metadata: Metadata = {
   title: "Orbit — Portal Mega Menu Demo",
@@ -29,7 +50,7 @@ export default function RootLayout({
               availableCouponCount: 3,
             },
           }}
-          hasCartItems
+          cartItems={demoCartItems}
         />
         {children}
       </body>

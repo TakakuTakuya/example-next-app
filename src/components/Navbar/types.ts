@@ -4,6 +4,13 @@ export interface AccountSummary {
   availableCouponCount: number;
 }
 
+export interface CartItem {
+  id: string;
+  imageSrc: string;
+  name: string;
+  price: number;
+}
+
 export interface AuthenticatedNavbarState {
   status: "authenticated";
   account: AccountSummary;

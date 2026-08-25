@@ -29,6 +29,7 @@ import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
 import { SolutionsNavigationContent } from "./SolutionsNavigationContent";
 import type {
+  CartItem,
   NavbarAuthState,
   NavigationContentProps,
 } from "./types";
@@ -76,7 +77,7 @@ function formatAccountTriggerText(userName: string): string {
 
 interface NavbarProps {
   auth?: NavbarAuthState;
-  hasCartItems?: boolean;
+  cartItems?: readonly CartItem[];
 }
 
 /**
@@ -86,10 +87,11 @@ interface NavbarProps {
  */
 export function Navbar({
   auth = { status: "anonymous" },
-  hasCartItems = false,
+  cartItems = [],
 }: NavbarProps) {
   const isLoggedIn = auth.status === "authenticated";
-  const showCartPanel = isLoggedIn && hasCartItems;
+  const cartItemCount = cartItems.length;
+  const showCartPanel = isLoggedIn && cartItemCount > 0;
   const accountTriggerLabel = isLoggedIn ? "アカウント" : "ログイン";
 
   return (
@@ -205,12 +207,32 @@ export function Navbar({
               </MegaMenu.Item>
               {showCartPanel ? (
                 <MegaMenu.Item value="cart">
-                  <MegaMenu.Link href="/cart">カート</MegaMenu.Link>
+                  <MegaMenu.Link href="/cart">
+                    <span className="relative">
+                      <ShoppingCart
+                        className={menuIconClassName}
+                        aria-hidden="true"
+                      />
+                      <span
+                        className="absolute -top-2 -right-2 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-green px-1 text-[10px] leading-none font-bold text-white"
+                        aria-hidden="true"
+                      >
+                        {cartItemCount}
+                      </span>
+                    </span>
+                    <span>カート</span>
+                    <span className="sr-only">
+                      内の商品数：{cartItemCount}
+                    </span>
+                  </MegaMenu.Link>
                   <MegaMenu.Content
                     align="trigger-end"
                     className="max-w-[400px]"
                   >
-                    <CartPanelContent surface="mega-menu" />
+                    <CartPanelContent
+                      items={cartItems}
+                      surface="mega-menu"
+                    />
                   </MegaMenu.Content>
                 </MegaMenu.Item>
               ) : (
@@ -277,7 +299,10 @@ export function Navbar({
                 <ShoppingCart className="size-5" aria-hidden="true" />
               </BottomSheet.Trigger>
               <BottomSheet.Content label="カート">
-                <CartPanelContent surface="bottom-sheet" />
+                <CartPanelContent
+                  items={cartItems}
+                  surface="bottom-sheet"
+                />
               </BottomSheet.Content>
             </BottomSheet.Item>
           ) : (

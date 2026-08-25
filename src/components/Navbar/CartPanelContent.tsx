@@ -1,30 +1,58 @@
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShoppingCart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import * as BottomSheet from "./BottomSheet";
+import type { CartItem } from "./types";
+
+const priceFormatter = new Intl.NumberFormat("ja-JP", {
+  style: "currency",
+  currency: "JPY",
+});
 
 interface CartPanelContentProps {
+  items: readonly CartItem[];
   surface: "bottom-sheet" | "mega-menu";
 }
 
 /** デスクトップのCartパネルとモバイルのBottom Sheetで共有する内容。 */
-export function CartPanelContent({ surface }: CartPanelContentProps) {
+export function CartPanelContent({
+  items,
+  surface,
+}: CartPanelContentProps) {
   const ContentLink = surface === "bottom-sheet" ? BottomSheet.Link : Link;
 
   return (
     <div
       className={surface === "bottom-sheet" ? "px-5 pt-5" : "p-5"}
     >
-      <div className="mb-5 flex items-start gap-3 rounded-2xl bg-paper p-4">
-        <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl bg-white text-green shadow-sm">
-          <ShoppingCart className="size-5" aria-hidden="true" />
-        </span>
-        <div>
-          <p className="font-bold">カートに商品があります</p>
-          <p className="mt-1 text-sm/6 text-muted">
-            商品の内容を確認して、購入手続きへ進めます。
-          </p>
-        </div>
-      </div>
+      <ul className="mb-5 grid gap-2.5">
+        {items.map(({ id, imageSrc, name, price }) => (
+          <li
+            key={id}
+            className="flex items-center gap-3 rounded-2xl bg-paper p-3"
+          >
+            <Image
+              className="size-16 shrink-0 rounded-xl border border-line bg-white object-contain p-3"
+              src={imageSrc}
+              alt=""
+              width={64}
+              height={64}
+              sizes="64px"
+            />
+            <div className="min-w-0">
+              <p className="text-sm/6 font-bold wrap-break-word">
+                {name}
+              </p>
+              <data
+                className="mt-1 block text-sm font-[750] text-green"
+                value={String(price)}
+              >
+                {priceFormatter.format(price)}
+              </data>
+            </div>
+          </li>
+        ))}
+      </ul>
 
       <ContentLink
         className="flex min-h-14 items-center justify-between rounded-xl bg-green px-5 text-sm font-[750] text-white transition-colors duration-150 hover:bg-[#0d3b2f] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"
