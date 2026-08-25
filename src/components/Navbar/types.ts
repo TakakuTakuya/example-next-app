@@ -9,6 +9,7 @@ export interface CartItem {
   imageSrc: string;
   name: string;
   price: number;
+  discountLabel?: string;
 }
 
 export interface AuthenticatedNavbarState {

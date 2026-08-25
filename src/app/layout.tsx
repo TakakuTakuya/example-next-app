@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
-import { Navbar, type CartItem } from "@/components/Navbar";
+import { Navbar } from "@/components/Navbar";
 import "./globals.css";
+
+interface DemoCartItem {
+  id: string;
+  imageSrc: string;
+  name: string;
+  price: number;
+  discountLabel?: string;
+}
 
 const demoCartItems = [
   {
@@ -8,6 +16,7 @@ const demoCartItems = [
     imageSrc: "/window.svg",
     name: "Orbit Analytics",
     price: 12800,
+    discountLabel: "2/25まで割引中",
   },
   {
     id: "orbit-automations",
@@ -20,8 +29,9 @@ const demoCartItems = [
     imageSrc: "/globe.svg",
     name: "Orbit Connect",
     price: 5500,
+    discountLabel: "期間限定割引中",
   },
-] as const satisfies readonly CartItem[];
+] as const satisfies readonly DemoCartItem[];
 
 export const metadata: Metadata = {
   title: "Orbit — Portal Mega Menu Demo",

@@ -4,11 +4,6 @@ import { ArrowRight } from "lucide-react";
 import * as BottomSheet from "./BottomSheet";
 import type { CartItem } from "./types";
 
-const priceFormatter = new Intl.NumberFormat("ja-JP", {
-  style: "currency",
-  currency: "JPY",
-});
-
 interface CartPanelContentProps {
   items: readonly CartItem[];
   surface: "bottom-sheet" | "mega-menu";
@@ -26,7 +21,7 @@ export function CartPanelContent({
       className={surface === "bottom-sheet" ? "px-5 pt-5" : "p-5"}
     >
       <ul className="mb-5 grid gap-2.5">
-        {items.map(({ id, imageSrc, name, price }) => (
+        {items.map(({ discountLabel, id, imageSrc, name, price }) => (
           <li
             key={id}
             className="flex items-center gap-3 rounded-2xl bg-paper p-3"
@@ -43,12 +38,19 @@ export function CartPanelContent({
               <p className="text-sm/6 font-bold wrap-break-word">
                 {name}
               </p>
-              <data
-                className="mt-1 block text-sm font-[750] text-green"
-                value={String(price)}
-              >
-                {priceFormatter.format(price)}
-              </data>
+              <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <data
+                  className="text-sm font-[750] text-green"
+                  value={String(price)}
+                >
+                  {price.toLocaleString("ja-JP")}円
+                </data>
+                {discountLabel ? (
+                  <span className="rounded-full bg-green/10 px-2 py-1 text-[11px] leading-none font-bold text-green">
+                    {discountLabel}
+                  </span>
+                ) : null}
+              </div>
             </div>
           </li>
         ))}
