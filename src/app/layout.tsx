@@ -2,47 +2,6 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
-interface DemoCartItem {
-  id: string;
-  imageSrc: string;
-  name: string;
-  price: number;
-  discountLabel?: string;
-}
-
-interface DemoCart {
-  items: readonly DemoCartItem[];
-  itemCount: number;
-  subtotal: number;
-}
-
-const demoCart = {
-  items: [
-    {
-      id: "orbit-analytics",
-      imageSrc: "/window.svg",
-      name: "Orbit Analytics",
-      price: 12800,
-      discountLabel: "2/25まで割引中",
-    },
-    {
-      id: "orbit-automations",
-      imageSrc: "/file.svg",
-      name: "Orbit Automations",
-      price: 8800,
-    },
-    {
-      id: "orbit-connect",
-      imageSrc: "/globe.svg",
-      name: "Orbit Connect",
-      price: 5500,
-      discountLabel: "期間限定割引中",
-    },
-  ],
-  itemCount: 3,
-  subtotal: 27100,
-} as const satisfies DemoCart;
-
 export const metadata: Metadata = {
   title: "Orbit — Portal Mega Menu Demo",
   description:
@@ -70,7 +29,32 @@ export default function RootLayout({
               availableCouponCount: 3,
             },
           }}
-          cart={demoCart}
+          cart={{
+            items: [
+              {
+                id: "orbit-analytics",
+                imageSrc: "/window.svg",
+                name: "Orbit Analytics",
+                price: 12800,
+                discountLabel: "2/25まで割引中",
+              },
+              {
+                id: "orbit-automations",
+                imageSrc: "/file.svg",
+                name: "Orbit Automations",
+                price: 8800,
+              },
+              {
+                id: "orbit-connect",
+                imageSrc: "/globe.svg",
+                name: "Orbit Connect",
+                price: 5500,
+                discountLabel: "期間限定割引中",
+              },
+            ],
+            itemCount: 3,
+            subtotal: 27100,
+          }}
         />
         {children}
       </body>
