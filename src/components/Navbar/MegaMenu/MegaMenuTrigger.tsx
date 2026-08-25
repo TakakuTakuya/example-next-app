@@ -94,7 +94,7 @@ export function MegaMenuTrigger({
       >
         {children}
       </button>
-      {isOpen ? <MegaMenuPointerBridge /> : null}
+      {isOpen && <MegaMenuPointerBridge />}
     </>
   );
 }

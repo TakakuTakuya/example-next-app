@@ -46,18 +46,18 @@ export function CartPanelContent({
               <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <data
                   className={cn(
-                    "text-sm font-[750]",
-                    discountLabel ? "text-[#b42318]" : "text-green",
+                    "text-sm font-[750] text-green",
+                    discountLabel && "text-[#b42318]",
                   )}
                   value={String(price)}
                 >
                   {price.toLocaleString("ja-JP")}円
                 </data>
-                {discountLabel ? (
+                {discountLabel && (
                   <span className="rounded-full bg-green/10 px-2 py-1 text-[11px] leading-none font-bold text-green">
                     {discountLabel}
                   </span>
-                ) : null}
+                )}
               </div>
             </div>
           </li>

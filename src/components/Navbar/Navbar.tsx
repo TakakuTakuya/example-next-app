@@ -115,7 +115,7 @@ export function Navbar({
                 <RootPushNavContent auth={auth} />
               </PushNav.Screen>
 
-              {isLoggedIn ? (
+              {isLoggedIn && (
                 <PushNav.Screen value="account">
                   <PushNavScreenLayout>
                     <AccountOverviewNavigationContent
@@ -124,7 +124,7 @@ export function Navbar({
                     />
                   </PushNavScreenLayout>
                 </PushNav.Screen>
-              ) : null}
+              )}
 
               {primaryNavigationItems.map(({ value }) => {
                 const NavigationContent =

@@ -56,7 +56,7 @@ export function MegaMenuLink({
       >
         {children}
       </NavbarMenuItem>
-      {isOpen ? <MegaMenuPointerBridge /> : null}
+      {isOpen && <MegaMenuPointerBridge />}
     </>
   );
 }
