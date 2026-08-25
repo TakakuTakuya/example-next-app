@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/cn";
 import * as BottomSheet from "./BottomSheet";
 import type { CartItem } from "./types";
 
@@ -40,7 +41,10 @@ export function CartPanelContent({
               </p>
               <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <data
-                  className="text-sm font-[750] text-green"
+                  className={cn(
+                    "text-sm font-[750]",
+                    discountLabel ? "text-[#b42318]" : "text-green",
+                  )}
                   value={String(price)}
                 >
                   {price.toLocaleString("ja-JP")}円
