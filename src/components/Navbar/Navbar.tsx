@@ -29,8 +29,8 @@ import { RootPushNavContent } from "./RootPushNavContent";
 import { SiteLogo } from "./SiteLogo";
 import { SolutionsNavigationContent } from "./SolutionsNavigationContent";
 import type {
-  CartItem,
   NavbarAuthState,
+  NavbarCart,
   NavigationContentProps,
 } from "./types";
 import * as MegaMenu from "./MegaMenu";
@@ -57,6 +57,12 @@ const ACCOUNT_TRIGGER_TEXT_MAX_LENGTH = 11;
 const accountTriggerTextSuffix = " 様";
 const truncatedAccountTriggerTextSuffix = `…${accountTriggerTextSuffix}`;
 
+const emptyCart = {
+  items: [],
+  itemCount: 0,
+  subtotal: 0,
+} as const satisfies NavbarCart;
+
 function formatAccountTriggerText(userName: string): string {
   const accountTriggerText = `${userName}${accountTriggerTextSuffix}`;
   const accountTriggerCharacters = Array.from(accountTriggerText);
@@ -77,7 +83,7 @@ function formatAccountTriggerText(userName: string): string {
 
 interface NavbarProps {
   auth?: NavbarAuthState;
-  cartItems?: readonly CartItem[];
+  cart?: NavbarCart;
 }
 
 /**
@@ -87,11 +93,10 @@ interface NavbarProps {
  */
 export function Navbar({
   auth = { status: "anonymous" },
-  cartItems = [],
+  cart = emptyCart,
 }: NavbarProps) {
   const isLoggedIn = auth.status === "authenticated";
-  const cartItemCount = cartItems.length;
-  const showCartPanel = isLoggedIn && cartItemCount > 0;
+  const showCartPanel = isLoggedIn && cart.itemCount > 0;
   const accountTriggerLabel = isLoggedIn ? "アカウント" : "ログイン";
 
   return (
@@ -217,12 +222,12 @@ export function Navbar({
                         className="absolute -top-2 -right-2 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-green px-1 text-[10px] leading-none font-bold text-white"
                         aria-hidden="true"
                       >
-                        {cartItemCount}
+                        {cart.itemCount}
                       </span>
                     </span>
                     <span>カート</span>
                     <span className="sr-only">
-                      内の商品数：{cartItemCount}
+                      内の商品数：{cart.itemCount}
                     </span>
                   </MegaMenu.Link>
                   <MegaMenu.Content
@@ -230,7 +235,9 @@ export function Navbar({
                     className="max-w-[400px]"
                   >
                     <CartPanelContent
-                      items={cartItems}
+                      itemCount={cart.itemCount}
+                      items={cart.items}
+                      subtotal={cart.subtotal}
                       surface="mega-menu"
                     />
                   </MegaMenu.Content>
@@ -300,7 +307,9 @@ export function Navbar({
               </BottomSheet.Trigger>
               <BottomSheet.Content label="カート">
                 <CartPanelContent
-                  items={cartItems}
+                  itemCount={cart.itemCount}
+                  items={cart.items}
+                  subtotal={cart.subtotal}
                   surface="bottom-sheet"
                 />
               </BottomSheet.Content>

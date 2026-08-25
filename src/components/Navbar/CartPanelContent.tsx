@@ -6,13 +6,17 @@ import * as BottomSheet from "./BottomSheet";
 import type { CartItem } from "./types";
 
 interface CartPanelContentProps {
+  itemCount: number;
   items: readonly CartItem[];
+  subtotal: number;
   surface: "bottom-sheet" | "mega-menu";
 }
 
 /** デスクトップのCartパネルとモバイルのBottom Sheetで共有する内容。 */
 export function CartPanelContent({
+  itemCount,
   items,
+  subtotal,
   surface,
 }: CartPanelContentProps) {
   const ContentLink = surface === "bottom-sheet" ? BottomSheet.Link : Link;
@@ -21,7 +25,7 @@ export function CartPanelContent({
     <div
       className={surface === "bottom-sheet" ? "px-5 pt-5" : "p-5"}
     >
-      <ul className="mb-5 grid gap-2.5">
+      <ul className="mb-4 grid gap-2.5">
         {items.map(({ discountLabel, id, imageSrc, name, price }) => (
           <li
             key={id}
@@ -59,6 +63,18 @@ export function CartPanelContent({
           </li>
         ))}
       </ul>
+
+      <p className="mb-5 flex items-baseline justify-end gap-2 border-t border-line pt-4">
+        <span className="text-sm text-muted">
+          {itemCount}点・小計 （税込）
+        </span>
+        <data
+          className="text-base font-[760] text-ink"
+          value={String(subtotal)}
+        >
+          {subtotal.toLocaleString("ja-JP")}円
+        </data>
+      </p>
 
       <ContentLink
         className="flex min-h-14 items-center justify-between rounded-xl bg-green px-5 text-sm font-[750] text-white transition-colors duration-150 hover:bg-[#0d3b2f] focus-visible:outline-[3px] focus-visible:outline-focus focus-visible:outline-offset-[3px] motion-reduce:transition-none"

@@ -12,6 +12,12 @@ export interface CartItem {
   discountLabel?: string;
 }
 
+export interface NavbarCart {
+  items: readonly CartItem[];
+  itemCount: number;
+  subtotal: number;
+}
+
 export interface AuthenticatedNavbarState {
   status: "authenticated";
   account: AccountSummary;
