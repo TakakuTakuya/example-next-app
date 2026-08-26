@@ -1,4 +1,6 @@
 import {
+  useLayoutEffect,
+  useRef,
   type FocusEventHandler,
   type HTMLAttributes,
   type PointerEventHandler,
@@ -31,6 +33,11 @@ export function MegaMenuContent({
 }: MegaMenuContentProps) {
   const menu = useMegaMenuRoot();
   const item = useMegaMenuItem();
+  const pointerInsideRef = useRef(false);
+
+  useLayoutEffect(() => {
+    pointerInsideRef.current = false;
+  }, [menu.activeValue]);
 
   if (menu.activeValue !== item.value || !menu.layerSlot) {
     return null;
@@ -38,6 +45,7 @@ export function MegaMenuContent({
 
   const handlePointerEnter: PointerEventHandler<HTMLDivElement> = (event) => {
     onPointerEnterProp?.(event);
+    pointerInsideRef.current = true;
 
     if (event.pointerType === "mouse" && !event.defaultPrevented) {
       menu.cancelScheduledClose();
@@ -46,8 +54,13 @@ export function MegaMenuContent({
 
   const handlePointerLeave: PointerEventHandler<HTMLDivElement> = (event) => {
     onPointerLeaveProp?.(event);
+    pointerInsideRef.current = false;
 
-    if (event.pointerType === "mouse" && !event.defaultPrevented) {
+    if (
+      event.pointerType === "mouse" &&
+      !event.defaultPrevented &&
+      !event.currentTarget.contains(document.activeElement)
+    ) {
       menu.scheduleClose();
     }
   };
@@ -66,6 +79,7 @@ export function MegaMenuContent({
 
     if (
       !event.defaultPrevented &&
+      !pointerInsideRef.current &&
       (!(nextTarget instanceof Node) ||
         !event.currentTarget.contains(nextTarget))
     ) {
